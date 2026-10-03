@@ -29,6 +29,7 @@
 <div class="layout">
 <nav aria-label="本节目录">
 <div class="nav-title">学习路径</div>
+<a href="lesson-math-matrix-calculus.html">先学：向量与矩阵求导</a>
 <a href="#start">01 · 本节目标</a><a href="#tensor">02 · 什么是张量</a><a href="#shape">03 · 形状、轴与索引</a><a href="#batch">04 · 批次与图像</a><a href="#reshape">05 · reshape 与转置</a><a href="#broadcast">06 · 广播与矩阵乘法</a><a href="#math">07 · 数学基础检查</a><a href="#practice">08 · NumPy 与回归实验</a><a href="#quiz">09 · 自测与完成标准</a>
 <p class="nav-note">按理解进度学习，可以分多次完成。所有互动在本页运行，无需联网。</p>
 </nav>
@@ -38,7 +39,7 @@
 <p class="section-num">01 / 从已有知识建立连接</p><h2>学完后，你应该能做什么？</h2>
 <p>过去你可能写过 <code>y = Xw + b</code>。现在我们要能解释：<code>X</code> 有几个轴，每个轴表示什么，为什么它能与 <code>w</code> 相乘，以及结果的形状是什么。</p>
 <ul><li>用自己的话解释张量、轴与形状。</li><li>读懂表格数据和图像批次的形状。</li><li>判断索引、切片、reshape、转置与广播的结果。</li><li>用 NumPy 组织数据，训练已学过的线性回归，并读懂损失曲线。</li></ul>
-<div class="callout"><strong>建议顺序：</strong>先读张量与形状，操作每个实验，再运行配套代码。数学基础检查可以按掌握情况展开阅读。</div>
+<div class="callout"><strong>建议顺序：</strong>先完成<a href="lesson-math-matrix-calculus.html">向量与矩阵求导预备课</a>中的基础梯度与线性回归推导，再读本节的张量与形状，操作每个实验，最后运行配套代码。数学基础检查可以按掌握情况展开阅读。</div>
 </section>
 <section id="tensor">
 <p class="section-num">02 / 从一张表到一叠表</p><h2>张量：用多个轴组织数值</h2>
@@ -236,6 +237,7 @@ for value in values:
 <p><strong>为什么形状少了一个轴？</strong>因为 j 的多个位置已经被合成一个平均值，结果不再需要 j 这个索引。默认 <code>keepdims=False</code> 会移除被平均的轴；<code>keepdims=True</code> 则保留它，长度变成 1。例如 <code>T.mean(axis=1, keepdims=True)</code> 的形状是 <code>(2, 1, 3)</code>。</p>
 <p>如果写 <code>A.mean()</code>，不指定 axis，默认就把所有元素一起求平均：<code>(1+2+3+4+5+6)/6 = 3.5</code>，得到一个标量。</p>
 <h3>把这个思路用在线性回归里</h3>
+<div class="callout">下面的两行梯度不是需要背下来的新规则。如果还不能解释 <code>X.T @ error</code> 为什么出现，先看<a href="lesson-math-matrix-calculus.html#regression">预备课：从标量求导推到这段训练代码</a>，里面逐个样本展开了求导与第一次更新。</div>
 
 <pre><code>import numpy as np
 
