@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>数学补充课：向量与矩阵求导</title>
+<style>
+:root{--ink:#172033;--muted:#59647a;--paper:#f6f7fb;--card:#fff;--line:#dce1ea;--blue:#3157d5;--cyan:#0b8195;--orange:#b85d12;--green:#18754a;--red:#ad3344;--soft:#eef2ff;--shadow:0 12px 34px rgba(30,42,74,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(160deg,#edf1ff 0,#f8fafc 32%,#f6f7fb 100%);color:var(--ink);font-family:Inter,"Noto Sans SC","Microsoft YaHei",sans-serif;line-height:1.72}code,pre,.math{font-family:"JetBrains Mono","SFMono-Regular",Consolas,monospace}a{color:var(--blue)}
+.hero{padding:64px 24px 44px;background:radial-gradient(circle at 86% 20%,rgba(84,214,206,.25),transparent 28%),linear-gradient(135deg,#17234f,#284ea9);color:#fff}.hero-inner,.page{max-width:1080px;margin:auto}.eyebrow{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;opacity:.78}.hero h1{font-size:clamp(2.05rem,5vw,4rem);line-height:1.12;margin:.25em 0}.hero p{max-width:800px;font-size:1.08rem;color:#e5eaff}.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.chip{padding:7px 12px;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(255,255,255,.09);font-size:.9rem}
+.page{padding:26px 20px 80px}.nav{position:sticky;top:0;z-index:5;margin:0 auto 26px;padding:11px;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);display:flex;gap:7px;overflow:auto}.nav a{white-space:nowrap;text-decoration:none;color:#34405a;padding:7px 10px;border-radius:10px;font-size:.88rem}.nav a:hover{background:var(--soft);color:var(--blue)}
+section{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,42px);margin:24px 0;box-shadow:var(--shadow)}.section-num{margin:0;color:var(--blue);font-weight:800;font-size:.82rem;letter-spacing:.1em}h2{font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.25;margin:.35em 0 .6em}h3{margin:1.35em 0 .5em;font-size:1.13rem}.lead{font-size:1.05rem;color:#38445d}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:15px}.card{border:1px solid var(--line);border-radius:16px;padding:18px;background:#fbfcff}.card h3{margin-top:0}.type-card{border-top:5px solid var(--blue)}.type-card:nth-child(2){border-color:var(--cyan)}.type-card:nth-child(3){border-color:var(--orange)}
+.shape{display:inline-block;border-radius:7px;padding:1px 7px;background:#edf1ff;color:#243f9c;font-family:monospace;font-weight:700}.formula{overflow:auto;margin:14px 0;padding:15px 18px;border-left:4px solid var(--blue);background:#f4f6ff;border-radius:0 12px 12px 0;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.05rem}.formula strong{color:#233e9c}.note,.warning,.success{padding:14px 16px;border-radius:13px;margin:14px 0}.note{background:#eef8fa;border:1px solid #bde3e8}.warning{background:#fff4e9;border:1px solid #f2c797}.success{background:#edf9f2;border:1px solid #b8dfc9}
+.pipeline{display:flex;align-items:stretch;gap:8px;overflow:auto;padding:12px 0}.node{min-width:128px;padding:13px;text-align:center;border-radius:14px;background:#f4f6ff;border:1px solid #cfd7fa}.arrow{align-self:center;color:var(--blue);font-size:1.5rem;font-weight:900}.node small{display:block;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:14px 0}.controls label{font-weight:700}.controls input[type=range]{width:150px;vertical-align:middle}.controls select{font:inherit;padding:7px 10px;border:1px solid #bfc8dc;border-radius:9px;background:#fff;color:var(--ink)}.readout{padding:14px;border-radius:13px;background:#151e36;color:#edf2ff;overflow:auto}.readout code{color:#cfe6ff}.viz-grid{display:grid;grid-template-columns:minmax(280px,1fr) minmax(280px,1fr);gap:18px;align-items:center}.plane{width:100%;height:auto;background:#fbfcff;border:1px solid var(--line);border-radius:14px}.axis{stroke:#a8b1c4;stroke-width:1}.contour{fill:none;stroke:#cad3eb;stroke-width:1}.grad{stroke:var(--red);stroke-width:4;marker-end:url(#redArrow)}.step{stroke:var(--green);stroke-width:4;marker-end:url(#greenArrow)}.point{fill:var(--blue)}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.94rem}th,td{padding:10px 12px;border:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f0f3fa}.matrix{display:inline-grid;grid-template-columns:repeat(var(--cols),minmax(40px,auto));gap:3px;padding:5px 9px;border-left:2px solid #67738d;border-right:2px solid #67738d;border-radius:4px;vertical-align:middle;background:#fff}.matrix span{text-align:center;padding:2px 4px;font-family:monospace}.equation-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:12px 0}.eq-op{font-weight:800;color:var(--muted)}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tabs button,button.action{border:1px solid #bfc8dc;background:#fff;color:#26334e;border-radius:10px;padding:9px 12px;cursor:pointer;font-weight:700}.tabs button.active,button.action{background:var(--blue);border-color:var(--blue);color:#fff}.tab-panel{display:none}.tab-panel.active{display:block}pre{overflow:auto;background:#11182b;color:#dce7ff;border-radius:14px;padding:17px;line-height:1.6}.comment{color:#8295bd}
+.quiz-item{border-top:1px solid var(--line);padding:17px 0}.quiz-item:first-child{border-top:0}.answers{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.answers button{border:1px solid #bbc5da;background:white;border-radius:10px;padding:8px 11px;cursor:pointer}.answers button.correct{background:#daf3e4;border-color:#66b88a}.answers button.wrong{background:#fde3e6;border-color:#d67c88}.feedback{min-height:1.7em;font-weight:700}.checklist label{display:block;padding:9px 0}.checklist input{transform:scale(1.15);margin-right:9px}.footer{text-align:center;color:var(--muted);padding:26px}.small{font-size:.9rem}
+@media(max-width:720px){.hero{padding-top:42px}.viz-grid{grid-template-columns:1fr}.nav{border-radius:0;margin-left:-20px;margin-right:-20px}.pipeline{align-items:center}.node{min-width:115px}section{border-radius:17px}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="hero-inner">
+  <div class="eyebrow">AI 学习课程 · 数学补充课</div>
+  <h1>向量与矩阵求导</h1>
+  <p>你已经会标量求导，也会矩阵乘法。这节课只搭中间的桥：先看“谁对谁求导”和结果形状，再用一个全连接层推导 <code>∂L/∂W</code>、<code>∂L/∂x</code>，最后连接到反向传播。</p>
+  <div class="chips"><span class="chip">梯度</span><span class="chip">雅可比矩阵</span><span class="chip">外积</span><span class="chip">批次梯度</span><span class="chip">数值差分核对</span></div>
+</div></header>
+<main class="page">
+<nav class="nav" aria-label="课程目录"><a href="#types">01 意义与定义</a><a href="#gradient">02 梯度</a><a href="#jacobian">03 雅可比</a><a href="#linear">04 矩阵梯度</a><a href="#batch">05 批次</a><a href="#backprop">06 反向传播</a><a href="#optional">07 进阶</a><a href="#practice">08 练习</a><a href="#quiz">09 自测</a></nav>
+
+<section id="types"><p class="section-num">01 / 先理解为什么要求导</p><h2>导数是在预测：稍微改一点，结果会怎样变</h2>
+<p class="lead">你熟悉的标量导数已经表达了这个意思。例如 <code>f(w)=w²</code>，在 <code>w=3</code> 时 <code>f′(3)=6</code>：把 <code>w</code> 增加很小的 <code>0.01</code>，<code>f</code> 大约增加 <code>6×0.01=0.06</code>。实际从 9 变成 9.0601；导数给的是当前位置附近的一阶近似。</p>
+<div class="note"><strong>向量和矩阵求导没有改变这件事。</strong>只是现在有很多个可以改动的数，也可能有很多个输出。导数负责把“输入的小变化”换算成“输出的小变化”。在神经网络里，矩阵的每个元素都是一个可调整的权重，矩阵梯度就是每个权重对损失的局部影响表。</div>
+<h3>三个常见问题，对应三种结果</h3>
+<div class="grid">
+  <article class="card type-card"><h3>一个结果，很多输入</h3><p><strong>问题：</strong>把向量 <code>x</code> 的每个分量稍微改动，标量损失 <code>L</code> 会变多少？</p><p><strong>定义：</strong>把所有偏导排成梯度 <span class="shape">(n,)</span>。</p><div class="formula">L(x+Δx) ≈ L(x) + <strong>∇L · Δx</strong></div><p class="small muted">梯度与改变量做点积，预测损失变化。</p></article>
+  <article class="card type-card"><h3>很多结果，很多输入</h3><p><strong>问题：</strong>输入向量 <code>x</code> 有一点变化时，输出向量 <code>y</code> 的每个分量怎样变？</p><p><strong>定义：</strong>所有输出对所有输入的偏导组成雅可比矩阵 <span class="shape">(m,n)</span>。</p><div class="formula">y(x+Δx) ≈ y(x) + <strong>JΔx</strong></div><p class="small muted">雅可比像一个局部线性变换，把输入变化映射为输出变化。</p></article>
+  <article class="card type-card"><h3>一个结果，矩阵参数</h3><p><strong>问题：</strong>把权重矩阵 <code>W</code> 的每个格子稍微改动，损失会变多少？</p><p><strong>定义：</strong>每格的偏导组成与 <code>W</code> 同形的梯度 <span class="shape">(m,n)</span>。</p><div class="formula">ΔL ≈ Σᵢⱼ <strong>(∂L/∂Wᵢⱼ)ΔWᵢⱼ</strong></div><p class="small muted">负梯度告诉优化器该怎样同时调整整张权重表。</p></article>
+</div>
+<div class="success"><strong>一句话记忆：</strong>梯度预测一个标量怎样变；雅可比预测一个向量怎样变；矩阵梯度告诉训练器每个参数该往哪个方向改。</div>
+<div class="warning"><strong>本课采用的约定：</strong>梯度与自变量形状相同；雅可比矩阵的“行对应输出、列对应输入”。不同教材可能使用转置约定，看到公式时先检查形状，不要只凭记忆。</div>
+</section>
+
+<section id="gradient"><p class="section-num">02 / 一个标量如何随多个数变化</p><h2>梯度把所有偏导排在一起</h2>
+<div class="viz-grid"><div>
+  <p>令 <span class="math">L(x₁,x₂)=x₁²+2x₂²</span>。你会分别求两个标量偏导：</p>
+  <div class="formula">∂L/∂x₁ = 2x₁　　∂L/∂x₂ = 4x₂</div>
+  <p>把它们按 <code>x</code> 的顺序排在一起，就是梯度：</p>
+  <div class="formula"><strong>∇L = [2x₁, 4x₂]</strong></div>
+  <div class="controls"><label>x₁ <input id="x1" type="range" min="-3" max="3" step="0.25" value="2"> <span id="x1v">2</span></label><label>x₂ <input id="x2" type="range" min="-3" max="3" step="0.25" value="1"> <span id="x2v">1</span></label></div>
+  <div id="gradReadout" class="readout" aria-live="polite"></div>
+</div><svg class="plane" viewBox="0 0 420 320" role="img" aria-labelledby="planeTitle planeDesc"><title id="planeTitle">二维损失曲面俯视图上的梯度</title><desc id="planeDesc">椭圆是等损失线，红色箭头是梯度，绿色箭头是负梯度下降方向。</desc><defs><marker id="redArrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ad3344"/></marker><marker id="greenArrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#18754a"/></marker></defs><line class="axis" x1="20" y1="160" x2="400" y2="160"/><line class="axis" x1="210" y1="18" x2="210" y2="302"/><ellipse class="contour" cx="210" cy="160" rx="55" ry="32"/><ellipse class="contour" cx="210" cy="160" rx="105" ry="60"/><ellipse class="contour" cx="210" cy="160" rx="160" ry="92"/><circle id="gradPoint" class="point" r="6"/><line id="gradArrow" class="grad"/><line id="stepArrow" class="step"/><text x="330" y="35" fill="#ad3344">∇L：上升最快</text><text x="330" y="57" fill="#18754a">−∇L：下降方向</text></svg></div>
+<h3>例子：让梯度预测一次小改动</h3>
+<p>假设准备把当前位置改成 <code>x+Δx</code>。梯度不必重新完整计算函数，就能预测损失大约变化 <code>∇L·Δx</code>。把改动调大、再调小，比较预测和真实变化。</p>
+<div class="controls"><label>Δx₁ <input id="dx1" type="range" min="-0.5" max="0.5" step="0.05" value="0.10"> <span id="dx1v">0.10</span></label><label>Δx₂ <input id="dx2" type="range" min="-0.5" max="0.5" step="0.05" value="0"> <span id="dx2v">0</span></label></div>
+<div id="deltaReadout" class="readout" aria-live="polite"></div>
+<div class="note">改动越小，一阶预测通常越准确。梯度不是“最终移动量”；训练器会选择 <code>Δx=−η∇L</code>，用学习率 <code>η</code> 控制步长。</div>
+</section>
+
+<section id="jacobian"><p class="section-num">03 / 多个输出对多个输入</p><h2>雅可比矩阵就是一张偏导表</h2>
+<p class="lead">雅可比矩阵的意义不是“把偏导摆好看”，而是用一个矩阵把输入的小变化换算成输出的小变化：<code>Δy≈JΔx</code>。第 <code>j</code> 列直接回答“只改变第 <code>j</code> 个输入时，所有输出如何变化”。</p>
+<p>设 <code>x=[x₁,x₂]</code>，<code>y=Wx+b</code>，其中 <code>W</code> 有 2 行 2 列：</p>
+<div class="equation-row"><span class="matrix" style="--cols:2"><span>y₁</span><span></span><span>y₂</span><span></span></span><span class="eq-op">=</span><span class="matrix" style="--cols:2"><span>1</span><span>2</span><span>−1</span><span>3</span></span><span class="matrix" style="--cols:1"><span>x₁</span><span>x₂</span></span><span class="eq-op">+</span><span class="matrix" style="--cols:1"><span>0</span><span>1</span></span></div>
+<p>展开后 <code>y₁=x₁+2x₂</code>，<code>y₂=−x₁+3x₂+1</code>。每行对应该输出对所有输入的偏导：</p>
+<div class="formula">J = ∂y/∂x = [ [∂y₁/∂x₁, ∂y₁/∂x₂], [∂y₂/∂x₁, ∂y₂/∂x₂] ] = <strong>W</strong></div>
+<div class="controls"><label>x₁ <input id="jx1" type="range" min="-3" max="3" step="1" value="1"> <span id="jx1v">1</span></label><label>x₂ <input id="jx2" type="range" min="-3" max="3" step="1" value="2"> <span id="jx2v">2</span></label></div><div id="jacReadout" class="readout" aria-live="polite"></div>
+<h3>例子：只推动一个输入，看看两个输出怎样动</h3>
+<div class="controls"><label>输入的小变化 <select id="jacDelta"><option value="x1">只让 x₁ 增加 0.1</option><option value="x2">只让 x₂ 增加 0.1</option><option value="both">x₁ 增加 0.1，x₂ 减少 0.1</option></select></label></div>
+<div id="jacDeltaReadout" class="readout" aria-live="polite"></div>
+<p class="muted">本例是线性函数，所以 <code>Δy=JΔx</code> 完全相等。非线性函数中它是当前位置附近的近似，而且雅可比会随输入变化。</p>
+</section>
+
+<section id="linear"><p class="section-num">04 / 训练真正需要的形式</p><h2>先把向量输出变成标量损失，再对参数求导</h2>
+<p class="lead">矩阵 <code>W</code> 可以看成一张参数表。<code>∂L/∂Wᵢⱼ</code> 的定义是：只把第 <code>i,j</code> 个参数增加一个极小量，其余参数不动时，损失变化量与这个极小量的比值。把每一格的结果放回原位置，就得到矩阵梯度。</p>
+<div class="formula">∂L/∂Wᵢⱼ = lim<sub>ε→0</sub> [L(W中只有Wᵢⱼ增加ε) − L(W)] / ε</div>
+<p>直接写“向量 <code>y</code> 对矩阵 <code>W</code> 求导”会得到三维对象，很难使用。训练最终有一个标量损失 <code>L</code>，因此通常直接求 <code>∂L/∂W</code>：它与 <code>W</code> 同形，每一格就是对应权重的局部敏感度。</p>
+<div class="pipeline"><div class="node">输入 x<small>(3,)</small></div><div class="arrow">→</div><div class="node">y = Wx+b<small>(2,)</small></div><div class="arrow">→</div><div class="node">e = y−t<small>(2,)</small></div><div class="arrow">→</div><div class="node">L = ½‖e‖²<small>标量</small></div></div>
+<div class="tabs" role="tablist"><button class="active" data-tab="numbers">带数字算一遍</button><button data-tab="derive">逐元素推导</button><button data-tab="meaning">为什么是外积</button></div>
+<div id="numbers" class="tab-panel active">
+  <div class="equation-row"><span>W =</span><span class="matrix" style="--cols:3"><span>1</span><span>−1</span><span>2</span><span>0.5</span><span>1</span><span>−1</span></span><span>x =</span><span class="matrix" style="--cols:1"><span>2</span><span>1</span><span>−1</span></span><span>b =</span><span class="matrix" style="--cols:1"><span>0</span><span>1</span></span><span>t =</span><span class="matrix" style="--cols:1"><span>0</span><span>2</span></span></div>
+  <div class="formula">y = Wx+b = [−1,4]　　e = y−t = [−1,2]　　L = ½(1+4) = 2.5</div>
+  <table><thead><tr><th>要求的梯度</th><th>公式</th><th>本例结果</th><th>形状</th></tr></thead><tbody><tr><td>∂L/∂W</td><td>e xᵀ</td><td><code>[[-2,-1,1],[4,2,-2]]</code></td><td><span class="shape">(2,3)</span></td></tr><tr><td>∂L/∂b</td><td>e</td><td><code>[-1,2]</code></td><td><span class="shape">(2,)</span></td></tr><tr><td>∂L/∂x</td><td>Wᵀe</td><td><code>[0,3,-4]</code></td><td><span class="shape">(3,)</span></td></tr></tbody></table>
+</div>
+<div id="derive" class="tab-panel"><p>第 <code>i</code> 个输出为 <code>yᵢ=ΣⱼWᵢⱼxⱼ+bᵢ</code>。损失对 <code>yᵢ</code> 的偏导是 <code>eᵢ</code>。</p><div class="formula">∂L/∂Wᵢⱼ = (∂L/∂yᵢ)(∂yᵢ/∂Wᵢⱼ) = eᵢxⱼ</div><p>因此梯度矩阵第 <code>i,j</code> 格就是 <code>eᵢxⱼ</code>，把所有格子合起来便是 <code>e xᵀ</code>。</p><div class="formula">∂L/∂xⱼ = Σᵢ(∂L/∂yᵢ)(∂yᵢ/∂xⱼ) = ΣᵢeᵢWᵢⱼ</div><p>这正是 <code>Wᵀe</code> 的第 <code>j</code> 个分量。</p></div>
+<div id="meaning" class="tab-panel"><p>权重 <code>Wᵢⱼ</code> 连接“输入 <code>xⱼ</code>”和“输出 <code>yᵢ</code>”。它的梯度同时需要两条信息：</p><ul><li><code>eᵢ</code>：第 <code>i</code> 个输出收到多大的上游梯度；</li><li><code>xⱼ</code>：这条连接当时接收到多大的输入。</li></ul><p>把每个输出信号与每个输入值两两相乘，刚好形成一个 <code>(输出数, 输入数)</code> 的表，这就是外积 <code>e xᵀ</code>。</p></div>
+<h3>例子：只拧动权重矩阵中的一个“旋钮”</h3>
+<p>选择一个权重并改变一点。矩阵梯度对应位置的数字乘改变量，会预测损失怎样变化。负梯度表示增加这个权重会让损失下降；正梯度表示增加它会让损失上升。</p>
+<div class="controls"><label>选择权重 <select id="weightCell"><option value="0,0">W₁₁，当前梯度 −2</option><option value="0,1">W₁₂，当前梯度 −1</option><option value="0,2">W₁₃，当前梯度 1</option><option value="1,0">W₂₁，当前梯度 4</option><option value="1,1">W₂₂，当前梯度 2</option><option value="1,2">W₂₃，当前梯度 −2</option></select></label><label>改变量 ε <input id="weightEps" type="range" min="-0.25" max="0.25" step="0.05" value="0.10"> <span id="weightEpsV">0.10</span></label></div>
+<div id="weightReadout" class="readout" aria-live="polite"></div>
+<div class="success"><strong>最可靠的检查：</strong><code>W</code> 是 <code>(2,3)</code>，所以 <code>∂L/∂W</code> 也必须是 <code>(2,3)</code>。如果得到 <code>(3,2)</code>，通常是外积次序或转置写反了。</div>
+</section>
+
+<section id="batch"><p class="section-num">05 / 从一个样本到一批样本</p><h2>PyTorch 的 weight 为什么需要转置</h2>
+<p>PyTorch 把 <code>nn.Linear(in,out).weight</code> 存成 <span class="shape">(out,in)</span>。一批输入 <code>X</code> 的每行是一个样本，所以前向是：</p>
+<div class="formula">X <span class="shape">(B,in)</span> @ weight.T <span class="shape">(in,out)</span> + b <span class="shape">(out,)</span> → Z <span class="shape">(B,out)</span></div>
+<p>设上游梯度 <code>G=∂L/∂Z</code>，它和 <code>Z</code> 同形。批次公式是：</p>
+<table><thead><tr><th>梯度</th><th>公式</th><th>形状检查</th><th>含义</th></tr></thead><tbody>
+<tr><td><code>∂L/∂weight</code></td><td><code>G.T @ X</code></td><td><code>(out,B) @ (B,in) → (out,in)</code></td><td>把每条样本的外积贡献加起来</td></tr>
+<tr><td><code>∂L/∂b</code></td><td><code>G.sum(axis=0)</code></td><td><code>(B,out) → (out,)</code></td><td>同一个偏置被一批中的所有样本共用</td></tr>
+<tr><td><code>∂L/∂X</code></td><td><code>G @ weight</code></td><td><code>(B,out) @ (out,in) → (B,in)</code></td><td>把梯度继续传向上一层</td></tr>
+</tbody></table>
+<div class="note">如果损失使用批次<strong>平均值</strong>，<code>G</code> 中已经包含除以批次大小的因子；如果损失使用<strong>求和</strong>，则没有这个因子。二者方向相同但大小不同。</div>
+</section>
+
+<section id="backprop"><p class="section-num">06 / 不建立巨大的导数矩阵</p><h2>反向传播是在传递“上游梯度”</h2>
+<p>考虑 <code>z=Wx+b</code>、<code>h=ReLU(z)</code>、<code>L=½‖h−t‖²</code>。从右向左，每个节点只回答：“已经收到 <code>∂L/∂输出</code>，怎样算 <code>∂L/∂输入</code>？”</p>
+<div class="pipeline"><div class="node">L<small>先得 ∂L/∂h</small></div><div class="arrow">→</div><div class="node">ReLU 反向<small>乘 1[z&gt;0]</small></div><div class="arrow">→</div><div class="node">线性层反向<small>算 W、b、x 梯度</small></div></div>
+<div class="formula">g<sub>h</sub> = h−t　→　g<sub>z</sub> = g<sub>h</sub> ⊙ 1[z&gt;0]　→　∂L/∂W = g<sub>z</sub>xᵀ，∂L/∂x = Wᵀg<sub>z</sub></div>
+<p><code>⊙</code> 表示逐元素乘法。虽然 ReLU 作为“向量对向量函数”有雅可比矩阵，但它是对角矩阵；实际程序直接做逐元素乘法，不会创建一张巨大的对角矩阵。</p>
+<div class="warning"><strong>不要把前向和反向混在一起：</strong>前向用参数算预测与损失；反向不重新预测，而是把损失对各中间量的影响从后向前传播。</div>
+</section>
+
+<section id="optional"><p class="section-num">07 / 先理解结果，不要求背</p><h2>softmax 的完整导数与常用化简</h2>
+<p>softmax 的每个输出都依赖所有输入，因此它的雅可比不是单纯的逐元素导数。若 <code>p=softmax(z)</code>：</p>
+<div class="formula">∂pᵢ/∂zⱼ = pᵢ(δᵢⱼ−pⱼ)　，也可写成　J = diag(p)−ppᵀ</div>
+<p>与单个样本的交叉熵 <code>L=−Σᵢyᵢlog pᵢ</code> 合起来后，对 logits 的梯度会化简：</p>
+<div class="formula"><strong>∂L/∂z = p−y</strong></div>
+<p>这不是“softmax 的导数就是 <code>p−y</code>”。<code>p−y</code> 是 <strong>softmax 与交叉熵组合</strong>后的结果。</p>
+<details><summary>以后再学的内容</summary><ul><li>Hessian：标量对向量的二阶偏导矩阵；</li><li>矩阵微分与迹技巧：更紧凑地推导复杂公式；</li><li>特征值、SVD 与低秩分解：在 PCA 和模型压缩中按用途学习。</li></ul></details>
+</section>
+
+<section id="practice"><p class="section-num">08 / 手推之后让代码检查</p><h2>数值差分是你的公式验算器</h2>
+<p>如果把矩阵中某个元素 <code>Wᵢⱼ</code> 增加和减少一个很小的 <code>ε</code>，就能近似该位置的偏导：</p>
+<div class="formula">∂L/∂Wᵢⱼ ≈ [L(Wᵢⱼ+ε)−L(Wᵢⱼ−ε)] / (2ε)</div>
+<p><a href="lesson-math-matrix-calculus.py">打开或下载配套代码</a>。它会核对向量梯度、雅可比、单样本与批次矩阵梯度，并和 PyTorch 自动求导比较。在项目根目录运行：</p>
+<pre><code>uv run python lessons/lesson-math-matrix-calculus.py</code></pre>
+<h3>学习任务</h3><ol><li>先不运行代码，手算页面中的 <code>∂L/∂W</code>、<code>∂L/∂b</code> 和 <code>∂L/∂x</code>。</li><li>给每个公式写出形状，确认矩阵乘法可以执行。</li><li>运行配套程序，比较解析梯度、数值差分和 PyTorch 结果。</li><li>把损失从求和改为平均，解释梯度数值发生了什么变化。</li></ol>
+<div class="checklist"><label><input type="checkbox">我能先判断求导结果应该是标量、向量还是矩阵。</label><label><input type="checkbox">我能解释梯度、雅可比矩阵和参数梯度的区别。</label><label><input type="checkbox">我能手推一层 <code>y=Wx+b</code> 的三个反向公式。</label><label><input type="checkbox">我能把单样本公式扩展到批次并检查形状。</label></div>
+</section>
+
+<section id="quiz"><p class="section-num">09 / 检查是否真正理解</p><h2>六道自测题</h2>
+<div class="quiz-item" data-answer="c"><strong>1. 在某点 ∇L=[3,−2]，它主要表达什么？</strong><div class="answers"><button data-choice="a">参数现在等于 3 和 −2</button><button data-choice="b">损失一定等于 1</button><button data-choice="c">两个分量发生小变化时，损失的一阶变化率</button></div><div class="feedback"></div></div>
+<div class="quiz-item" data-answer="b"><strong>2. 标量损失 L 对形状为 (3,4) 的 W 求导，结果形状是？</strong><div class="answers"><button data-choice="a">(4,3)</button><button data-choice="b">(3,4)</button><button data-choice="c">标量</button></div><div class="feedback"></div></div>
+<div class="quiz-item" data-answer="a"><strong>3. y=Wx+b，W 是 (2,3)，x 是 (3,)，y 对 x 的雅可比形状是？</strong><div class="answers"><button data-choice="a">(2,3)</button><button data-choice="b">(3,2)</button><button data-choice="c">(2,)</button></div><div class="feedback"></div></div>
+<div class="quiz-item" data-answer="c"><strong>4. 单样本线性层中 e 是 (out,)，x 是 (in,)，∂L/∂W 是？</strong><div class="answers"><button data-choice="a">x eᵀ</button><button data-choice="b">Wᵀe</button><button data-choice="c">e xᵀ</button></div><div class="feedback"></div></div>
+<div class="quiz-item" data-answer="b"><strong>5. 批次中偏置梯度为什么沿批次维求和？</strong><div class="answers"><button data-choice="a">因为每条样本有不同偏置</button><button data-choice="b">因为同一偏置参与了每条样本的前向计算</button></div><div class="feedback"></div></div>
+<div class="quiz-item" data-answer="a"><strong>6. ∂L/∂z=p−y 是什么的组合结果？</strong><div class="answers"><button data-choice="a">softmax 与交叉熵</button><button data-choice="b">只有 softmax</button><button data-choice="c">ReLU 与均方误差</button></div><div class="feedback"></div></div>
+</section>
+<p class="footer">建议在第二节“模型怎样学习”之前完成。你不需要背公式表，但应能用形状重新推出线性层的梯度。</p>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+function n(v){return Number(v).toFixed(2).replace(/\.00$/,'')}
+function updateGradient(){
+  const x1=Number($('#x1').value),x2=Number($('#x2').value);
+  const dx1=Number($('#dx1').value),dx2=Number($('#dx2').value);
+  const g1=2*x1,g2=4*x2,L=x1*x1+2*x2*x2;
+  const nextL=(x1+dx1)**2+2*(x2+dx2)**2;
+  const predicted=g1*dx1+g2*dx2,actual=nextL-L;
+  $('#x1v').textContent=n(x1);$('#x2v').textContent=n(x2);
+  $('#dx1v').textContent=n(dx1);$('#dx2v').textContent=n(dx2);
+  $('#gradReadout').innerHTML=`当前位置 <code>x=[${n(x1)}, ${n(x2)}]</code>，L=<code>${n(L)}</code><br>梯度 <code>∇L=[${n(g1)}, ${n(g2)}]</code>：x₁ 每增加一点，L 最先按 ${n(g1)} 倍变化；x₂ 对应 ${n(g2)} 倍。`;
+  $('#deltaReadout').innerHTML=`改动 <code>Δx=[${n(dx1)}, ${n(dx2)}]</code><br>梯度预测：<code>ΔL≈∇L·Δx=${n(predicted)}</code><br>重新计算的真实变化：<code>ΔL=${n(actual)}</code>　（两者相差 ${n(Math.abs(actual-predicted))}）`;
+  const sx=210+x1*48,sy=160-x2*38,scale=9;
+  $('#gradPoint').setAttribute('cx',sx);$('#gradPoint').setAttribute('cy',sy);
+  $('#gradArrow').setAttribute('x1',sx);$('#gradArrow').setAttribute('y1',sy);$('#gradArrow').setAttribute('x2',sx+g1*scale);$('#gradArrow').setAttribute('y2',sy-g2*scale);
+  $('#stepArrow').setAttribute('x1',sx);$('#stepArrow').setAttribute('y1',sy);$('#stepArrow').setAttribute('x2',sx-g1*scale);$('#stepArrow').setAttribute('y2',sy+g2*scale);
+}
+['x1','x2','dx1','dx2'].forEach(id=>$('#'+id).addEventListener('input',updateGradient));updateGradient();
+
+function updateJac(){
+  const a=Number($('#jx1').value),b=Number($('#jx2').value),y1=a+2*b,y2=-a+3*b+1;
+  const choices={x1:[.1,0,'0.1 × 雅可比第一列'],x2:[0,.1,'0.1 × 雅可比第二列'],both:[.1,-.1,'0.1 × 第一列 − 0.1 × 第二列']};
+  const [da,db,explanation]=choices[$('#jacDelta').value];
+  const dy1=da+2*db,dy2=-da+3*db;
+  $('#jx1v').textContent=n(a);$('#jx2v').textContent=n(b);
+  $('#jacReadout').innerHTML=`x = <code>[${n(a)}, ${n(b)}]</code> → y = <code>[${n(y1)}, ${n(y2)}]</code><br>J 始终为 <code>[[1, 2], [-1, 3]]</code>，形状 (输出 2, 输入 2)`;
+  $('#jacDeltaReadout').innerHTML=`Δx=<code>[${n(da)}, ${n(db)}]</code><br>Δy=JΔx=<code>[${n(dy1)}, ${n(dy2)}]</code>，也就是 ${explanation}。<br>新输出为 <code>[${n(y1+dy1)}, ${n(y2+dy2)}]</code>。`;
+}
+['jx1','jx2','jacDelta'].forEach(id=>$('#'+id).addEventListener('input',updateJac));updateJac();
+
+function updateWeightExample(){
+  const W=[[1,-1,2],[.5,1,-1]],x=[2,1,-1],target=[0,2],bias=[0,1];
+  const y=[W[0][0]*x[0]+W[0][1]*x[1]+W[0][2]*x[2]+bias[0],W[1][0]*x[0]+W[1][1]*x[1]+W[1][2]*x[2]+bias[1]];
+  const error=[y[0]-target[0],y[1]-target[1]],baseLoss=.5*(error[0]**2+error[1]**2);
+  const [row,col]=$('#weightCell').value.split(',').map(Number),eps=Number($('#weightEps').value);
+  const gradient=error[row]*x[col];
+  const changedError=[...error];changedError[row]+=eps*x[col];
+  const newLoss=.5*(changedError[0]**2+changedError[1]**2),actual=newLoss-baseLoss,predicted=gradient*eps;
+  $('#weightEpsV').textContent=n(eps);
+  $('#weightReadout').innerHTML=`W<sub>${row+1}${col+1}</sub> 的梯度是 <code>${n(gradient)}</code>，把它改动 <code>${n(eps)}</code>。<br>梯度预测损失变化：<code>${n(gradient)}×${n(eps)}=${n(predicted)}</code><br>重新前向计算：L 从 <code>${n(baseLoss)}</code> 变为 <code>${n(newLoss)}</code>，真实变化 <code>${n(actual)}</code>。`;
+}
+['weightCell','weightEps'].forEach(id=>$('#'+id).addEventListener('input',updateWeightExample));updateWeightExample();
+document.querySelectorAll('.tabs button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');$('#'+btn.dataset.tab).classList.add('active')}));
+document.querySelectorAll('.quiz-item').forEach(item=>item.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{item.querySelectorAll('button').forEach(b=>b.classList.remove('correct','wrong'));const ok=btn.dataset.choice===item.dataset.answer;btn.classList.add(ok?'correct':'wrong');item.querySelector('.feedback').textContent=ok?'正确。先看输出、自变量和结果形状。':'再检查一次输出、自变量和矩阵乘法的形状。'})));
+</script>
+</body>
+</html>

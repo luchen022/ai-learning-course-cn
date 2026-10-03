@@ -1,0 +1,486 @@
+{
+  "torch_version": "2.14.0+cpu",
+  "device": "cpu",
+  "lines": [
+    "春天来了，花开了。",
+    "夏天来了，蝉叫了。",
+    "秋天来了，叶落了。",
+    "冬天来了，雪下了。"
+  ],
+  "corpus": "春天来了，花开了。\n夏天来了，蝉叫了。\n秋天来了，叶落了。\n冬天来了，雪下了。\n",
+  "vocab": [
+    "\n",
+    "。",
+    "下",
+    "了",
+    "冬",
+    "叫",
+    "叶",
+    "夏",
+    "天",
+    "开",
+    "春",
+    "来",
+    "秋",
+    "花",
+    "落",
+    "蝉",
+    "雪",
+    "，"
+  ],
+  "configuration": {
+    "context": 16,
+    "d_model": 32,
+    "heads": 4,
+    "head_width": 8,
+    "layers": 2,
+    "ffn_width": 64,
+    "steps": 320,
+    "parameters": 18834,
+    "sampling": "greedy argmax"
+  },
+  "window_count": 24,
+  "shapes": {
+    "ids": [
+      2,
+      16
+    ],
+    "embedded": [
+      2,
+      16,
+      32
+    ],
+    "block_1": [
+      2,
+      16,
+      32
+    ],
+    "block_2": [
+      2,
+      16,
+      32
+    ],
+    "logits": [
+      2,
+      16,
+      18
+    ]
+  },
+  "shift_example": {
+    "input": [
+      "春",
+      "天",
+      "来",
+      "了",
+      "，",
+      "花",
+      "开",
+      "了"
+    ],
+    "target": [
+      "天",
+      "来",
+      "了",
+      "，",
+      "花",
+      "开",
+      "了",
+      "。"
+    ]
+  },
+  "norm_example": {
+    "input": [
+      1.0,
+      2.0,
+      3.0,
+      4.0
+    ],
+    "mean": 2.5,
+    "variance": 1.25,
+    "epsilon": 1e-05,
+    "normalized": [
+      -1.3416354656219482,
+      -0.4472118318080902,
+      0.4472118318080902,
+      1.3416354656219482
+    ],
+    "branch": [
+      0.5,
+      -0.5,
+      1.0,
+      -1.0
+    ],
+    "sum": [
+      1.5,
+      1.5,
+      4.0,
+      3.0
+    ]
+  },
+  "causal_earlier_logits_max_diff": 0.0,
+  "history": [
+    {
+      "step": 0,
+      "train_loss": 2.987070322036743
+    },
+    {
+      "step": 20,
+      "train_loss": 0.7481059432029724
+    },
+    {
+      "step": 40,
+      "train_loss": 0.34572121500968933
+    },
+    {
+      "step": 60,
+      "train_loss": 0.1321118026971817
+    },
+    {
+      "step": 80,
+      "train_loss": 0.08406617492437363
+    },
+    {
+      "step": 100,
+      "train_loss": 0.06736357510089874
+    },
+    {
+      "step": 120,
+      "train_loss": 0.059489551931619644
+    },
+    {
+      "step": 140,
+      "train_loss": 0.0584273524582386
+    },
+    {
+      "step": 160,
+      "train_loss": 0.05852323770523071
+    },
+    {
+      "step": 180,
+      "train_loss": 0.05516607686877251
+    },
+    {
+      "step": 200,
+      "train_loss": 0.05523290857672691
+    },
+    {
+      "step": 220,
+      "train_loss": 0.054640140384435654
+    },
+    {
+      "step": 240,
+      "train_loss": 0.056986358016729355
+    },
+    {
+      "step": 260,
+      "train_loss": 0.05359726771712303
+    },
+    {
+      "step": 280,
+      "train_loss": 0.05453687533736229
+    },
+    {
+      "step": 300,
+      "train_loss": 0.05440744757652283
+    },
+    {
+      "step": 320,
+      "train_loss": 0.05229919031262398
+    }
+  ],
+  "final_train_token_accuracy": 0.96875,
+  "generation": {
+    "prefix": "春天来了，",
+    "text": "春天来了，花开了。\n夏天来了，蝉叫",
+    "steps": [
+      {
+        "step": 1,
+        "context": "春天来了，",
+        "chosen": "花",
+        "chosen_probability": 0.9616555571556091,
+        "top4": [
+          {
+            "char": "花",
+            "probability": 0.9616555571556091
+          },
+          {
+            "char": "蝉",
+            "probability": 0.01683051697909832
+          },
+          {
+            "char": "落",
+            "probability": 0.0048805163241922855
+          },
+          {
+            "char": "叶",
+            "probability": 0.0039042679127305746
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "context": "春天来了，花",
+        "chosen": "开",
+        "chosen_probability": 0.9958229064941406,
+        "top4": [
+          {
+            "char": "开",
+            "probability": 0.9958229064941406
+          },
+          {
+            "char": "下",
+            "probability": 0.0010474857408553362
+          },
+          {
+            "char": "冬",
+            "probability": 0.000770032696891576
+          },
+          {
+            "char": "秋",
+            "probability": 0.00028450496029108763
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "context": "春天来了，花开",
+        "chosen": "了",
+        "chosen_probability": 0.9990500807762146,
+        "top4": [
+          {
+            "char": "了",
+            "probability": 0.9990500807762146
+          },
+          {
+            "char": "蝉",
+            "probability": 0.00021256959007587284
+          },
+          {
+            "char": "来",
+            "probability": 0.0001201097184093669
+          },
+          {
+            "char": "夏",
+            "probability": 0.00010941894288407639
+          }
+        ]
+      },
+      {
+        "step": 4,
+        "context": "春天来了，花开了",
+        "chosen": "。",
+        "chosen_probability": 0.9983553290367126,
+        "top4": [
+          {
+            "char": "。",
+            "probability": 0.9983553290367126
+          },
+          {
+            "char": "，",
+            "probability": 0.000826203846372664
+          },
+          {
+            "char": "了",
+            "probability": 0.00031538872281089425
+          },
+          {
+            "char": "\n",
+            "probability": 0.0001049695274559781
+          }
+        ]
+      },
+      {
+        "step": 5,
+        "context": "春天来了，花开了。",
+        "chosen": "\n",
+        "chosen_probability": 0.998696506023407,
+        "top4": [
+          {
+            "char": "\n",
+            "probability": 0.998696506023407
+          },
+          {
+            "char": "落",
+            "probability": 0.00025370155344717205
+          },
+          {
+            "char": "。",
+            "probability": 0.00019298444385640323
+          },
+          {
+            "char": "蝉",
+            "probability": 0.00017231472884304821
+          }
+        ]
+      },
+      {
+        "step": 6,
+        "context": "春天来了，花开了。\n",
+        "chosen": "夏",
+        "chosen_probability": 0.9933351278305054,
+        "top4": [
+          {
+            "char": "夏",
+            "probability": 0.9933351278305054
+          },
+          {
+            "char": "秋",
+            "probability": 0.0028507565148174763
+          },
+          {
+            "char": "冬",
+            "probability": 0.0010717797558754683
+          },
+          {
+            "char": "天",
+            "probability": 0.0005947586614638567
+          }
+        ]
+      },
+      {
+        "step": 7,
+        "context": "春天来了，花开了。\n夏",
+        "chosen": "天",
+        "chosen_probability": 0.9989525079727173,
+        "top4": [
+          {
+            "char": "天",
+            "probability": 0.9989525079727173
+          },
+          {
+            "char": "了",
+            "probability": 0.00019022959168069065
+          },
+          {
+            "char": "开",
+            "probability": 0.00015028893540147692
+          },
+          {
+            "char": "叶",
+            "probability": 0.000135623209644109
+          }
+        ]
+      },
+      {
+        "step": 8,
+        "context": "春天来了，花开了。\n夏天",
+        "chosen": "来",
+        "chosen_probability": 0.9990491271018982,
+        "top4": [
+          {
+            "char": "来",
+            "probability": 0.9990491271018982
+          },
+          {
+            "char": "下",
+            "probability": 0.00021097429271321744
+          },
+          {
+            "char": "了",
+            "probability": 0.0001242742728209123
+          },
+          {
+            "char": "\n",
+            "probability": 0.00011108471517218277
+          }
+        ]
+      },
+      {
+        "step": 9,
+        "context": "春天来了，花开了。\n夏天来",
+        "chosen": "了",
+        "chosen_probability": 0.9991773962974548,
+        "top4": [
+          {
+            "char": "了",
+            "probability": 0.9991773962974548
+          },
+          {
+            "char": "夏",
+            "probability": 0.0002403207472525537
+          },
+          {
+            "char": "下",
+            "probability": 0.00017838491476140916
+          },
+          {
+            "char": "。",
+            "probability": 9.029320062836632e-05
+          }
+        ]
+      },
+      {
+        "step": 10,
+        "context": "春天来了，花开了。\n夏天来了",
+        "chosen": "，",
+        "chosen_probability": 0.9985381364822388,
+        "top4": [
+          {
+            "char": "，",
+            "probability": 0.9985381364822388
+          },
+          {
+            "char": "。",
+            "probability": 0.00031789750210009515
+          },
+          {
+            "char": "天",
+            "probability": 0.000289668794721365
+          },
+          {
+            "char": "蝉",
+            "probability": 0.000179775757715106
+          }
+        ]
+      },
+      {
+        "step": 11,
+        "context": "春天来了，花开了。\n夏天来了，",
+        "chosen": "蝉",
+        "chosen_probability": 0.9943856000900269,
+        "top4": [
+          {
+            "char": "蝉",
+            "probability": 0.9943856000900269
+          },
+          {
+            "char": "花",
+            "probability": 0.0012858783593401313
+          },
+          {
+            "char": "了",
+            "probability": 0.0009457311825826764
+          },
+          {
+            "char": "叶",
+            "probability": 0.0007694967789575458
+          }
+        ]
+      },
+      {
+        "step": 12,
+        "context": "春天来了，花开了。\n夏天来了，蝉",
+        "chosen": "叫",
+        "chosen_probability": 0.9976843595504761,
+        "top4": [
+          {
+            "char": "叫",
+            "probability": 0.9976843595504761
+          },
+          {
+            "char": "冬",
+            "probability": 0.00036097702104598284
+          },
+          {
+            "char": "，",
+            "probability": 0.0003176084428559989
+          },
+          {
+            "char": "\n",
+            "probability": 0.0002574579557403922
+          }
+        ]
+      }
+    ]
+  }
+}

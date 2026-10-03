@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "candidate": "logistic",
+  "threshold": 0.5,
+  "config": {
+    "impute": "median",
+    "scale": true,
+    "use_station": true
+  },
+  "preprocessor": {
+    "fill": 19.0,
+    "mean": 19.267499999999995,
+    "std": 7.97819071490105,
+    "scale": true,
+    "categories": [
+      "A",
+      "B",
+      "C",
+      "MISSING"
+    ]
+  },
+  "model": {
+    "kind": "logistic",
+    "weights": [
+      -0.33951544440795967,
+      1.7974902795143264,
+      -1.4055812459505501,
+      -0.997663132018706,
+      0.6322537425720715,
+      0.15025174278651468,
+      0.0829085206997712
+    ]
+  }
+}

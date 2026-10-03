@@ -1,0 +1,13 @@
+{
+  "torch_version": "2.14.0+cpu",
+  "device": "cpu",
+  "cuda_build": null,
+  "validation_mse": 4.547473576627277e-14,
+  "learned_w": 2.0,
+  "learned_b": 0.9999997615814209,
+  "restored_predictions": [
+    9.0,
+    11.0
+  ],
+  "checkpoint": "/home/luchen/projects/learning/ai/lessons/lesson-06-output/linear-checkpoint.pt"
+}

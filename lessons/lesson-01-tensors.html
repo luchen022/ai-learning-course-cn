@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>第一节 · 张量与必要基础</title>
+<style>
+:root{--bg:#f6f5f0;--paper:#fff;--ink:#202c2b;--muted:#566661;--line:#d9e1db;--accent:#166b55;--soft:#e9f4ee;--orange:#9a4a15;--orange-bg:#fff0df;--code:#172c28;--code-ink:#edf8f2;--blue:#276bb0;--red:#ba3442;--shadow:0 8px 32px #24392d08}
+@media(prefers-color-scheme:dark){:root{--bg:#131b18;--paper:#1b2722;--ink:#e7eee9;--muted:#b1c2b9;--line:#3e5248;--accent:#8ed6b6;--soft:#283e32;--orange:#ffc28c;--orange-bg:#423121;--code:#0e1713;--code-ink:#edf8f2;--blue:#8dbef3;--red:#ff9ca3;--shadow:none}}
+*{box-sizing:border-box}[hidden]{display:none!important}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}a{color:var(--accent);text-underline-offset:4px}button,input,select{font:inherit}button,select{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button{padding:9px 16px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);min-height:44px}button:hover{border-color:var(--accent)}button.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}button[aria-pressed=true]{background:var(--soft);border-color:var(--accent);color:var(--accent)}select{padding:8px;max-width:100%;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;min-height:44px}input[type=number]{width:85px;padding:8px;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px}input[type=range]{accent-color:var(--accent);width:min(220px,100%)}header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13px;letter-spacing:2px;color:var(--accent);font-weight:700}h1{font-size:clamp(30px,5vw,52px);line-height:1.25;letter-spacing:-1px;margin:14px 0 20px}h2{font-size:26px;line-height:1.4;margin:0 0 18px}h3{font-size:19px;line-height:1.5;margin:22px 0 10px}p{margin:10px 0 16px}.intro{max-width:730px;color:var(--muted);font-size:18px}.layout{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:210px minmax(0,1fr);gap:28px;padding:0 32px 64px}nav{align-self:start;position:sticky;top:24px;font-size:14px}nav a{display:block;padding:8px 10px;text-decoration:none;border-left:2px solid var(--line);color:var(--muted)}nav a:hover{background:var(--soft);color:var(--accent);border-color:var(--accent)}nav .nav-title{font-weight:700;color:var(--ink);margin-bottom:12px}.nav-note{padding:12px 10px;color:var(--muted);font-size:13px}main{min-width:0}section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:30px;margin-bottom:24px;box-shadow:var(--shadow)}.section-num{color:var(--accent);font-size:13px;letter-spacing:1px;margin:0 0 8px}.callout{background:var(--soft);border-left:3px solid var(--accent);padding:16px 18px;border-radius:0 8px 8px 0;margin:18px 0}.warning{background:var(--orange-bg);border-color:var(--orange)}.muted{color:var(--muted)}.small{font-size:14px}.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:16px 0}.controls label{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.readout{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--accent);font-weight:700;font-size:18px;overflow-wrap:anywhere;margin:16px 0}.lab{border:1px solid var(--line);border-radius:12px;padding:20px;margin:18px 0;background:var(--bg)}.sheet{display:grid;gap:7px;max-width:100%;width:max-content;margin:16px 0}.cell{width:52px;height:48px;padding:4px;font-family:ui-monospace,monospace;font-size:16px;border-radius:7px}.cell.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}.sheet.vector{grid-auto-flow:column}.sheet-wrap{overflow:auto}.axis-label{font-size:14px;color:var(--muted);margin:6px 0}.stage{min-height:120px}.scalar{display:inline-grid;place-items:center;width:80px;height:80px;border:2px solid var(--accent);border-radius:12px;font:28px ui-monospace,monospace;color:var(--accent);margin:14px 0}.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}.mini-grid{display:grid;gap:5px;margin:10px 0}.tile{padding:7px 2px;text-align:center;background:var(--soft);border:1px solid var(--line);border-radius:5px;font-family:ui-monospace,monospace}.tile.highlight{background:var(--accent);color:var(--bg)}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92em;overflow-wrap:anywhere}p code,li code,td code{background:var(--soft);padding:2px 5px;border-radius:4px}pre{padding:18px;background:var(--code);color:var(--code-ink);border-radius:10px;overflow:auto;font-size:14px;line-height:1.7;tab-size:4}pre code{overflow-wrap:normal}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted)}.table-wrap{overflow:auto}.formula{padding:14px 16px;background:var(--soft);font:17px/1.8 ui-monospace,monospace;border-radius:10px;overflow-wrap:anywhere;margin:16px 0}details{border-top:1px solid var(--line);padding:14px 0}summary{cursor:pointer;font-weight:600}details p{margin:12px 0}.quiz{padding:18px 0;border-top:1px solid var(--line)}.quiz label{display:block;margin:8px 0;cursor:pointer}.quiz input{accent-color:var(--accent);margin-right:8px}.feedback{color:var(--accent);margin:8px 0;min-height:26px}.error{color:var(--red)}.chart{display:block;width:100%;height:auto;color:var(--ink);background:var(--paper);border-radius:8px}.chart text{fill:currentColor;font:12px system-ui,sans-serif}.chart .gridline{stroke:var(--line);stroke-width:1}.chart .point{fill:var(--accent)}.chart .fit{stroke:var(--blue);stroke-width:3;fill:none}.chart .loss{stroke:var(--accent);stroke-width:2.5;fill:none}.channel{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:112px;margin:10px 0}.pixel{width:25px;height:25px;border-radius:4px}.channel-row{display:flex;gap:18px;flex-wrap:wrap}.channel-title{font-family:ui-monospace,monospace;font-size:14px}.checklist label{display:block;margin:12px 0;cursor:pointer}.checklist input{accent-color:var(--accent);margin-right:8px}.footer{color:var(--muted);font-size:14px;padding:8px 0 30px}.pill{display:inline-block;padding:4px 10px;background:var(--soft);color:var(--accent);border-radius:20px;font-size:13px;margin-right:6px;margin-bottom:6px}ul,ol{padding-left:24px}.noscript{background:var(--orange-bg);padding:16px}.print-link{float:right;font-size:14px}
+@media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr)}nav{position:static;display:flex;flex-wrap:wrap;gap:4px}nav a{border:1px solid var(--line);border-radius:6px;padding:5px 9px}.nav-title,.nav-note{display:none}header{padding-top:36px}.two-col{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:480px){header{padding:28px 18px 20px}.layout{padding:0 14px 32px;gap:16px}section{padding:22px 18px}.lab{padding:14px}h2{font-size:23px}.cell{width:42px;height:44px}.controls{gap:10px}.formula{font-size:14px}.readout{font-size:16px}pre{padding:14px;font-size:13px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{body{background:#fff;color:#222}header{padding:16px}.layout{display:block;padding:0}nav,.print-link,button{display:none}section{box-shadow:none;break-inside:avoid;border-radius:0}details{display:block}pre{white-space:pre-wrap}h1{font-size:30px}.two-col{grid-template-columns:1fr 1fr}}
+.cb-steps{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.cb-steps button{flex:1 1 140px;font-size:14px}.cb-panels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.cb-panel{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:14px;min-width:0;border-top:4px solid var(--channel-color)}.cb-panel h4{font-size:16px;margin:0 0 8px;color:var(--channel-color)}.cb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:10px 0}.cb-pixel{font-family:ui-monospace,monospace;padding:8px 2px;min-height:44px;min-width:0}.cb-pixel.selected{outline:2px solid var(--channel-color);outline-offset:1px;background:var(--soft)}.cb-grid .cb-pixel{border-color:var(--line)}.cb-repeated{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:10px 0}.cb-repeated span{display:grid;place-items:center;border:1px dashed var(--channel-color);border-radius:7px;padding:7px;font:16px ui-monospace,monospace;color:var(--channel-color)}.cb-op{color:var(--channel-color);font-weight:600;text-align:center;margin:12px 0}.cb-label{font-size:13px;color:var(--muted);margin:6px 0}.cb-axis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:18px 0}.cb-axis-item{text-align:center;border:1px solid var(--line);border-radius:8px;padding:10px 4px;font-size:14px}.cb-axis-item strong{display:block;color:var(--accent);font:20px ui-monospace,monospace;margin:8px 0}.cb-axis-item span{display:block;font-size:12px;color:var(--muted)}.cb-equation{font-family:ui-monospace,monospace;padding:14px;border:1px solid var(--line);border-radius:8px;overflow-wrap:anywhere;background:var(--paper)}.cb-rgb{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.cb-rgb span{padding:5px 10px;border-left:3px solid var(--channel-color);background:var(--paper);border-radius:4px;font-family:ui-monospace,monospace}.cb-controls label{font-size:14px}.cb-controls input[type=number]{width:76px}.cb-formal{margin-top:24px}.cb-formal summary{color:var(--accent)}
+@media(max-width:660px){.cb-panels{grid-template-columns:minmax(0,1fr)}.cb-panel{display:block}.cb-panel .cb-block{max-width:280px;margin:auto}.cb-axis-item{font-size:12px}.cb-axis-item span{font-size:11px}}
+@media(max-width:480px){.cb-axis{grid-template-columns:repeat(2,minmax(0,1fr))}.cb-axis-item{font-size:14px}.cb-axis-item span{font-size:12px}}
+@media print{.cb-steps{display:none}.cb-panels{grid-template-columns:repeat(3,minmax(0,1fr))}.cb-pixel{display:block}}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">AI 学习课程 / LESSON 01</div>
+<h1>第一节：张量与必要基础</h1>
+<p class="intro">你已经知道向量、矩阵和矩阵乘法。这一节从这些知识出发，理解 AI 中的数据怎样组织，以及怎样读懂一段计算的输入与输出。</p>
+<span class="pill">从矩阵出发</span><span class="pill">可操作的例子</span><span class="pill">配套 NumPy 练习</span>
+</header>
+<div class="layout">
+<nav aria-label="本节目录">
+<div class="nav-title">学习路径</div>
+<a href="#start">01 · 本节目标</a><a href="#tensor">02 · 什么是张量</a><a href="#shape">03 · 形状、轴与索引</a><a href="#batch">04 · 批次与图像</a><a href="#reshape">05 · reshape 与转置</a><a href="#broadcast">06 · 广播与矩阵乘法</a><a href="#math">07 · 数学基础检查</a><a href="#practice">08 · NumPy 与回归实验</a><a href="#quiz">09 · 自测与完成标准</a>
+<p class="nav-note">按理解进度学习，可以分多次完成。所有互动在本页运行，无需联网。</p>
+</nav>
+<main>
+<noscript><p class="noscript">当前浏览器禁用了 JavaScript。你仍可阅读讲义和代码；启用 JavaScript 后可操作实验和自测。</p></noscript>
+<section id="start">
+<p class="section-num">01 / 从已有知识建立连接</p><h2>学完后，你应该能做什么？</h2>
+<p>过去你可能写过 <code>y = Xw + b</code>。现在我们要能解释：<code>X</code> 有几个轴，每个轴表示什么，为什么它能与 <code>w</code> 相乘，以及结果的形状是什么。</p>
+<ul><li>用自己的话解释张量、轴与形状。</li><li>读懂表格数据和图像批次的形状。</li><li>判断索引、切片、reshape、转置与广播的结果。</li><li>用 NumPy 组织数据，训练已学过的线性回归，并读懂损失曲线。</li></ul>
+<div class="callout"><strong>建议顺序：</strong>先读张量与形状，操作每个实验，再运行配套代码。数学基础检查可以按掌握情况展开阅读。</div>
+</section>
+<section id="tensor">
+<p class="section-num">02 / 从一张表到一叠表</p><h2>张量：用多个轴组织数值</h2>
+<p>在 NumPy 和 PyTorch 的入门计算语境中，可以先把<strong>张量理解为多维数值数组</strong>。向量和矩阵已经是你熟悉的例子：向量有一个轴，矩阵有两个轴；把多个同样大小的矩阵叠起来，就得到三个轴的数组。</p>
+<p class="muted small">严格数学中的张量还涉及坐标变换等定义，本节先学习编程和模型计算所需的数组概念。</p>
+<div class="table-wrap"><table><thead><tr><th>对象</th><th>例子</th><th>轴数 / ndim</th><th>形状 / shape</th></tr></thead><tbody>
+<tr><td>标量</td><td><code>7</code></td><td>0</td><td><code>()</code></td></tr>
+<tr><td>向量</td><td><code>[1, 2, 3]</code></td><td>1</td><td><code>(3,)</code></td></tr>
+<tr><td>矩阵</td><td>2 行 3 列</td><td>2</td><td><code>(2, 3)</code></td></tr>
+<tr><td>三维数组</td><td>2 张“2 行 3 列”的表</td><td>3</td><td><code>(2, 2, 3)</code></td></tr>
+</tbody></table></div>
+<div class="callout warning"><strong>“维”有两个常见意思。</strong>线性代数中，“3 维向量”指向量有 3 个分量；数组编程中，它仍是一维张量，因为只有一个轴。形状 <code>(32, 10)</code> 的数组有两个轴，是二维张量。</div>
+<div class="lab">
+<h3>实验 A：改变轴数，观察数据的组织</h3>
+<label for="tensor-kind">选择对象 </label><select id="tensor-kind"><option value="0">标量</option><option value="1">向量</option><option value="2" selected>矩阵</option><option value="3">三维数组</option></select>
+<div id="tensor-meta" class="readout" aria-live="polite"></div>
+<div id="layer-controls" class="controls" hidden><label for="tensor-layer">第 0 轴：选择哪张表 <select id="tensor-layer"><option value="0">表 0</option><option value="1">表 1</option></select></label></div>
+<div id="tensor-stage" class="stage"></div>
+<p id="tensor-detail" class="small" aria-live="polite"></p>
+</div>
+<p>看到三维数组时，不必想象一个三维空间中的几何物体。它也可以表示“班级 × 学生 × 科目”，每个轴是组织数据的一种方式。</p>
+</section>
+<section id="shape">
+<p class="section-num">03 / 先问每个轴代表什么</p><h2>形状、轴、元素数量与索引</h2>
+<p><code>shape</code> 按顺序列出每个轴的长度；<code>ndim</code> 是轴的数量；<code>size</code> 是元素总数。对于形状 <code>(2, 3, 4)</code>，轴数是 3，元素数量是 <code>2 × 3 × 4 = 24</code>。</p>
+<p>对于矩阵 <code>X.shape == (3, 2)</code>，我们约定第 0 轴是样本、第 1 轴是特征。<strong>形状本身不携带业务含义</strong>，必须结合数据约定解释。</p>
+<pre><code>import numpy as np
+
+X = np.array([[1, 2], [3, 4], [5, 6]])
+print(X.shape)  # (3, 2)
+print(X.ndim)   # 2
+print(X.size)   # 6
+
+X[1, 0]     # 3：第 1 个样本的第 0 个特征
+X[1]        # [3, 4]，shape = (2,)
+X[:, 0]     # [1, 3, 5]，shape = (3,)
+X[:, 0:1]   # [[1], [3], [5]]，shape = (3, 1)</code></pre>
+<div class="callout"><strong>索引从 0 开始。</strong><code>:</code> 表示取这个轴上的全部元素；整数索引通常消去一个轴，切片通常保留这个轴。<code>0:1</code> 包含位置 0，不包含位置 1。</div>
+<div class="lab"><h3>实验 B：索引是否保留轴？</h3>
+<label for="slice-choice">选择表达式 </label><select id="slice-choice"><option value="all">X</option><option value="row">X[1]</option><option value="column">X[:, 0]</option><option value="keep">X[:, 0:1]</option><option value="scalar">X[1, 0]</option></select>
+<div class="two-col"><div><p class="small">原矩阵 X</p><div id="slice-grid" class="mini-grid" style="grid-template-columns:repeat(2,1fr)"></div></div><div><p class="small">运算结果</p><div id="slice-result" class="formula" aria-live="polite"></div></div></div>
+<p id="slice-explanation" class="small" aria-live="polite"></p>
+</div>
+</section>
+<section id="batch">
+<p class="section-num">04 / 一次处理多个样本</p><h2>批次与图像：四个轴各有用途</h2>
+<p>一个有 10 个特征的样本可以写成形状 <code>(10,)</code> 的向量。把 32 个同样格式的样本叠起来，得到 <code>(32, 10)</code>，其中 32 是批次大小（batch size）。批次让模型一次处理多个样本，也方便把矩阵计算交给硬件。</p>
+<div class="table-wrap"><table><thead><tr><th>数据</th><th>一种常见形状</th><th>轴的含义</th></tr></thead><tbody><tr><td>表格数据</td><td><code>(B, F)</code></td><td>样本数、特征数</td></tr><tr><td>单张灰度图</td><td><code>(H, W)</code></td><td>高度、宽度</td></tr><tr><td>单张 RGB 图</td><td><code>(3, H, W)</code></td><td>通道、高度、宽度</td></tr><tr><td>RGB 图像批次</td><td><code>(B, 3, H, W)</code></td><td>样本数、通道、高度、宽度</td></tr></tbody></table></div>
+<p class="small muted">这里使用 PyTorch 图像模型常见的 NCHW 约定。有些图像工具使用 HWC 或 NHWC，所以应当检查约定，而不是根据轴数猜含义。</p>
+<div class="lab"><h3>实验 C：一批 RGB 图像有多少个数？</h3>
+<div class="controls"><label>批次 B <input id="image-batch" type="number" min="1" max="64" value="2"></label><label>高度 H <select id="image-height"><option value="4">4</option><option value="32">32</option><option value="64" selected>64</option></select></label><label>宽度 W <select id="image-width"><option value="4">4</option><option value="32">32</option><option value="64" selected>64</option></select></label></div>
+<div id="image-meta" class="readout" aria-live="polite"></div>
+<p>单张 RGB 图的三个通道，可以分别看成三张数值表。下方只示意每张表中的 4 × 4 个值。</p>
+<div id="channels" class="channel-row" aria-label="红绿蓝三个通道的数值示意"></div>
+<p class="small"><code>images[0, 1, 2, 3]</code>：第 0 张图、绿色通道（索引 1）、第 2 行、第 3 列的一个值。实际数值范围取决于预处理方式。</p>
+</div>
+</section>
+<section id="reshape">
+<p class="section-num">05 / 改分组，还是交换轴？</p><h2>reshape 和转置做的是两件事</h2>
+<p><strong>reshape 改变元素的分组方式</strong>，元素数量必须保持相等。这里按 NumPy 默认的 C 顺序，也就是最后一个轴变化最快，将 <code>[[1,2,3],[4,5,6]]</code> 重新组织成 3 行 2 列。</p>
+<p><strong>转置交换轴</strong>：对于二维矩阵，新位置 <code>A.T[j, i]</code> 保存原来的 <code>A[i, j]</code>。这与重新分组不是同一个操作。</p>
+<div class="lab"><h3>实验 D：同样是 (3, 2)，值的排列相同吗？</h3><p>原矩阵 <code>A = [[1, 2, 3], [4, 5, 6]]</code>，形状为 <code>(2, 3)</code>。</p><div class="two-col"><div><p><code>A.reshape(3, 2)</code></p><div id="reshape-grid" class="mini-grid" style="grid-template-columns:repeat(2,1fr)"></div></div><div><p><code>A.T</code></p><div id="transpose-grid" class="mini-grid" style="grid-template-columns:repeat(2,1fr)"></div></div></div><p class="small">点击任意一个元素，观察它在两种结果中的位置。</p><p id="reshape-detail" aria-live="polite" class="small"></p>
+<div class="controls"><label for="reshape-choice">再试一种目标形状 <select id="reshape-choice"><option value="6">(6,)</option><option value="1,6">(1, 6)</option><option value="3,2" selected>(3, 2)</option><option value="2,4">(2, 4)：试试能否成功</option></select></label></div><div id="reshape-output" class="formula" aria-live="polite"></div>
+</div>
+<pre><code>A = np.arange(1, 7).reshape(2, 3)
+A.reshape(3, 2)  # [[1, 2], [3, 4], [5, 6]]
+A.T              # [[1, 4], [2, 5], [3, 6]]
+A.reshape(-1)    # [1, 2, 3, 4, 5, 6]，-1 让 NumPy 推断长度
+A.reshape(3, -1) # 推断第二个轴的长度为 2</code></pre>
+<div class="callout warning">把图像的 <code>(H, W, C)</code> 改成 <code>(C, H, W)</code>，需要交换轴，例如 <code>image.transpose(2, 0, 1)</code>。直接 reshape 成相同形状，通常会混淆像素与通道的对应关系。</div>
+</section>
+<section id="broadcast">
+<p class="section-num">06 / 在计算前先推断形状</p><h2>广播与矩阵乘法</h2>
+<h3>广播：让兼容形状参与逐元素运算</h3>
+<p>给一张表的每个数加 10，可以直接写 <code>X + 10</code>。给每一列加不同的偏移，可以写 <code>X + np.array([10, 20, 30])</code>。这种形状适配叫广播，不要求真的复制出一张同样大小的数组。</p>
+<div class="callout"><strong>广播规则：</strong>从最右侧的轴开始对齐；对应长度相等，或其中一个为 1，才兼容。较短形状缺少的左侧轴视为长度 1。比如 <code>(2, 3)</code> 和 <code>(3,)</code> 兼容；<code>(2, 3)</code> 和 <code>(2,)</code> 不兼容。</div>
+<div class="lab"><h3>实验 E：给这张表加什么？</h3><p><code>X = [[1, 2, 3], [4, 5, 6]]</code></p><label for="broadcast-choice">加数 </label><select id="broadcast-choice"><option value="scalar">10，形状 ()</option><option value="row" selected>[10, 20, 30]，形状 (3,)</option><option value="column">[[10], [20]]，形状 (2, 1)</option><option value="bad">[10, 20]，形状 (2,)</option></select><div id="broadcast-result" class="formula" aria-live="polite"></div><p id="broadcast-explanation" class="small" aria-live="polite"></p></div>
+<div class="lab" id="channel-broadcast">
+<h3>图解：给三个通道分别加 10、20、30</h3>
+<p><strong>先把“通道”理解成三张数值表。</strong>一张 RGB 图像的每个像素有三个数：红色分量 R、绿色分量 G、蓝色分量 B。把所有像素的 R 放进一张表，G 放进第二张表，B 放进第三张表，就得到三个通道。</p>
+<p>我们把图像缩小到 <strong>2 行 × 2 列</strong>，并准备两张图。整个数组的形状是 <code>(2, 3, 2, 2)</code>：2 张图、每张 3 个通道、每个通道 2 行 2 列。</p>
+<div class="cb-steps" aria-label="通道广播讲解步骤">
+<button type="button" id="cb-step-1" aria-pressed="true">① 看懂三个通道</button>
+<button type="button" id="cb-step-2" aria-pressed="false">② 加数如何对应</button>
+<button type="button" id="cb-step-3" aria-pressed="false">③ 计算后的结果</button>
+</div>
+<div class="controls cb-controls"><label for="cb-image">观察哪张图 <select id="cb-image"><option value="0">图 0</option><option value="1">图 1</option></select></label></div>
+<div id="cb-offset-controls" class="controls cb-controls" hidden>
+<label>R 通道加 <input id="cb-add-r" type="number" min="-100" max="100" value="10"></label>
+<label>G 通道加 <input id="cb-add-g" type="number" min="-100" max="100" value="20"></label>
+<label>B 通道加 <input id="cb-add-b" type="number" min="-100" max="100" value="30"></label>
+</div>
+<p id="cb-step-description" class="callout" aria-live="polite"></p>
+<div id="cb-panels" class="cb-panels" aria-label="三个通道及其广播运算"></div>
+<p class="small">点击任意数字，观察这个位置在三个通道中的值。三个通道中相同行、列位置的数，共同构成一个像素的 RGB 数值。</p>
+<div id="cb-pixel-detail" class="cb-equation" aria-live="polite"></div>
+<div id="cb-shape-explanation" hidden>
+<h3>为什么加数的形状是 (1, 3, 1, 1)？</h3>
+<p>先写出三个加数 <code>[10, 20, 30]</code>，再给它们标明对应的轴。我们只给<strong>通道轴</strong>准备不同的加数；图、行、列这三个轴都重复使用已有的加数，所以长度设为 1。</p>
+<div class="cb-axis" aria-label="图像与加数在四个轴上的形状对应">
+<div class="cb-axis-item">图 / 轴 0<strong>2 ← 1</strong><span>两张图使用同一组加数</span></div>
+<div class="cb-axis-item">通道 / 轴 1<strong>3 ← 3</strong><span>三个通道各有一个加数</span></div>
+<div class="cb-axis-item">行 / 轴 2<strong>2 ← 1</strong><span>同一通道每行都用它</span></div>
+<div class="cb-axis-item">列 / 轴 3<strong>2 ← 1</strong><span>同一通道每列都用它</span></div>
+</div>
+<div id="cb-shape-formula" class="formula"></div>
+<p><strong>长度 1 表示只有一个可供重复使用的位置，数字 3 表示有三个对应通道的位置。</strong>这里的 <code>reshape(1, 3, 1, 1)</code> 只重新组织三个加数，元素数量仍为 3。</p>
+<p>切换到“图 1”，你会看到图里的数变了，但三个加数不变。再只改 G 通道的加数，观察 R、B 通道的结果保持原值。</p>
+<div class="callout warning">加数图中的虚线格表示“哪些位置会使用这个加数”，是讲解示意。NumPy 无需先复制出这些格子的完整数组。这里也只做普通数组加法，不做颜色裁剪或归一化；数值采用教学用的小整数。</div>
+</div>
+<details class="cb-formal"><summary>形式化表达：每个位置究竟加了哪个数？</summary>
+<p>以下固定示例使用默认加数 10、20、30。用 <code>b</code> 表示图像索引，<code>c</code> 表示通道索引，<code>h</code> 表示行，<code>w</code> 表示列。加数数组 <code>offset</code> 的形状为 <code>(1, 3, 1, 1)</code>：</p>
+<pre><code>offset[0, 0, 0, 0] = 10  # R 的加数
+offset[0, 1, 0, 0] = 20  # G 的加数
+offset[0, 2, 0, 0] = 30  # B 的加数
+
+result[b, c, h, w] = images[b, c, h, w] + offset[0, c, 0, 0]</code></pre>
+<p>右边的加数只随 <code>c</code> 改变。无论第几张图、第几行、第几列，只要是同一个通道，就使用同一个加数。</p>
+<pre><code>images = np.arange(1, 25).reshape(2, 3, 2, 2)  # 本页示例数据
+offset = np.array([10, 20, 30]).reshape(1, 3, 1, 1)
+result = images + offset
+
+# 可以用下面的循环理解它的计算结果：
+for b in range(2):
+    for c in range(3):
+        for h in range(2):
+            for w in range(2):
+                result[b, c, h, w] = (
+                    images[b, c, h, w] + offset[0, c, 0, 0]
+                )</code></pre>
+<p class="small muted">上面的循环用来说明对应关系，实际 NumPy 代码直接写一次加法即可。</p>
+</details>
+</div>
+<h3>矩阵乘法：收缩相匹配的内侧轴</h3>
+<p>你熟悉的二维矩阵乘法规则是 <code>(m, n) @ (n, p) → (m, p)</code>。NumPy 中 <code>@</code> 表示矩阵乘法；<code>*</code> 是逐元素乘法，遵循广播规则。二者的计算含义不同。</p>
+<div class="formula">X: (32, 10) &nbsp; @ &nbsp; W: (10, 1)<br>→ 预测: (32, 1)<br>加 b: (1,) → 预测仍为 (32, 1)</div>
+<p>这里 32 个样本各有 10 个特征，<code>W</code> 把每个样本的 10 个特征组合成一个预测。后面学习神经网络时，多输出线性层也是同样的形状规则。</p>
+<div class="lab"><h3>实验 F：预测输出的形状</h3><div class="controls"><label>样本数 B <select id="mat-b"><option>1</option><option selected>32</option><option>64</option></select></label><label>输入特征 F <select id="mat-f"><option>3</option><option selected>10</option></select></label><label>输出数 O <select id="mat-o"><option selected>1</option><option>4</option></select></label></div><div id="mat-result" class="readout" aria-live="polite"></div></div>
+<div class="callout warning"><strong>一个容易悄悄发生的错误：</strong>预测形状为 <code>(32, 1)</code>，标签形状为 <code>(32,)</code>，相减会广播成 <code>(32, 32)</code>，不是每个样本各算一次误差。可以把标签改为 <code>(32, 1)</code>，或把预测改为 <code>(32,)</code>，并在计算损失前检查形状。</div>
+</section>
+<section id="math">
+<p class="section-num">07 / 按需补齐</p><h2>数学基础检查</h2>
+<p>你已经学习过回归的数学原理，这里只检查后续反向传播和强化学习需要的概念。先尝试回答标题中的问题，再展开答案。</p>
+<details><summary>导数：f(x) = x²，在 x = 3 时的导数是多少？</summary><p><code>f′(x) = 2x</code>，因此 <code>f′(3) = 6</code>。导数描述局部变化率：在 3 附近，x 增加很小的 Δx，f 的变化约为 <code>6Δx</code>。</p></details>
+<details><summary>偏导与梯度：L(w, b) = (wx + b − y)²，怎样求梯度？</summary><p>令误差 <code>e = wx + b − y</code>，固定样本 x、y，则 <code>∂L/∂w = 2ex</code>，<code>∂L/∂b = 2e</code>。梯度是把各个参数的偏导组织成一个向量：<code>∇L = [2ex, 2e]</code>。对足够小的步长，沿负梯度方向移动会在局部降低损失；步长过大可能发散。</p></details>
+<details><summary>链式法则：L = z²，z = wx + b，怎样求 ∂L/∂w？</summary><p><code>∂L/∂w = (∂L/∂z)(∂z/∂w) = 2z · x</code>。反向传播正是沿计算关系逐步应用链式法则；遇到多条路径时，还需要把各路径贡献相加。</p></details>
+<details><summary>条件概率：为什么 P(A|B) 通常不等于 P(B|A)？</summary><p>因为限定的样本范围不同。对于 <code>P(B) &gt; 0</code>，<code>P(A|B) = P(A∩B)/P(B)</code>。例如“在下雨的日子里带伞的比例”和“在带伞的日子里下雨的比例”并不相同。</p></details>
+<details><summary>期望与方差：公平骰子的平均点数是多少？方差描述什么？</summary><p>离散变量的期望为 <code>E[X] = Σ p(x)x</code>，公平骰子的期望是 <code>(1+2+3+4+5+6)/6 = 3.5</code>。期望不必是某次实际出现的值。方差 <code>Var(X) = E[(X−E[X])²]</code> 描述围绕期望的波动程度；骰子的方差是 <code>35/12</code>。</p></details>
+<details><summary>Python 准备：你能定义函数、循环，并读懂列表吗？</summary><pre><code>def square(x):
+    return x * x
+
+values = [1, 2, 3]
+for value in values:
+    print(square(value))</code></pre><p>如果这段代码读起来有困难，先补变量、列表、循环、函数、模块导入。Python 列表与 NumPy 数组也有区别：<code>[1,2] * 2</code> 是重复列表，<code>np.array([1,2]) * 2</code> 才是逐元素乘 2。</p></details>
+</section>
+<section id="practice">
+<p class="section-num">08 / 将概念落实到代码</p><h2>NumPy 练习与线性回归实验</h2>
+<p>先不引入新模型，继续使用你熟悉的线性回归。我们用一个特征，保持输入、预测和标签都是二维数组，观察一次批量计算如何得到多个样本的预测。</p>
+<pre><code>import numpy as np
+
+X = np.array([[0.], [1.], [2.], [3.], [4.]])  # (5, 1)
+y = 2 * X + 1                               # (5, 1)
+W = np.zeros((1, 1))                         # (1, 1)
+b = np.zeros((1,))                           # (1,)
+learning_rate = 0.05
+
+for step in range(100):
+    prediction = X @ W + b                   # (5, 1)
+    error = prediction - y                   # (5, 1)
+    loss = np.mean(error ** 2)               # 标量
+    grad_W = 2 / len(X) * X.T @ error        # (1, 1)
+    grad_b = 2 * error.mean(axis=0)           # (1,)
+    W -= learning_rate * grad_W
+    b -= learning_rate * grad_b</code></pre>
+<p><code>mean(axis=0)</code> 沿样本轴求平均，留下输出轴。这里 MSE 对所有元素取平均，模型只有一个输出，因此 <code>2 / len(X)</code> 的梯度系数与这份损失定义相匹配。</p>
+<div class="lab"><h3>实验 G：亲手推进梯度下降</h3><p>目标数据满足 <code>y = 2x + 1</code>。初始参数 <code>w = 0, b = 0</code>。改变学习率后，点击训练，观察直线和损失的变化。</p>
+<div class="controls"><label for="learning-rate">学习率 <select id="learning-rate"><option value="0.01">0.01</option><option value="0.05" selected>0.05</option><option value="0.1">0.10</option><option value="0.2">0.20：观察是否稳定</option></select></label><button id="train-one" type="button">训练 1 步</button><button id="train-many" class="primary" type="button">训练 20 步</button><button id="train-reset" type="button">重置参数</button></div>
+<div id="train-meta" class="readout" aria-live="polite"></div>
+<div><h3>预测直线与目标数据</h3><svg id="fit-chart" class="chart" viewBox="0 0 560 270" role="img" aria-labelledby="fit-title fit-desc"><title id="fit-title">预测直线与目标数据</title><desc id="fit-desc">横轴 x，纵轴 y；圆点是目标值，蓝色直线是当前模型预测。纵轴随预测值调整。</desc></svg></div>
+<div><h3>当前训练过程的 MSE</h3><svg id="loss-chart" class="chart" viewBox="0 0 560 250" role="img" aria-labelledby="loss-title loss-desc"><title id="loss-title">均方误差训练曲线</title><desc id="loss-desc">横轴为训练步数，纵轴为均方误差，使用线性刻度。</desc></svg></div>
+<p id="train-explanation" class="small" aria-live="polite"></p>
+</div>
+<h3>配套 Python 文件</h3><p><a href="lesson-01-practice.py" download>下载 NumPy 练习代码</a>。代码包含张量与切片示例、reshape 与转置、广播检查、线性回归训练和两幅图的导出。</p>
+<pre><code># 在终端进入项目根目录后运行（项目依赖已由 uv 管理）：
+uv run python lessons/lesson-01-practice.py</code></pre>
+<p class="small muted">运行后在代码文件旁的 lesson-01-output 目录生成 loss.png 与 regression.png。本页实验采用相同的全批量梯度下降公式，浏览器本身不运行 Python。</p>
+<h3>动手任务</h3><ol><li>创建形状 <code>(2, 3, 4)</code> 的数组，打印 shape、ndim、size，并解释三个轴。</li><li>预测 <code>X[1]</code>、<code>X[:, 0]</code>、<code>X[:, 0:1]</code> 的形状，再运行验证。</li><li>比较 <code>A.reshape(3,2)</code> 与 <code>A.T</code> 的元素排列。</li><li>把预测和标签刻意改成不一致的形状，观察错误广播，再修正。</li><li>用 0.01、0.05、0.20 三种学习率做实验，记录损失变化。不要只看一次训练的最后一个数字。</li></ol>
+</section>
+<section id="quiz">
+<p class="section-num">09 / 用输出检验理解</p><h2>先作答，再查看反馈</h2>
+<form id="quiz-form">
+<div class="quiz"><p><strong>1.</strong> 形状为 <code>(8, 3, 32, 32)</code> 的数组有几个轴、多少个元素？</p><label><input type="radio" name="q1" value="a">8 个轴，3,072 个元素</label><label><input type="radio" name="q1" value="b">4 个轴，24,576 个元素</label><label><input type="radio" name="q1" value="c">3 个轴，24,576 个元素</label><p id="q1-feedback" class="feedback"></p></div>
+<div class="quiz"><p><strong>2.</strong> <code>X.shape = (5, 2)</code>，<code>X[:, 0:1]</code> 的形状是什么？</p><label><input type="radio" name="q2" value="a">(5,)</label><label><input type="radio" name="q2" value="b">(5, 1)</label><label><input type="radio" name="q2" value="c">(1, 2)</label><p id="q2-feedback" class="feedback"></p></div>
+<div class="quiz"><p><strong>3.</strong> <code>X: (16, 4)</code>，<code>W: (4, 3)</code>，<code>X @ W</code> 的形状是什么？</p><label><input type="radio" name="q3" value="a">(16, 3)</label><label><input type="radio" name="q3" value="b">(4, 4)</label><label><input type="radio" name="q3" value="c">不能相乘</label><p id="q3-feedback" class="feedback"></p></div>
+<div class="quiz"><p><strong>4.</strong> <code>(5, 1)</code> 的预测减去 <code>(5,)</code> 的标签，结果是什么？</p><label><input type="radio" name="q4" value="a">(5, 1)</label><label><input type="radio" name="q4" value="b">报错</label><label><input type="radio" name="q4" value="c">(5, 5)</label><p id="q4-feedback" class="feedback"></p></div>
+<div class="quiz"><p><strong>5.</strong> 对 <code>A = [[1,2,3],[4,5,6]]</code>，哪句话正确？</p><label><input type="radio" name="q5" value="a">A.reshape(3,2) 与 A.T 的结果完全相同</label><label><input type="radio" name="q5" value="b">两者形状相同，但元素排列不同</label><label><input type="radio" name="q5" value="c">reshape 可以随意增加元素数量</label><p id="q5-feedback" class="feedback"></p></div>
+<button type="submit" class="primary">检查答案</button><p id="quiz-result" class="feedback" aria-live="polite"></p>
+</form>
+<h3>完成标准</h3><div class="checklist"><label><input type="checkbox">我能区分“向量有几个分量”与“张量有几个轴”。</label><label><input type="checkbox">我能解释表格批次、图像批次的每个轴。</label><label><input type="checkbox">我能在运行前推断索引、reshape、转置和矩阵乘法的结果。</label><label><input type="checkbox">我能识别预测与标签之间的意外广播。</label><label><input type="checkbox">我运行了 NumPy 练习，能解释损失曲线和学习率的影响。</label></div>
+<div class="callout">下一节：<a href="lesson-02-learning.html">第二节：模型怎样学习</a>。我们会在这节的数组与梯度基础上，进一步讲解交叉熵、小批量训练和反向传播。</div>
+</section>
+<p class="footer">第一节配套讲义 · 勾选和实验状态仅在当前页面保留。课程大纲：<a href="../AI学习课程大纲.md">AI学习课程大纲.md</a></p>
+</main>
+</div>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const fmt = n => Number.isInteger(n) ? String(n) : n.toFixed(4);
+const shapeString = s => s.length === 0 ? '()' : '(' + s.join(', ') + (s.length === 1 ? ',' : '') + ')';
+function tileGrid(el, values, selected, clickable) {
+  el.replaceChildren();
+  values.forEach(v => {
+    const cell = document.createElement(clickable ? 'button' : 'span');
+    if(clickable) cell.type = 'button';
+    cell.className = 'tile' + (v === selected ? ' highlight' : '');
+    cell.textContent = v;
+    if(clickable) {cell.setAttribute('aria-label', '追踪元素 ' + v);cell.addEventListener('click', () => renderTransforms(v));}
+    el.append(cell);
+  });
+}
+let tensorSelected = null;
+function renderTensor() {
+  const kind = Number($('tensor-kind').value), layer = Number($('tensor-layer').value);
+  const shape = [[], [3], [2,3], [2,2,3]][kind];
+  $('tensor-meta').textContent = 'ndim = ' + kind + ' · shape = ' + shapeString(shape) + ' · size = ' + (shape.length ? shape.reduce((a,b)=>a*b,1) : 1);
+  $('layer-controls').hidden = kind !== 3;
+  $('tensor-stage').replaceChildren();
+  if(kind === 0) {
+    const block = document.createElement('div');block.className = 'scalar';block.textContent = '7';$('tensor-stage').append(block);
+    $('tensor-detail').textContent = '一个数，不需要沿任何轴定位；空形状 () 也有 1 个元素。';return;
+  }
+  const label = document.createElement('p');label.className='axis-label';
+  label.textContent = kind === 1 ? '第 0 轴：分量（位置 0、1、2）' : kind === 2 ? '第 0 轴：行（0、1）；第 1 轴：列（0、1、2）' : '当前表 ' + layer + '；第 1 轴：行；第 2 轴：列';
+  const sheet = document.createElement('div');sheet.className = 'sheet' + (kind===1 ? ' vector' : '');
+  if(kind>1) sheet.style.gridTemplateColumns='repeat(3, 1fr)';
+  const count = kind===1 ? 3 : 6;
+  for(let i=0;i<count;i++) {
+    const v= kind===3 ? layer*6+i+1 : i+1;
+    const index = kind===1 ? [i] : kind===2 ? [Math.floor(i/3),i%3] : [layer,Math.floor(i/3),i%3];
+    const key = index.join(',');
+    const button=document.createElement('button');button.type='button';button.className='cell'+(tensorSelected===key?' active':'');button.textContent=v;
+    button.setAttribute('aria-label','索引 ['+index.join(', ')+']，值 '+v);button.setAttribute('aria-pressed',String(tensorSelected===key));
+    button.addEventListener('click',()=>{tensorSelected=key;renderTensor();$('tensor-detail').textContent='T['+index.join(', ')+'] = '+v+'。使用 '+index.length+' 个整数索引定位到一个标量。';});sheet.append(button);
+  }
+  const wrap=document.createElement('div');wrap.className='sheet-wrap';wrap.append(sheet);$('tensor-stage').append(label,wrap);
+  $('tensor-detail').textContent = kind===3 ? '点击一格读取 T[表, 行, 列]。切换表只改变第 0 轴的索引，整个张量的形状不变。' : '点击任意一格，查看它的索引。';
+}
+$('tensor-kind').addEventListener('change',()=>{tensorSelected=null;renderTensor();});$('tensor-layer').addEventListener('change',()=>{tensorSelected=null;renderTensor();});renderTensor();
+function renderSlice() {
+  const key=$('slice-choice').value;
+  const data={all:{indices:[0,1,2,3,4,5],value:'[[1, 2], [3, 4], [5, 6]]',shape:'(3, 2)',desc:'两个轴都保留。'},row:{indices:[2,3],value:'[3, 4]',shape:'(2,)',desc:'整数索引选定一行，样本轴消去，留下特征轴。'},column:{indices:[0,2,4],value:'[1, 3, 5]',shape:'(3,)',desc:'取全部样本，只取特征 0，特征轴消去。'},keep:{indices:[0,2,4],value:'[[1], [3], [5]]',shape:'(3, 1)',desc:'切片 0:1 只取一列，但保留特征轴。'},scalar:{indices:[2],value:'3',shape:'()',desc:'两个轴都由整数索引选定，结果是标量。'}}[key];
+  $('slice-grid').replaceChildren();[1,2,3,4,5,6].forEach((v,i)=>{const s=document.createElement('span');s.className='tile'+(data.indices.includes(i)?' highlight':'');s.textContent=v;$('slice-grid').append(s);});
+  $('slice-result').textContent=data.value+' → shape = '+data.shape;$('slice-explanation').textContent=data.desc;
+}
+$('slice-choice').addEventListener('change',renderSlice);renderSlice();
+function renderImage(){
+  const input=$('image-batch');let b=Number(input.value);if(!Number.isFinite(b)||b<1)b=1;b=Math.min(64,Math.floor(b));input.value=b;
+  const h=Number($('image-height').value),w=Number($('image-width').value);
+  $('image-meta').textContent='shape = ('+[b,3,h,w].join(', ')+') · ndim = 4 · size = '+(b*3*h*w).toLocaleString('zh-CN');
+}
+['image-batch','image-height','image-width'].forEach(id=>$(id).addEventListener('change',renderImage));renderImage();
+['R · 通道 0','G · 通道 1','B · 通道 2'].forEach((name,c)=>{const box=document.createElement('div');const title=document.createElement('div');title.className='channel-title';title.textContent=name;const grid=document.createElement('div');grid.className='channel';for(let i=0;i<16;i++){const pixel=document.createElement('span');pixel.className='pixel';const rgb=[0,0,0];rgb[c]=75+i*11;pixel.style.backgroundColor='rgb('+rgb.join(',')+')';pixel.setAttribute('aria-label',name+'，示意值 '+rgb[c]);grid.append(pixel);}box.append(title,grid);$('channels').append(box);});
+function renderTransforms(selected=2){
+  tileGrid($('reshape-grid'),[1,2,3,4,5,6],selected,true);tileGrid($('transpose-grid'),[1,4,2,5,3,6],selected,true);
+  const r=Math.floor((selected-1)/2),c=(selected-1)%2;const oldRow=Math.floor((selected-1)/3),oldCol=(selected-1)%3;
+  $('reshape-detail').textContent='元素 '+selected+'：reshape 后位置 ['+r+', '+c+']；转置后位置 ['+oldCol+', '+oldRow+']。';
+}
+renderTransforms();
+function renderReshape(){const s=$('reshape-choice').value.split(',').map(Number),size=s.reduce((a,b)=>a*b,1);$('reshape-output').classList.toggle('error',size!==6);$('reshape-output').textContent=size!==6?'不能 reshape：目标需要 '+size+' 个元素，原数组只有 6 个。':'可以 reshape 为 '+shapeString(s)+'：元素数仍为 6，按 [1, 2, 3, 4, 5, 6] 的默认顺序重新分组。';}
+$('reshape-choice').addEventListener('change',renderReshape);renderReshape();
+function renderBroadcast(){const key=$('broadcast-choice').value;const data={scalar:{value:[[11,12,13],[14,15,16]],text:'标量 10 适用于每个位置，输出形状 (2, 3)。'},row:{value:[[11,22,33],[14,25,36]],text:'(3,) 与最右侧的长度 3 对齐；同一组列偏移用于两行，输出形状 (2, 3)。'},column:{value:[[11,12,13],[24,25,26]],text:'(2, 1) 的最后一个轴长度为 1，可扩展到 3；每一行加自己的偏移，输出形状 (2, 3)。'},bad:{value:null,text:'从右侧比较，3 与 2 既不相等，也没有一方为 1，因此无法广播。'}}[key];$('broadcast-result').classList.toggle('error',key==='bad');$('broadcast-result').textContent=data.value?JSON.stringify(data.value):'形状不兼容：(2, 3) + (2,)';$('broadcast-explanation').textContent=data.text;}
+$('broadcast-choice').addEventListener('change',renderBroadcast);renderBroadcast();
+let cbStep=1,cbPosition=0;
+const cbNames=['R · 红色通道 0','G · 绿色通道 1','B · 蓝色通道 2'];
+const cbColors=['var(--red)','var(--accent)','var(--blue)'];
+const cbInputIds=['cb-add-r','cb-add-g','cb-add-b'];
+function cbOffsets(){return cbInputIds.map(id=>{const input=$(id);let value=Number(input.value);if(!Number.isFinite(value))value=0;value=Math.max(-100,Math.min(100,Math.round(value)));return value;});}
+function cbGrid(values,c,result){
+  const grid=document.createElement('div');grid.className='cb-grid';
+  values.forEach((value,p)=>{const button=document.createElement('button');button.type='button';button.className='cb-pixel'+(p===cbPosition?' selected':'');button.textContent=value;button.setAttribute('aria-pressed',String(p===cbPosition));button.setAttribute('aria-label',cbNames[c]+'，'+(result?'结果':'原值')+'，行 '+Math.floor(p/2)+' 列 '+p%2+'，值 '+value);button.addEventListener('click',()=>{cbPosition=p;renderChannelBroadcast();});grid.append(button);});return grid;
+}
+function cbBlock(label,grid){const block=document.createElement('div');block.className='cb-block';const text=document.createElement('p');text.className='cb-label';text.textContent=label;block.append(text,grid);return block;}
+function renderChannelBroadcast(){
+  const b=Number($('cb-image').value),offsets=cbOffsets(),h=Math.floor(cbPosition/2),w=cbPosition%2;
+  for(let step=1;step<=3;step++)$('cb-step-'+step).setAttribute('aria-pressed',String(cbStep===step));
+  $('cb-offset-controls').hidden=cbStep===1;$('cb-shape-explanation').hidden=cbStep===1;
+  $('cb-step-description').textContent=[null,'① 三张表属于同一张图。相同位置的 R、G、B 三个数，合起来才是一个像素。先观察三个通道的原值。','② 先按通道选加数，再将它用于这个通道的每个位置：R 用 '+offsets[0]+'，G 用 '+offsets[1]+'，B 用 '+offsets[2]+'。虚线格显示各位置重复使用的加数。','③ 每个位置独立做一次加法。比如 R 的整张表都加 '+offsets[0]+'，G 的整张表都加 '+offsets[1]+'，B 的整张表都加 '+offsets[2]+'。'][cbStep];
+  $('cb-panels').replaceChildren();
+  cbNames.forEach((name,c)=>{
+    const original=Array.from({length:4},(_,p)=>b*12+c*4+p+1);
+    const panel=document.createElement('div');panel.className='cb-panel';panel.style.setProperty('--channel-color',cbColors[c]);
+    const heading=document.createElement('h4');heading.textContent=name;panel.append(heading,cbBlock('原值 · 2 行 × 2 列',cbGrid(original,c,false)));
+    if(cbStep>1){
+      const op=document.createElement('p');op.className='cb-op';op.textContent='↓ 每个位置加 '+offsets[c];panel.append(op);
+      if(cbStep===2){const repeated=document.createElement('div');repeated.className='cb-repeated';for(let p=0;p<4;p++){const cell=document.createElement('span');cell.textContent=(offsets[c]>=0?'+':'')+offsets[c];repeated.append(cell);}panel.append(cbBlock('加数对应的位置 · 示意',repeated));}
+      else panel.append(cbBlock('结果 · 仍为 2 行 × 2 列',cbGrid(original.map(value=>value+offsets[c]),c,true)));
+    }
+    $('cb-panels').append(panel);
+  });
+  const before=cbNames.map((_,c)=>b*12+c*4+cbPosition+1),after=before.map((v,c)=>v+offsets[c]);
+  const detail=$('cb-pixel-detail');detail.replaceChildren();const title=document.createElement('div');title.textContent='图 '+b+'，行 '+h+'，列 '+w+' 的同一个像素：';detail.append(title);
+  const rgb=document.createElement('div');rgb.className='cb-rgb';['R','G','B'].forEach((name,c)=>{const item=document.createElement('span');item.style.setProperty('--channel-color',cbColors[c]);item.textContent=name+': '+before[c]+(cbStep>1?' + ('+offsets[c]+') = '+after[c]:'');rgb.append(item);});detail.append(rgb);
+  const coordinate=document.createElement('div');coordinate.className='small';coordinate.textContent=cbStep===1?'RGB = ('+before.join(', ')+')。三个分量在各自通道表中的行、列位置相同。':'以 G 为例：result['+[b,1,h,w].join(', ')+'] = images['+[b,1,h,w].join(', ')+'] + offset[0, 1, 0, 0] = '+before[1]+' + ('+offsets[1]+') = '+after[1]+'。';detail.append(coordinate);
+  $('cb-shape-formula').textContent='images: (2, 3, 2, 2)\noffset: (1, 3, 1, 1) → 通道加数 ['+offsets.join(', ')+']\nresult: (2, 3, 2, 2)';$('cb-shape-formula').style.whiteSpace='pre-line';
+}
+for(let step=1;step<=3;step++)$('cb-step-'+step).addEventListener('click',()=>{cbStep=step;renderChannelBroadcast();});
+$('cb-image').addEventListener('change',renderChannelBroadcast);cbInputIds.forEach(id=>{$(id).addEventListener('input',renderChannelBroadcast);$(id).addEventListener('change',()=>{$(id).value=cbOffsets()[cbInputIds.indexOf(id)];renderChannelBroadcast();});});renderChannelBroadcast();
+function renderMat(){const b=$('mat-b').value,f=$('mat-f').value,o=$('mat-o').value;$('mat-result').textContent='('+b+', '+f+') @ ('+f+', '+o+') → ('+b+', '+o+')';}
+['mat-b','mat-f','mat-o'].forEach(id=>$(id).addEventListener('change',renderMat));renderMat();
+const NS='http://www.w3.org/2000/svg';
+function svgNode(tag,attrs,text){const e=document.createElementNS(NS,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,String(v)));if(text!==undefined)e.textContent=text;return e;}
+function axes(svg,w,h,xmax,ymin,ymax,xlabel,ylabel){
+  svg.querySelectorAll('[data-drawn]').forEach(n=>n.remove());const group=svgNode('g',{'data-drawn':'true'});svg.append(group);
+  const l=78,r=26,t=26,b=48,pw=w-l-r,ph=h-t-b;
+  const sx=x=>l+x/Math.max(xmax,1)*pw,sy=y=>t+(ymax-y)/(ymax-ymin)*ph;
+  for(let i=0;i<=4;i++){const y=ymin+(ymax-ymin)*i/4;group.append(svgNode('line',{x1:l,y1:sy(y),x2:w-r,y2:sy(y),class:'gridline'}));const label=Math.abs(y)>=1e4?y.toExponential(1):Math.abs(ymax-ymin)<2?y.toFixed(2):y.toFixed(1);group.append(svgNode('text',{x:l-8,y:sy(y)+4,'text-anchor':'end'},label));}
+  for(let i=0;i<=4;i++){const x=xmax*i/4;group.append(svgNode('text',{x:sx(x),y:h-b+20,'text-anchor':i===0?'start':i===4?'end':'middle'},Number.isInteger(x)?x:x.toFixed(1)));}
+  group.append(svgNode('text',{x:l+pw/2,y:h-8,'text-anchor':'middle'},xlabel));group.append(svgNode('text',{x:8,y:16},ylabel));
+  return{group,sx,sy};
+}
+let train={w:0,b:0,steps:0,history:[33],halted:false};
+function currentLoss(w,b){let total=0;for(let x=0;x<=4;x++)total+=(w*x+b-(2*x+1))**2;return total/5;}
+function drawTraining(){
+  const loss=train.history.at(-1);$('train-meta').textContent='步数 '+train.steps+' · w = '+fmt(train.w)+' · b = '+fmt(train.b)+' · MSE = '+(loss>1e5?loss.toExponential(3):loss.toFixed(5));
+  const y0=train.b,y4=4*train.w+train.b;let min=Math.min(0,y0,y4),max=Math.max(9,y0,y4),pad=(max-min)*.12;
+  const width=Math.max(240,Math.round($('fit-chart').clientWidth));
+  $('fit-chart').setAttribute('viewBox','0 0 '+width+' 270');$('loss-chart').setAttribute('viewBox','0 0 '+width+' 250');
+  const fit=axes($('fit-chart'),width,270,4,min-pad,max+pad,'x（特征值）','y（目标 / 预测）');
+  fit.group.append(svgNode('path',{d:'M '+fit.sx(0)+' '+fit.sy(y0)+' L '+fit.sx(4)+' '+fit.sy(y4),class:'fit'}));
+  for(let x=0;x<=4;x++)fit.group.append(svgNode('circle',{cx:fit.sx(x),cy:fit.sy(2*x+1),r:5,class:'point'}));
+  let ymax=Math.max(...train.history)*1.1;if(ymax===0)ymax=1;
+  const plot=axes($('loss-chart'),width,250,Math.max(1,train.steps),0,ymax,'训练步数','MSE');
+  plot.group.append(svgNode('path',{d:train.history.map((v,i)=>(i?'L ':'M ')+plot.sx(i)+' '+plot.sy(v)).join(' '),class:'loss'}));
+  if(train.history.length===1)plot.group.append(svgNode('circle',{cx:plot.sx(0),cy:plot.sy(loss),r:4,class:'point'}));
+  $('train-explanation').classList.toggle('error',train.halted);
+  $('train-explanation').textContent=train.halted?'损失已超过 10¹²，已停止训练。请降低学习率并重置，比较新的训练过程。':train.steps===0?'还未更新参数：预测全为 0，初始 MSE = 33。':loss>33?'损失高于初始值。检查学习率是否过大；图的纵轴会随数值调整。':'损失下降时，直线逐渐贴近目标数据。学习率较小时可能需要更多步；前期损失较大时，后期变化在线性刻度下会显得较平。';
+  $('train-one').disabled=train.halted;$('train-many').disabled=train.halted;
+}
+function trainSteps(n){const lr=Number($('learning-rate').value);for(let i=0;i<n;i++){if(train.halted)break;let gw=0,gb=0;for(let x=0;x<=4;x++){const e=train.w*x+train.b-(2*x+1);gw+=2*x*e/5;gb+=2*e/5;}const w=train.w-lr*gw,b=train.b-lr*gb,loss=currentLoss(w,b);if(!Number.isFinite(loss)){train.halted=true;break;}train.w=w;train.b=b;train.steps++;train.history.push(loss);if(loss>1e12||train.steps>=1000)train.halted=true;}
+  drawTraining();if(train.steps>=1000)$('train-explanation').textContent='已完成 1000 步。可以重置参数后比较其他学习率。';
+}
+$('train-one').addEventListener('click',()=>trainSteps(1));$('train-many').addEventListener('click',()=>trainSteps(20));$('train-reset').addEventListener('click',()=>{train={w:0,b:0,steps:0,history:[33],halted:false};drawTraining();});drawTraining();
+new ResizeObserver(()=>drawTraining()).observe($('fit-chart').parentElement);
+const answers={q1:['b','轴数是形状中数字的个数：4；元素数为 8×3×32×32 = 24,576。'],q2:['b','切片 0:1 保留第二个轴，所以形状是 (5, 1)。'],q3:['a','内侧的 4 匹配，留下样本数 16 与输出数 3。'],q4:['c','从右侧对齐 (5, 1) 与 (1, 5)，广播结果为 (5, 5)。'],q5:['b','reshape 重新分组，转置交换轴；两者都为 (3, 2)，但排列不同。']};
+$('quiz-form').addEventListener('submit',event=>{event.preventDefault();const data=new FormData(event.currentTarget);let correct=0,missing=0;for(const [q,[answer,explanation]]of Object.entries(answers)){const choice=data.get(q),out=$(q+'-feedback');if(!choice){missing++;out.textContent='请先选择一个答案。';out.classList.add('error');}else{const ok=choice===answer;if(ok)correct++;out.textContent=(ok?'正确。':'还需复习。')+explanation;out.classList.toggle('error',!ok);}}$('quiz-result').textContent='答对 '+correct+' / 5 题。'+(missing?'还有 '+missing+' 题未作答。':correct===5?'可以继续动手练习。':'回到对应实验验证，再作答。');});
+})();
+</script>
+</body>
+</html>

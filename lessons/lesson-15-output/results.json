@@ -1,0 +1,1744 @@
+{
+  "environment": {
+    "grid": [
+      [
+        "S",
+        "C",
+        "#",
+        "#"
+      ],
+      [
+        "A",
+        "B",
+        "D",
+        "G"
+      ]
+    ],
+    "states": [
+      "S",
+      "A",
+      "B",
+      "D",
+      "C",
+      "G"
+    ],
+    "actions": [
+      "right",
+      "down",
+      "up",
+      "left"
+    ],
+    "terminal": [
+      "C",
+      "G"
+    ],
+    "max_steps": 20,
+    "transition_table": {
+      "S": {
+        "up": {
+          "next_state": "S",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "right": {
+          "next_state": "C",
+          "reward": 2,
+          "done": true,
+          "probability": 1.0
+        },
+        "down": {
+          "next_state": "A",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "left": {
+          "next_state": "S",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        }
+      },
+      "C": {
+        "up": {
+          "next_state": "C",
+          "reward": 0,
+          "done": true,
+          "probability": 1.0
+        },
+        "right": {
+          "next_state": "C",
+          "reward": 0,
+          "done": true,
+          "probability": 1.0
+        },
+        "down": {
+          "next_state": "C",
+          "reward": 0,
+          "done": true,
+          "probability": 1.0
+        },
+        "left": {
+          "next_state": "C",
+          "reward": 0,
+          "done": true,
+          "probability": 1.0
+        }
+      },
+      "A": {
+        "up": {
+          "next_state": "S",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "right": {
+          "next_state": "B",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "down": {
+          "next_state": "A",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "left": {
+          "next_state": "A",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        }
+      },
+      "B": {
+        "up": {
+          "next_state": "C",
+          "reward": 2,
+          "done": true,
+          "probability": 1.0
+        },
+        "right": {
+          "next_state": "D",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "down": {
+          "next_state": "B",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "left": {
+          "next_state": "A",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        }
+      },
+      "D": {
+        "up": {
+          "next_state": "D",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "right": {
+          "next_state": "G",
+          "reward": 10,
+          "done": true,
+          "probability": 1.0
+        },
+        "down": {
+          "next_state": "D",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        },
+        "left": {
+          "next_state": "B",
+          "reward": 0,
+          "done": false,
+          "probability": 1.0
+        }
+      },
+      "G": {
+        "up": {
+          "next_state": "G",
+          "reward": 0,
+          "done": true,
+          "probability": 1.0
+        },
+        "right": {
+          "next_state": "G",
+          "reward": 0,
+          "done": true,
+          "probability": 1.0
+        },
+        "down": {
+          "next_state": "G",
+          "reward": 0,
+          "done": true,
+          "probability": 1.0
+        },
+        "left": {
+          "next_state": "G",
+          "reward": 0,
+          "done": true,
+          "probability": 1.0
+        }
+      }
+    }
+  },
+  "value_iteration": {
+    "0.5": [
+      {
+        "sweep": 0,
+        "values": {
+          "S": 0.0,
+          "A": 0.0,
+          "B": 0.0,
+          "D": 0.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 1,
+        "values": {
+          "S": 2.0,
+          "A": 0.0,
+          "B": 2.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 2,
+        "values": {
+          "S": 2.0,
+          "A": 1.0,
+          "B": 5.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 3,
+        "values": {
+          "S": 2.0,
+          "A": 2.5,
+          "B": 5.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 4,
+        "values": {
+          "S": 2.0,
+          "A": 2.5,
+          "B": 5.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 5,
+        "values": {
+          "S": 2.0,
+          "A": 2.5,
+          "B": 5.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 6,
+        "values": {
+          "S": 2.0,
+          "A": 2.5,
+          "B": 5.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 7,
+        "values": {
+          "S": 2.0,
+          "A": 2.5,
+          "B": 5.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 8,
+        "values": {
+          "S": 2.0,
+          "A": 2.5,
+          "B": 5.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      }
+    ],
+    "0.8": [
+      {
+        "sweep": 0,
+        "values": {
+          "S": 0.0,
+          "A": 0.0,
+          "B": 0.0,
+          "D": 0.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 1,
+        "values": {
+          "S": 2.0,
+          "A": 0.0,
+          "B": 2.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 2,
+        "values": {
+          "S": 2.0,
+          "A": 1.6,
+          "B": 8.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 3,
+        "values": {
+          "S": 2.0,
+          "A": 6.4,
+          "B": 8.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 4,
+        "values": {
+          "S": 5.120000000000001,
+          "A": 6.4,
+          "B": 8.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 5,
+        "values": {
+          "S": 5.120000000000001,
+          "A": 6.4,
+          "B": 8.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 6,
+        "values": {
+          "S": 5.120000000000001,
+          "A": 6.4,
+          "B": 8.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 7,
+        "values": {
+          "S": 5.120000000000001,
+          "A": 6.4,
+          "B": 8.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "sweep": 8,
+        "values": {
+          "S": 5.120000000000001,
+          "A": 6.4,
+          "B": 8.0,
+          "D": 10.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      }
+    ]
+  },
+  "mc_td_prediction": {
+    "gamma": 0.8,
+    "alpha": 0.5,
+    "trace": [
+      {
+        "state": "S",
+        "action": "down",
+        "next_state": "A",
+        "reward": 0,
+        "done": false
+      },
+      {
+        "state": "A",
+        "action": "right",
+        "next_state": "B",
+        "reward": 0,
+        "done": false
+      },
+      {
+        "state": "B",
+        "action": "right",
+        "next_state": "D",
+        "reward": 0,
+        "done": false
+      },
+      {
+        "state": "D",
+        "action": "right",
+        "next_state": "G",
+        "reward": 10,
+        "done": true
+      }
+    ],
+    "true_returns": {
+      "D": 10.0,
+      "B": 8.0,
+      "A": 6.4,
+      "S": 5.120000000000001
+    },
+    "episodes": [
+      {
+        "episode": 0,
+        "mc": {
+          "S": 0.0,
+          "A": 0.0,
+          "B": 0.0,
+          "D": 0.0,
+          "C": 0.0,
+          "G": 0.0
+        },
+        "td": {
+          "S": 0.0,
+          "A": 0.0,
+          "B": 0.0,
+          "D": 0.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "episode": 1,
+        "mc": {
+          "S": 2.5600000000000005,
+          "A": 3.2,
+          "B": 4.0,
+          "D": 5.0,
+          "C": 0.0,
+          "G": 0.0
+        },
+        "td": {
+          "S": 0.0,
+          "A": 0.0,
+          "B": 0.0,
+          "D": 5.0,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "episode": 2,
+        "mc": {
+          "S": 3.8400000000000007,
+          "A": 4.800000000000001,
+          "B": 6.0,
+          "D": 7.5,
+          "C": 0.0,
+          "G": 0.0
+        },
+        "td": {
+          "S": 0.0,
+          "A": 0.0,
+          "B": 2.0,
+          "D": 7.5,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "episode": 3,
+        "mc": {
+          "S": 4.48,
+          "A": 5.6000000000000005,
+          "B": 7.0,
+          "D": 8.75,
+          "C": 0.0,
+          "G": 0.0
+        },
+        "td": {
+          "S": 0.0,
+          "A": 0.8,
+          "B": 4.0,
+          "D": 8.75,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "episode": 4,
+        "mc": {
+          "S": 4.800000000000001,
+          "A": 6.0,
+          "B": 7.5,
+          "D": 9.375,
+          "C": 0.0,
+          "G": 0.0
+        },
+        "td": {
+          "S": 0.32000000000000006,
+          "A": 2.0,
+          "B": 5.5,
+          "D": 9.375,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "episode": 5,
+        "mc": {
+          "S": 4.960000000000001,
+          "A": 6.2,
+          "B": 7.75,
+          "D": 9.6875,
+          "C": 0.0,
+          "G": 0.0
+        },
+        "td": {
+          "S": 0.9600000000000001,
+          "A": 3.2,
+          "B": 6.5,
+          "D": 9.6875,
+          "C": 0.0,
+          "G": 0.0
+        }
+      },
+      {
+        "episode": 6,
+        "mc": {
+          "S": 5.040000000000001,
+          "A": 6.300000000000001,
+          "B": 7.875,
+          "D": 9.84375,
+          "C": 0.0,
+          "G": 0.0
+        },
+        "td": {
+          "S": 1.7600000000000002,
+          "A": 4.2,
+          "B": 7.125,
+          "D": 9.84375,
+          "C": 0.0,
+          "G": 0.0
+        }
+      }
+    ],
+    "first_td_updates": [
+      {
+        "state": "S",
+        "action": "down",
+        "reward": 0,
+        "old": 0.0,
+        "target": 0.0,
+        "new": 0.0
+      },
+      {
+        "state": "A",
+        "action": "right",
+        "reward": 0,
+        "old": 0.0,
+        "target": 0.0,
+        "new": 0.0
+      },
+      {
+        "state": "B",
+        "action": "right",
+        "reward": 0,
+        "old": 0.0,
+        "target": 0.0,
+        "new": 0.0
+      },
+      {
+        "state": "D",
+        "action": "right",
+        "reward": 10,
+        "old": 0.0,
+        "target": 10.0,
+        "new": 5.0
+      }
+    ]
+  },
+  "q_learning": {
+    "episodes": 800,
+    "alpha": 0.5,
+    "runs": [
+      {
+        "gamma": 0.5,
+        "epsilon": 0.0,
+        "seed": 15500,
+        "alpha": 0.5,
+        "episodes": 800,
+        "max_steps": 20,
+        "q_shape": [
+          6,
+          4
+        ],
+        "q_table": [
+          [
+            2.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "checkpoints": [
+          {
+            "episode": 0,
+            "q_start": {
+              "right": 0.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": null
+          },
+          {
+            "episode": 10,
+            "q_start": {
+              "right": 1.998046875,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 25,
+            "q_start": {
+              "right": 1.9999999403953552,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 50,
+            "q_start": {
+              "right": 1.9999999999999982,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 100,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 200,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 400,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 800,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          }
+        ],
+        "training_destination_counts": {
+          "C": 800,
+          "G": 0
+        },
+        "training_timeout_count": 0,
+        "final_greedy": {
+          "return": 2.0,
+          "end_state": "C",
+          "steps": 1,
+          "terminated": true,
+          "trace": [
+            {
+              "t": 0,
+              "state": "S",
+              "action": "right",
+              "next_state": "C",
+              "reward": 2,
+              "done": true
+            }
+          ]
+        },
+        "final_policy": {
+          "S": "right",
+          "A": "right",
+          "B": "right",
+          "D": "right"
+        }
+      },
+      {
+        "gamma": 0.5,
+        "epsilon": 0.1,
+        "seed": 15510,
+        "alpha": 0.5,
+        "episodes": 800,
+        "max_steps": 20,
+        "q_shape": [
+          6,
+          4
+        ],
+        "q_table": [
+          [
+            2.0,
+            0.4999994188546477,
+            0.9999847412109375,
+            0.9999995231628418
+          ],
+          [
+            0.0,
+            0.0,
+            0.9999999403953481,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            5.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "checkpoints": [
+          {
+            "episode": 0,
+            "q_start": {
+              "right": 0.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": null
+          },
+          {
+            "episode": 10,
+            "q_start": {
+              "right": 1.998046875,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 25,
+            "q_start": {
+              "right": 1.9999999403953552,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.94
+          },
+          {
+            "episode": 50,
+            "q_start": {
+              "right": 1.9999999999999982,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.499999999998181
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.95
+          },
+          {
+            "episode": 100,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.1249999850988388,
+              "up": 0.0,
+              "left": 0.9374999999997726
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.91
+          },
+          {
+            "episode": 200,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.3437499888241291,
+              "up": 0.9375,
+              "left": 0.9921874999999716
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.93
+          },
+          {
+            "episode": 400,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.49462890572613105,
+              "up": 0.9921875,
+              "left": 0.9999389648437498
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.93
+          },
+          {
+            "episode": 800,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.4999994188546477,
+              "up": 0.9999847412109375,
+              "left": 0.9999995231628418
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.9
+          }
+        ],
+        "training_destination_counts": {
+          "C": 799,
+          "G": 1
+        },
+        "training_timeout_count": 0,
+        "final_greedy": {
+          "return": 2.0,
+          "end_state": "C",
+          "steps": 1,
+          "terminated": true,
+          "trace": [
+            {
+              "t": 0,
+              "state": "S",
+              "action": "right",
+              "next_state": "C",
+              "reward": 2,
+              "done": true
+            }
+          ]
+        },
+        "final_policy": {
+          "S": "right",
+          "A": "up",
+          "B": "right",
+          "D": "right"
+        }
+      },
+      {
+        "gamma": 0.5,
+        "epsilon": 0.3,
+        "seed": 15530,
+        "alpha": 0.5,
+        "episodes": 800,
+        "max_steps": 20,
+        "q_shape": [
+          6,
+          4
+        ],
+        "q_table": [
+          [
+            2.0,
+            1.2499999999999396,
+            1.0,
+            1.0
+          ],
+          [
+            2.4999999999999956,
+            1.1984562837400496,
+            0.984375,
+            1.245116680632138
+          ],
+          [
+            5.0,
+            2.476196187305452,
+            1.9375,
+            1.249384547082819
+          ],
+          [
+            10.0,
+            4.3749999813735485,
+            4.3749999999221245,
+            2.4743479490275986
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "checkpoints": [
+          {
+            "episode": 0,
+            "q_start": {
+              "right": 0.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": null
+          },
+          {
+            "episode": 10,
+            "q_start": {
+              "right": 1.998046875,
+              "down": 0.0,
+              "up": 0.375,
+              "left": 0.6240234375
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.7
+          },
+          {
+            "episode": 25,
+            "q_start": {
+              "right": 1.999999761581421,
+              "down": 0.0,
+              "up": 0.68743896484375,
+              "left": 0.811981201171875
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.74
+          },
+          {
+            "episode": 50,
+            "q_start": {
+              "right": 1.9999999999999716,
+              "down": 0.078125,
+              "up": 0.9218597408616915,
+              "left": 0.9529952984157717
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.74125
+          },
+          {
+            "episode": 100,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.234375,
+              "up": 0.999389529225482,
+              "left": 0.9764976492078856
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.8125
+          },
+          {
+            "episode": 200,
+            "q_start": {
+              "right": 2.0,
+              "down": 1.2231636047363281,
+              "up": 0.999997615348537,
+              "left": 0.9999985655303472
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.665
+          },
+          {
+            "episode": 400,
+            "q_start": {
+              "right": 2.0,
+              "down": 1.2499998916746335,
+              "up": 0.9999999999998579,
+              "left": 0.999999999999316
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.6721875
+          },
+          {
+            "episode": 800,
+            "q_start": {
+              "right": 2.0,
+              "down": 1.2499999999999396,
+              "up": 1.0,
+              "left": 1.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.6759765625
+          }
+        ],
+        "training_destination_counts": {
+          "C": 745,
+          "G": 55
+        },
+        "training_timeout_count": 0,
+        "final_greedy": {
+          "return": 2.0,
+          "end_state": "C",
+          "steps": 1,
+          "terminated": true,
+          "trace": [
+            {
+              "t": 0,
+              "state": "S",
+              "action": "right",
+              "next_state": "C",
+              "reward": 2,
+              "done": true
+            }
+          ]
+        },
+        "final_policy": {
+          "S": "right",
+          "A": "right",
+          "B": "right",
+          "D": "right"
+        }
+      },
+      {
+        "gamma": 0.8,
+        "epsilon": 0.0,
+        "seed": 15800,
+        "alpha": 0.5,
+        "episodes": 800,
+        "max_steps": 20,
+        "q_shape": [
+          6,
+          4
+        ],
+        "q_table": [
+          [
+            2.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "checkpoints": [
+          {
+            "episode": 0,
+            "q_start": {
+              "right": 0.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": null
+          },
+          {
+            "episode": 10,
+            "q_start": {
+              "right": 1.998046875,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 25,
+            "q_start": {
+              "right": 1.9999999403953552,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 50,
+            "q_start": {
+              "right": 1.9999999999999982,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 100,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 200,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 400,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          },
+          {
+            "episode": 800,
+            "q_start": {
+              "right": 2.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.0
+          }
+        ],
+        "training_destination_counts": {
+          "C": 800,
+          "G": 0
+        },
+        "training_timeout_count": 0,
+        "final_greedy": {
+          "return": 2.0,
+          "end_state": "C",
+          "steps": 1,
+          "terminated": true,
+          "trace": [
+            {
+              "t": 0,
+              "state": "S",
+              "action": "right",
+              "next_state": "C",
+              "reward": 2,
+              "done": true
+            }
+          ]
+        },
+        "final_policy": {
+          "S": "right",
+          "A": "right",
+          "B": "right",
+          "D": "right"
+        }
+      },
+      {
+        "gamma": 0.8,
+        "epsilon": 0.1,
+        "seed": 15810,
+        "alpha": 0.5,
+        "episodes": 800,
+        "max_steps": 20,
+        "q_shape": [
+          6,
+          4
+        ],
+        "q_table": [
+          [
+            2.0,
+            5.120000000000001,
+            4.095989708601477,
+            4.094756593406198
+          ],
+          [
+            6.4,
+            5.119687499999847,
+            4.095996083877955,
+            5.119960905164481
+          ],
+          [
+            8.0,
+            6.399609368480743,
+            1.999755859375,
+            5.119990231795238
+          ],
+          [
+            10.0,
+            7.999991893768282,
+            7.999999045860022,
+            6.399797821043535
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "checkpoints": [
+          {
+            "episode": 0,
+            "q_start": {
+              "right": 0.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": null
+          },
+          {
+            "episode": 10,
+            "q_start": {
+              "right": 1.99609375,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.3120000000000003
+          },
+          {
+            "episode": 25,
+            "q_start": {
+              "right": 1.9999998807907104,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.79990234375
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.1088
+          },
+          {
+            "episode": 50,
+            "q_start": {
+              "right": 1.9999999999999858,
+              "down": 0.0,
+              "up": 0.7999999999985449,
+              "left": 1.3999755859141714
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.1552000000000002
+          },
+          {
+            "episode": 100,
+            "q_start": {
+              "right": 2.0,
+              "down": 2.5600000000000005,
+              "up": 1.3999999999996362,
+              "left": 1.549993896478543
+            },
+            "greedy_end": "G",
+            "greedy_return": 5.120000000000001,
+            "recent_train_mean": 2.19712
+          },
+          {
+            "episode": 200,
+            "q_start": {
+              "right": 2.0,
+              "down": 5.120000000000001,
+              "up": 3.9273857265794794,
+              "left": 3.4593758239730024
+            },
+            "greedy_end": "G",
+            "greedy_return": 5.120000000000001,
+            "recent_train_mean": 4.888844800000001
+          },
+          {
+            "episode": 400,
+            "q_start": {
+              "right": 2.0,
+              "down": 5.120000000000001,
+              "up": 4.093365401977806,
+              "left": 4.076105494499157
+            },
+            "greedy_end": "G",
+            "greedy_return": 5.120000000000001,
+            "recent_train_mean": 4.894883840000001
+          },
+          {
+            "episode": 800,
+            "q_start": {
+              "right": 2.0,
+              "down": 5.120000000000001,
+              "up": 4.095989708601477,
+              "left": 4.094756593406198
+            },
+            "greedy_end": "G",
+            "greedy_return": 5.120000000000001,
+            "recent_train_mean": 4.786135040000001
+          }
+        ],
+        "training_destination_counts": {
+          "C": 120,
+          "G": 680
+        },
+        "training_timeout_count": 0,
+        "final_greedy": {
+          "return": 5.120000000000001,
+          "end_state": "G",
+          "steps": 4,
+          "terminated": true,
+          "trace": [
+            {
+              "t": 0,
+              "state": "S",
+              "action": "down",
+              "next_state": "A",
+              "reward": 0,
+              "done": false
+            },
+            {
+              "t": 1,
+              "state": "A",
+              "action": "right",
+              "next_state": "B",
+              "reward": 0,
+              "done": false
+            },
+            {
+              "t": 2,
+              "state": "B",
+              "action": "right",
+              "next_state": "D",
+              "reward": 0,
+              "done": false
+            },
+            {
+              "t": 3,
+              "state": "D",
+              "action": "right",
+              "next_state": "G",
+              "reward": 10,
+              "done": true
+            }
+          ]
+        },
+        "final_policy": {
+          "S": "down",
+          "A": "right",
+          "B": "right",
+          "D": "right"
+        }
+      },
+      {
+        "gamma": 0.8,
+        "epsilon": 0.3,
+        "seed": 15830,
+        "alpha": 0.5,
+        "episodes": 800,
+        "max_steps": 20,
+        "q_shape": [
+          6,
+          4
+        ],
+        "q_table": [
+          [
+            2.0,
+            5.120000000000001,
+            4.096,
+            4.096
+          ],
+          [
+            6.4,
+            5.120000000000001,
+            4.096,
+            5.119999999999999
+          ],
+          [
+            8.0,
+            6.399999999999996,
+            2.0,
+            5.119999999999999
+          ],
+          [
+            10.0,
+            8.0,
+            7.999999999956344,
+            6.399999999999989
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "checkpoints": [
+          {
+            "episode": 0,
+            "q_start": {
+              "right": 0.0,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.0
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": null
+          },
+          {
+            "episode": 10,
+            "q_start": {
+              "right": 1.998046875,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 0.7984375
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 1.9600000000000002
+          },
+          {
+            "episode": 25,
+            "q_start": {
+              "right": 1.9999998807907104,
+              "down": 0.0,
+              "up": 0.0,
+              "left": 1.4997894287109377
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.064
+          },
+          {
+            "episode": 50,
+            "q_start": {
+              "right": 1.9999999999999432,
+              "down": 0.9600000000000001,
+              "up": 1.199999994039172,
+              "left": 1.5749473214149474
+            },
+            "greedy_end": "C",
+            "greedy_return": 2.0,
+            "recent_train_mean": 2.140608
+          },
+          {
+            "episode": 100,
+            "q_start": {
+              "right": 2.0,
+              "down": 5.111223144531252,
+              "up": 1.5749999996274484,
+              "left": 3.1232680803537374
+            },
+            "greedy_end": "G",
+            "greedy_return": 5.120000000000001,
+            "recent_train_mean": 2.5251200000000003
+          },
+          {
+            "episode": 200,
+            "q_start": {
+              "right": 2.0,
+              "down": 5.120000000000001,
+              "up": 4.076304546877456,
+              "left": 4.0955249149642
+            },
+            "greedy_end": "G",
+            "greedy_return": 5.120000000000001,
+            "recent_train_mean": 3.8343429120000008
+          },
+          {
+            "episode": 400,
+            "q_start": {
+              "right": 2.0,
+              "down": 5.120000000000001,
+              "up": 4.095999962433906,
+              "left": 4.095999999773463
+            },
+            "greedy_end": "G",
+            "greedy_return": 5.120000000000001,
+            "recent_train_mean": 3.3288779776000013
+          },
+          {
+            "episode": 800,
+            "q_start": {
+              "right": 2.0,
+              "down": 5.120000000000001,
+              "up": 4.096,
+              "left": 4.096
+            },
+            "greedy_end": "G",
+            "greedy_return": 5.120000000000001,
+            "recent_train_mean": 3.599804825600001
+          }
+        ],
+        "training_destination_counts": {
+          "C": 228,
+          "G": 572
+        },
+        "training_timeout_count": 0,
+        "final_greedy": {
+          "return": 5.120000000000001,
+          "end_state": "G",
+          "steps": 4,
+          "terminated": true,
+          "trace": [
+            {
+              "t": 0,
+              "state": "S",
+              "action": "down",
+              "next_state": "A",
+              "reward": 0,
+              "done": false
+            },
+            {
+              "t": 1,
+              "state": "A",
+              "action": "right",
+              "next_state": "B",
+              "reward": 0,
+              "done": false
+            },
+            {
+              "t": 2,
+              "state": "B",
+              "action": "right",
+              "next_state": "D",
+              "reward": 0,
+              "done": false
+            },
+            {
+              "t": 3,
+              "state": "D",
+              "action": "right",
+              "next_state": "G",
+              "reward": 10,
+              "done": true
+            }
+          ]
+        },
+        "final_policy": {
+          "S": "down",
+          "A": "right",
+          "B": "right",
+          "D": "right"
+        }
+      }
+    ],
+    "random_baselines": {
+      "0.5": {
+        "episodes": 300,
+        "mean_return": 0.6751346969604493,
+        "destination_counts": {
+          "C": 270,
+          "G": 21
+        },
+        "timeout_count": 9
+      },
+      "0.8": {
+        "episodes": 300,
+        "mean_return": 1.20300698610422,
+        "destination_counts": {
+          "C": 278,
+          "G": 16
+        },
+        "timeout_count": 6
+      }
+    }
+  },
+  "sarsa_vs_q_numeric": {
+    "old": 1.0,
+    "reward": 0.0,
+    "gamma": 0.8,
+    "alpha": 0.5,
+    "next_chosen_q": 1.0,
+    "next_max_q": 5.0,
+    "sarsa_target": 0.8,
+    "sarsa_new": 0.9,
+    "q_learning_target": 4.0,
+    "q_learning_new": 2.5
+  }
+}

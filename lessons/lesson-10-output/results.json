@@ -1,0 +1,408 @@
+{
+  "torch_version": "2.14.0+cpu",
+  "device": "cpu",
+  "sentences": [
+    "小猫 喜欢 小鱼",
+    "小猫 追 小球",
+    "小狗 喜欢 骨头",
+    "小狗 追 小猫",
+    "小鸟 喜欢 天空",
+    "小鸟 追 小虫",
+    "小鸟 起飞"
+  ],
+  "vocab": [
+    "<PAD>",
+    "<UNK>",
+    "<BOS>",
+    "<EOS>",
+    "小猫",
+    "喜欢",
+    "小鱼",
+    "追",
+    "小球",
+    "小狗",
+    "骨头",
+    "小鸟",
+    "天空",
+    "小虫",
+    "起飞"
+  ],
+  "char_vocab": [
+    "<PAD>",
+    "<UNK>",
+    "<BOS>",
+    "<EOS>",
+    "小",
+    "猫",
+    "喜",
+    "欢",
+    "鱼",
+    "追",
+    "球",
+    "狗",
+    "骨",
+    "头",
+    "鸟",
+    "天",
+    "空",
+    "虫",
+    "起",
+    "飞"
+  ],
+  "unknown_sentence": "小猫 喜欢 火星",
+  "demo_table": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.3,
+      0.4,
+      0.5
+    ],
+    [
+      0.6,
+      0.7,
+      0.8
+    ],
+    [
+      0.9,
+      1.0,
+      1.1
+    ],
+    [
+      1.2,
+      1.3,
+      1.4
+    ],
+    [
+      1.5,
+      1.6,
+      1.7
+    ],
+    [
+      1.8,
+      1.9,
+      2.0
+    ],
+    [
+      2.1,
+      2.2,
+      2.3
+    ],
+    [
+      2.4,
+      2.5,
+      2.6
+    ],
+    [
+      2.7,
+      2.8,
+      2.9
+    ],
+    [
+      3.0,
+      3.1,
+      3.2
+    ],
+    [
+      3.3,
+      3.4,
+      3.5
+    ],
+    [
+      3.6,
+      3.7,
+      3.8
+    ],
+    [
+      3.9,
+      4.0,
+      4.1
+    ],
+    [
+      4.2,
+      4.3,
+      4.4
+    ]
+  ],
+  "demo_batch": {
+    "sentences": [
+      "小猫 喜欢 小鱼",
+      "小鸟 起飞"
+    ],
+    "input_ids": [
+      [
+        2,
+        4,
+        5,
+        6
+      ],
+      [
+        2,
+        11,
+        14,
+        0
+      ]
+    ],
+    "target_ids": [
+      [
+        4,
+        5,
+        6,
+        3
+      ],
+      [
+        11,
+        14,
+        3,
+        0
+      ]
+    ]
+  },
+  "shapes": {
+    "batch_ids": [
+      7,
+      4
+    ],
+    "embedding_weight": [
+      15,
+      8
+    ],
+    "vectors": [
+      7,
+      4,
+      8
+    ],
+    "rnn_outputs": [
+      7,
+      4,
+      16
+    ],
+    "final_hidden": [
+      1,
+      7,
+      16
+    ],
+    "logits": [
+      7,
+      4,
+      15
+    ]
+  },
+  "valid_target_positions": 27,
+  "all_target_positions": 28,
+  "initial_masked_loss": 2.6926350593566895,
+  "final_masked_loss": 0.5054398775100708,
+  "final_training_token_accuracy": 0.7037037014961243,
+  "history": [
+    {
+      "epoch": 0,
+      "train_loss": 2.6926350593566895,
+      "train_token_accuracy": 0.0
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.923332154750824,
+      "train_token_accuracy": 0.5925925970077515
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.6224018335342407,
+      "train_token_accuracy": 0.6666666865348816
+    },
+    {
+      "epoch": 30,
+      "train_loss": 0.5532206892967224,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 40,
+      "train_loss": 0.5229721069335938,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 50,
+      "train_loss": 0.5139524936676025,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 60,
+      "train_loss": 0.5101903676986694,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 70,
+      "train_loss": 0.508638322353363,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 80,
+      "train_loss": 0.5077782273292542,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 90,
+      "train_loss": 0.5072422623634338,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 100,
+      "train_loss": 0.506870687007904,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 110,
+      "train_loss": 0.5065885186195374,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 120,
+      "train_loss": 0.5063629746437073,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 130,
+      "train_loss": 0.5061768889427185,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 140,
+      "train_loss": 0.5060206055641174,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 150,
+      "train_loss": 0.5058874487876892,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 160,
+      "train_loss": 0.5057727694511414,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 170,
+      "train_loss": 0.5056731700897217,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 180,
+      "train_loss": 0.5055856704711914,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 190,
+      "train_loss": 0.5055083632469177,
+      "train_token_accuracy": 0.7037037014961243
+    },
+    {
+      "epoch": 200,
+      "train_loss": 0.5054398775100708,
+      "train_token_accuracy": 0.7037037014961243
+    }
+  ],
+  "first_sentence_steps": [
+    {
+      "input_token": "<BOS>",
+      "target_token": "小猫",
+      "hidden_first4": [
+        -0.9986,
+        0.9955,
+        -0.9952,
+        -0.967
+      ],
+      "hidden_norm": 3.7493,
+      "top3": [
+        {
+          "token": "小鸟",
+          "probability": 0.4284515678882599
+        },
+        {
+          "token": "小猫",
+          "probability": 0.28562700748443604
+        },
+        {
+          "token": "小狗",
+          "probability": 0.2856076657772064
+        }
+      ]
+    },
+    {
+      "input_token": "小猫",
+      "target_token": "喜欢",
+      "hidden_first4": [
+        0.9487,
+        -0.9994,
+        0.9991,
+        0.9912
+      ],
+      "hidden_norm": 3.9269,
+      "top3": [
+        {
+          "token": "喜欢",
+          "probability": 0.4995184540748596
+        },
+        {
+          "token": "追",
+          "probability": 0.4994269907474518
+        },
+        {
+          "token": "起飞",
+          "probability": 0.0007388407830148935
+        }
+      ]
+    },
+    {
+      "input_token": "喜欢",
+      "target_token": "小鱼",
+      "hidden_first4": [
+        -0.9048,
+        0.9943,
+        0.9452,
+        0.9115
+      ],
+      "hidden_norm": 3.7254,
+      "top3": [
+        {
+          "token": "小鱼",
+          "probability": 0.996101975440979
+        },
+        {
+          "token": "骨头",
+          "probability": 0.0020206316839903593
+        },
+        {
+          "token": "天空",
+          "probability": 0.001432659919373691
+        }
+      ]
+    },
+    {
+      "input_token": "小鱼",
+      "target_token": "<EOS>",
+      "hidden_first4": [
+        0.9999,
+        0.9954,
+        1.0,
+        0.9965
+      ],
+      "hidden_norm": 3.984,
+      "top3": [
+        {
+          "token": "<EOS>",
+          "probability": 0.9998600482940674
+        },
+        {
+          "token": "天空",
+          "probability": 6.898674473632127e-05
+        },
+        {
+          "token": "追",
+          "probability": 1.6444902939838357e-05
+        }
+      ]
+    }
+  ]
+}

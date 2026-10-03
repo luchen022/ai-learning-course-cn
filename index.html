@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="从张量、机器学习和 PyTorch，到 Transformer、强化学习与 RAG 的中文 AI 互动课程。">
+<title>AI 学习课程</title>
+<style>
+:root{--ink:#172033;--muted:#637086;--paper:#f6f7fb;--card:#fff;--line:#dfe4ec;--blue:#3157d5;--cyan:#087f91;--orange:#b95f16;--green:#167148;--shadow:0 16px 38px rgba(34,46,78,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:linear-gradient(155deg,#edf1ff 0,#f8fafc 34%,#f6f7fb 100%);font-family:Inter,"Noto Sans SC","Microsoft YaHei",sans-serif;line-height:1.68}a{color:inherit}.hero{padding:72px 22px 50px;background:radial-gradient(circle at 85% 10%,rgba(67,220,206,.28),transparent 27%),linear-gradient(135deg,#17234f,#2852ae);color:#fff}.wrap{width:min(1120px,calc(100% - 36px));margin:auto}.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;opacity:.78}.hero h1{font-size:clamp(2.3rem,6vw,4.6rem);line-height:1.08;margin:.22em 0}.hero p{max-width:800px;font-size:1.1rem;color:#e7ebff}.hero-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:25px}.button{display:inline-block;padding:10px 15px;border-radius:11px;background:#fff;color:#1f347c;text-decoration:none;font-weight:750}.button.secondary{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.32);color:#fff}
+main{padding:28px 0 80px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 28px}.summary article,.phase{background:var(--card);border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow)}.summary article{padding:18px}.summary strong{display:block;font-size:1.45rem;color:var(--blue)}.summary span{color:var(--muted);font-size:.92rem}h2{font-size:clamp(1.5rem,3.5vw,2.2rem);margin:1.4em 0 .35em}.intro{max-width:780px;color:#3f4b62}.phase{padding:clamp(20px,4vw,34px);margin:18px 0}.phase-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:5px}.phase h3{font-size:1.28rem;margin:0}.phase p{margin:.25em 0 0;color:var(--muted)}.phase-num{white-space:nowrap;color:var(--blue);font-size:.8rem;font-weight:800;letter-spacing:.08em}.lesson{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:13px;align-items:center;padding:15px 4px;border-bottom:1px solid #edf0f5;text-decoration:none}.lesson:last-child{border-bottom:0}.lesson:hover .lesson-title{color:var(--blue)}.number{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:#edf1ff;color:#2948b2;font-weight:850}.number.math{font-size:.75rem;background:#e9f8f6;color:#087365}.lesson-title{font-weight:780}.lesson-desc{color:var(--muted);font-size:.9rem;margin-top:2px}.go{color:#8a95a8;font-size:1.3rem}.soon{display:inline-block;padding:3px 8px;border-radius:999px;background:#fff2e6;color:#9e4e0c;font-size:.76rem;font-weight:800}.note{margin-top:30px;padding:20px;border-left:4px solid var(--cyan);background:#edf8fa;border-radius:0 14px 14px 0}.footer{text-align:center;color:var(--muted);padding:25px 0 40px;font-size:.9rem}
+@media(max-width:700px){.hero{padding-top:48px}.summary{grid-template-columns:1fr}.lesson{grid-template-columns:42px minmax(0,1fr)}.go{display:none}.phase-head{display:block}.phase-num{display:block;margin-bottom:6px}.wrap{width:min(100% - 24px,1120px)}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap"><div class="eyebrow">AI LEARNING COURSE · 中文互动课</div><h1>从数学直觉到<br>可运行的 AI 项目</h1><p>沿着一条连续路线学习张量、模型训练、PyTorch、CNN、Transformer、强化学习和知识问答。每节课都包含图解、数字演算、代码与自测。</p><div class="hero-actions"><a class="button" href="lessons/lesson-01-tensors.html">从第一节开始</a><a class="button secondary" href="AI学习课程大纲.md">查看完整大纲</a></div></div></header>
+<main class="wrap">
+<div class="summary"><article><strong>18 节</strong><span>已完成的主线互动课件</span></article><article><strong>1 节</strong><span>向量与矩阵求导补充课</span></article><article><strong>本地优先</strong><span>HTML 可直接打开，练习由 uv 管理</span></article></div>
+<h2>课程路线</h2><p class="intro">建议按顺序学习。已经理解的部分可以快速通过自测；遇到形状、矩阵求导或广播问题时，先回到对应基础课。每个项目都明确区分教学实验和真实系统。</p>
+
+<section class="phase"><div class="phase-head"><div><h3>训练模型的基础</h3><p>先理解数据的形状、参数如何影响损失，以及怎样判断模型是否真的有效。</p></div><span class="phase-num">FOUNDATION</span></div>
+<a class="lesson" href="lessons/lesson-01-tensors.html"><span class="number">01</span><span><span class="lesson-title">张量与必要基础</span><span class="lesson-desc">形状、轴、reshape、交换轴、广播与 NumPy 训练</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-math-matrix-calculus.html"><span class="number math">数学</span><span><span class="lesson-title">向量与矩阵求导</span><span class="lesson-desc">梯度、雅可比、矩阵参数梯度和数值差分</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-02-learning.html"><span class="number">02</span><span><span class="lesson-title">模型怎样学习</span><span class="lesson-desc">损失、梯度下降、反向传播与批次训练</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-03-evaluation.html"><span class="number">03</span><span><span class="lesson-title">判断模型是否有效</span><span class="lesson-desc">数据划分、过拟合、指标、正则化与泄漏</span></span><span class="go">→</span></a>
+</section>
+
+<section class="phase"><div class="phase-head"><div><h3>机器学习全流程</h3><p>认识常用方法，并完成一次从数据到报告的表格项目。</p></div><span class="phase-num">MACHINE LEARNING</span></div>
+<a class="lesson" href="lessons/lesson-04-methods.html"><span class="number">04</span><span><span class="lesson-title">常见机器学习方法</span><span class="lesson-desc">决策树、森林、提升、K-means 与 PCA</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-05-project.html"><span class="number">05</span><span><span class="lesson-title">表格数据项目</span><span class="lesson-desc">预处理、交叉验证、基线、错误分析与报告</span></span><span class="go">→</span></a>
+</section>
+
+<section class="phase"><div class="phase-head"><div><h3>深度学习实践</h3><p>使用 CPU 版 PyTorch 训练、诊断并评估神经网络。</p></div><span class="phase-num">DEEP LEARNING</span></div>
+<a class="lesson" href="lessons/lesson-06-pytorch.html"><span class="number">06</span><span><span class="lesson-title">PyTorch 基础</span><span class="lesson-desc">Tensor、autograd、DataLoader、训练循环与保存</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-07-training.html"><span class="number">07</span><span><span class="lesson-title">训练更可靠的神经网络</span><span class="lesson-desc">激活、初始化、Adam、Dropout 与归一化</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-08-cnn.html"><span class="number">08</span><span><span class="lesson-title">卷积神经网络</span><span class="lesson-desc">卷积、通道、池化、感受野与数据增强</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-09-project.html"><span class="number">09</span><span><span class="lesson-title">图像分类项目</span><span class="lesson-desc">从头训练、迁移学习、混淆矩阵与误判分析</span></span><span class="go">→</span></a>
+</section>
+
+<section class="phase"><div class="phase-head"><div><h3>Transformer 与大语言模型</h3><p>从 Token 和序列开始，逐步搭出注意力与小型 Transformer。</p></div><span class="phase-num">LANGUAGE MODELS</span></div>
+<a class="lesson" href="lessons/lesson-10-text.html"><span class="number">10</span><span><span class="lesson-title">文本与序列建模</span><span class="lesson-desc">Token、Embedding、批次、RNN 与 LSTM</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-11-attention.html"><span class="number">11</span><span><span class="lesson-title">注意力机制</span><span class="lesson-desc">Q/K/V、softmax、因果掩码与多头形状</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-12-transformer.html"><span class="number">12</span><span><span class="lesson-title">Transformer</span><span class="lesson-desc">残差、LayerNorm、前馈网络与逐字生成</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-13-llm-use.html"><span class="number">13</span><span><span class="lesson-title">大语言模型的训练与使用</span><span class="lesson-desc">预训练、SFT、对齐、采样、幻觉与 RAG</span></span><span class="go">→</span></a>
+</section>
+
+<section class="phase"><div class="phase-head"><div><h3>强化学习</h3><p>先在小网格理解序列决策，再连接神经网络和语言模型对齐。</p></div><span class="phase-num">REINFORCEMENT LEARNING</span></div>
+<a class="lesson" href="lessons/lesson-14-rl-basics.html"><span class="number">14</span><span><span class="lesson-title">从预测走向决策</span><span class="lesson-desc">状态、动作、奖励、回报、V/Q 与 Bellman</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-15-tabular-rl.html"><span class="number">15</span><span><span class="lesson-title">表格型强化学习</span><span class="lesson-desc">价值迭代、MC、TD、Q-learning 与 SARSA</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-16-dqn.html"><span class="number">16</span><span><span class="lesson-title">深度强化学习与 DQN</span><span class="lesson-desc">经验回放、目标网络、探索与多种子评估</span></span><span class="go">→</span></a>
+<a class="lesson" href="lessons/lesson-17-policy-gradient.html"><span class="number">17</span><span><span class="lesson-title">策略梯度与大语言模型对齐</span><span class="lesson-desc">REINFORCE、优势、PPO、RLHF 与 DPO</span></span><span class="go">→</span></a>
+</section>
+
+<section class="phase"><div class="phase-head"><div><h3>知识问答项目</h3><p>把前面的检索、模型边界和评估意识带进一个可核查的应用。</p></div><span class="phase-num">FINAL PROJECT</span></div>
+<a class="lesson" href="lessons/lesson-18-rag.html"><span class="number">18</span><span><span class="lesson-title">构建知识问答系统</span><span class="lesson-desc">切分、TF-IDF、余弦检索、上下文与来源引用</span></span><span class="go">→</span></a>
+<div class="lesson"><span class="number">19</span><span><span class="lesson-title">评估与改进 <span class="soon">待制作</span></span><span class="lesson-desc">检索质量、回答质量、失败类型与改动对照</span></span></div>
+<div class="lesson"><span class="number">20</span><span><span class="lesson-title">整理毕业项目 <span class="soon">待制作</span></span><span class="lesson-desc">代码、说明、测试集、实验记录与已知局限</span></span></div>
+</section>
+
+<div class="note"><strong>运行配套代码：</strong>在项目根目录执行 <code>uv run python lessons/对应文件.py</code>。网页本身不需要 Python，也不需要启动服务器。</div>
+<p class="footer"><a href="课程初学者审阅.md">课程初学者审阅</a> · <a href="AI学习课程大纲.md">课程大纲</a></p>
+</main>
+</body>
+</html>
