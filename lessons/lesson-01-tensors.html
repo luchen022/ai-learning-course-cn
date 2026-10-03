@@ -112,8 +112,25 @@ A.reshape(3, -1) # 推断第二个轴的长度为 2</code></pre>
 </section>
 <section id="broadcast">
 <p class="section-num">06 / 在计算前先推断形状</p><h2>广播与矩阵乘法</h2>
+<h3>先看最直接的情况：相同形状，逐位置相加</h3>
+<p>先不考虑广播。两个张量做<strong>逐元素加法</strong>时，最直接的方式是让它们形状相同：每个位置都有一个对应的加数。比如，两张都是 <code>(2, 3)</code> 的表相加，就是第一行第一列加第一行第一列，其他位置也一样。</p>
+<pre><code>X = np.array([[1, 2, 3],
+              [4, 5, 6]])       # (2, 3)
+B = np.array([[10, 20, 30],
+              [40, 50, 60]])    # (2, 3)
+X + B
+# [[11, 22, 33],
+#  [44, 55, 66]]                # (2, 3)</code></pre>
+<div class="formula" aria-label="两个相同形状的张量逐元素相加">[[1, 2, 3],   +   [[10, 20, 30],   =   [[1+10, 2+20, 3+30],
+ [4, 5, 6]]       [40, 50, 60]]        [4+40, 5+50, 6+60]]</div>
+<p>这里没有混合不同位置的数，也没有把每一行加起来。结果依然是 <code>(2, 3)</code>，每个位置只计算它自己的那一对数。逐元素减法、乘法也可以这样理解。</p>
 <h3>广播：让兼容形状参与逐元素运算</h3>
-<p>给一张表的每个数加 10，可以直接写 <code>X + 10</code>。给每一列加不同的偏移，可以写 <code>X + np.array([10, 20, 30])</code>。这种形状适配叫广播，不要求真的复制出一张同样大小的数组。</p>
+<p>现在换一个需求：<strong>给 X 的每个数都加 10。</strong>沿用上面的方法，我们可以先写出一张同样形状的加数表：</p>
+<pre><code>X + np.array([[10, 10, 10],
+              [10, 10, 10]])    # 每个位置都有一个 10</code></pre>
+<p>但重复写六个 10 很麻烦。NumPy 允许直接写 <code>X + 10</code>：计算时，把这个 10 用到 X 的每个位置。<strong>这种让较小的加数适配较大张量形状的机制，就叫广播。</strong>你可以把它想成“先补成同样大小，再逐位置相加”，但 NumPy 不要求真的复制出那张加数表。</p>
+<p>同理，如果给每一列分别加 10、20、30，完整的加数表应该是 <code>[[10, 20, 30], [10, 20, 30]]</code>。因为两行重复，可以简写为 <code>X + np.array([10, 20, 30])</code>，让这三个加数在每一行重复使用。</p>
+<div class="callout"><strong>把两步连起来：</strong>先理解“相同形状，逐位置运算”，再理解“用广播，让不同但兼容的形状也能逐位置运算”。所以并不是张量只能和相同形状的张量运算；形状不同能否广播，要看下面的规则。这里讨论的是逐元素运算，矩阵乘法另有规则。</div>
 <div class="callout"><strong>广播规则：</strong>从最右侧的轴开始对齐；对应长度相等，或其中一个为 1，才兼容。较短形状缺少的左侧轴视为长度 1。比如 <code>(2, 3)</code> 和 <code>(3,)</code> 兼容；<code>(2, 3)</code> 和 <code>(2,)</code> 不兼容。</div>
 <div class="lab"><h3>实验 E：给这张表加什么？</h3><p><code>X = [[1, 2, 3], [4, 5, 6]]</code></p><label for="broadcast-choice">加数 </label><select id="broadcast-choice"><option value="scalar">10，形状 ()</option><option value="row" selected>[10, 20, 30]，形状 (3,)</option><option value="column">[[10], [20]]，形状 (2, 1)</option><option value="bad">[10, 20]，形状 (2,)</option></select><div id="broadcast-result" class="formula" aria-live="polite"></div><p id="broadcast-explanation" class="small" aria-live="polite"></p></div>
 <div class="lab" id="channel-broadcast">
