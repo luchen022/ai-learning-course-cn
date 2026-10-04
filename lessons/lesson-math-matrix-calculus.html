@@ -37,11 +37,51 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <p class="lead">你熟悉的标量导数已经表达了这个意思。例如 <code>f(w)=w²</code>，在 <code>w=3</code> 时 <code>f′(3)=6</code>：把 <code>w</code> 增加很小的 <code>0.01</code>，<code>f</code> 大约增加 <code>6×0.01=0.06</code>。实际从 9 变成 9.0601；导数给的是当前位置附近的一阶近似。</p>
 <div class="note"><strong>向量和矩阵求导没有改变这件事。</strong>只是现在有很多个可以改动的数，也可能有很多个输出。导数负责把“输入的小变化”换算成“输出的小变化”。在神经网络里，矩阵的每个元素都是一个可调整的权重，矩阵梯度就是每个权重对损失的局部影响表。</div>
 <h3>三个常见问题，对应三种结果</h3>
+<p>先把三个问题都写成具体式子。<strong>关键是看“对谁求导”：</strong>前两个问题改变输入 x，第三个问题改变参数 W。下面的例子都只看一条样本；t 表示期望的目标值，求导时保持不变。</p>
 <div class="grid">
-  <article class="card type-card"><h3>一个结果，很多输入</h3><p><strong>问题：</strong>把向量 <code>x</code> 的每个分量稍微改动，标量损失 <code>L</code> 会变多少？</p><p><strong>定义：</strong>把所有偏导排成梯度 <span class="shape">(n,)</span>。</p><div class="formula">L(x+Δx) ≈ L(x) + <strong>∇L · Δx</strong></div><p class="small muted">梯度与改变量做点积，预测损失变化。</p></article>
-  <article class="card type-card"><h3>很多结果，很多输入</h3><p><strong>问题：</strong>输入向量 <code>x</code> 有一点变化时，输出向量 <code>y</code> 的每个分量怎样变？</p><p><strong>定义：</strong>所有输出对所有输入的偏导组成雅可比矩阵 <span class="shape">(m,n)</span>。</p><div class="formula">y(x+Δx) ≈ y(x) + <strong>JΔx</strong></div><p class="small muted">雅可比像一个局部线性变换，把输入变化映射为输出变化。</p></article>
-  <article class="card type-card"><h3>一个结果，矩阵参数</h3><p><strong>问题：</strong>把权重矩阵 <code>W</code> 的每个格子稍微改动，损失会变多少？</p><p><strong>定义：</strong>每格的偏导组成与 <code>W</code> 同形的梯度 <span class="shape">(m,n)</span>。</p><div class="formula">ΔL ≈ Σᵢⱼ <strong>(∂L/∂Wᵢⱼ)ΔWᵢⱼ</strong></div><p class="small muted">负梯度告诉优化器该怎样同时调整整张权重表。</p></article>
+  <article class="card type-card">
+    <h3>一个结果，很多输入</h3>
+    <p><strong>问题：</strong>把向量 x 的每个分量稍微改动，标量损失 L 会变多少？</p>
+    <p><strong>函数与损失：</strong>这里直接把输入到目标的平方距离作为损失，第二个分量的误差权重为 2。</p>
+    <div class="formula">x = [x₁, x₂]，目标 t = [0, 0]<br>L(x) = (x₁−0)² + 2(x₂−0)²<br>　　 = x₁² + 2x₂²</div>
+    <p><strong>对谁求导：</strong>分别对 x₁、x₂ 求偏导，把结果按 x 的顺序排好。</p>
+    <div class="formula">∂L/∂x₁ = 2x₁<br>∂L/∂x₂ = 4x₂<br><strong>∇ₓL = [2x₁, 4x₂]</strong></div>
+    <p><strong>代入数字：</strong>x=[2,1] 时，L=2²+2×1²=6，梯度为 [4,4]。一个损失数对应两个输入的变化率。</p>
+    <p><strong>定义：</strong>标量对向量的偏导排成梯度 <span class="shape">(2,)</span>。</p>
+    <div class="formula">L(x+Δx) ≈ L(x) + <strong>∇L · Δx</strong></div>
+    <p class="small muted">梯度与改变量做点积，预测损失变化。</p>
+  </article>
+  <article class="card type-card">
+    <h3>很多结果，很多输入</h3>
+    <p><strong>问题：</strong>输入向量 x 有一点变化时，输出向量 y 的每个分量怎样变？</p>
+    <p><strong>输出函数：</strong>两个输入产生两个输出。这里的系数保持固定。</p>
+    <div class="formula">x = [x₁, x₂]<br>y₁ = x₁ + 2x₂<br>y₂ = −x₁ + 3x₂ + 1<br>y = [y₁, y₂]</div>
+    <p><strong>对谁求导：</strong>每个输出分别对每个输入求偏导。</p>
+    <div class="formula"><strong>J = ∂y/∂x<br>　= [[1, 2],<br>　　 [−1, 3]]</strong></div>
+    <p><strong>如果要计算损失：</strong>取目标 t=[0,0]，用两个输出的平方误差组成一个标量：</p>
+    <div class="formula">L = ½[(y₁−0)²+(y₂−0)²]<br>　= ½[(x₁+2x₂)²<br>　　 +(−x₁+3x₂+1)²]</div>
+    <p><strong>代入数字：</strong>x=[1,2] 时，y=[5,6]，L=(5²+6²)/2=30.5。</p>
+    <p class="small muted">雅可比 J 是 y 对 x 的导数，描述输出变化；若求 L 对 x 的导数，得到的则是梯度。这是两个不同的求导问题，雅可比本身不需要先定义损失。</p>
+    <p><strong>定义：</strong>所有输出对所有输入的偏导组成雅可比矩阵 <span class="shape">(2,2)</span>。</p>
+    <div class="formula">y(x+Δx) ≈ y(x) + <strong>JΔx</strong></div>
+  </article>
+  <article class="card type-card">
+    <h3>一个结果，矩阵参数</h3>
+    <p><strong>问题：</strong>把权重矩阵 W 的每个格子稍微改动，标量损失 L 会变多少？</p>
+    <p><strong>预测函数：</strong>输入 x=[1,2]、偏置 b=[0,0] 和目标 t=[3,4] 保持固定，只有 W 可调整。计算 Wx 时，把 x 看成一列。</p>
+    <div class="formula">W = [[w₁₁, w₁₂],<br>　　 [w₂₁, w₂₂]]<br>y = Wx + b<br>y₁ = w₁₁ + 2w₁₂<br>y₂ = w₂₁ + 2w₂₂</div>
+    <p><strong>损失计算：</strong>先算误差 e=y−t，再把两个平方误差相加并乘 ½。</p>
+    <div class="formula">e₁ = y₁−3，e₂ = y₂−4<br>L(W) = ½(e₁²+e₂²)<br>　= ½[(w₁₁+2w₁₂−3)²<br>　　 +(w₂₁+2w₂₂−4)²]</div>
+    <p><strong>对谁求导：</strong>分别对 W 的四个元素求偏导，排回原来的位置。</p>
+    <div class="formula"><strong>∂L/∂W = [[e₁, 2e₁],<br>　　　　 [e₂, 2e₂]]</strong></div>
+    <p><strong>代入数字：</strong>W=[[1,2],[3,4]] 时，y=[5,11]，e=[2,7]，L=(2²+7²)/2=26.5，梯度为 [[2,4],[7,14]]。</p>
+    <p><strong>定义：</strong>每格的偏导组成与 W 同形的梯度 <span class="shape">(2,2)</span>。</p>
+    <div class="formula">ΔL ≈ Σᵢⱼ <strong>(∂L/∂Wᵢⱼ)ΔWᵢⱼ</strong></div>
+    <p class="small muted">矩阵梯度描述每个权重对同一个损失的影响；负梯度给出各个权重的调整方向。</p>
+  </article>
 </div>
+<p class="small muted">上面的 ½ 是为了让平方求导后的系数 2 抵消，便于读公式。这是示例选择的损失定义；第一节用的是所有样本平方误差的平均值，系数需按那里的定义重新计算。</p>
+
 <div class="success"><strong>一句话记忆：</strong>梯度预测一个标量怎样变；雅可比预测一个向量怎样变；矩阵梯度告诉训练器每个参数该往哪个方向改。</div>
 <div class="warning"><strong>本课采用的约定：</strong>梯度与自变量形状相同；雅可比矩阵的“行对应输出、列对应输入”。不同教材可能使用转置约定，看到公式时先检查形状，不要只凭记忆。</div>
 </section>
