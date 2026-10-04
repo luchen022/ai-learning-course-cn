@@ -77,6 +77,13 @@ def main():
     C = np.ones((2, 2))
     check_scalar("M5：sum((AB-C)²) → 2(AB-C)Bᵀ", lambda A: np.sum((A @ B-C)**2), A, 2*(A @ B-C) @ B.T)
 
+    A = np.array([[1.0, 2.0, 0.0], [0.0, 1.0, 1.0]])
+    B = np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
+    C = np.array([[1.0, 2.0], [3.0, 4.0]])
+    G = C  # f=sum(C⊙P)，M3 给出 f 对 P 的梯度。
+    check_scalar("M6 左输入：P=AB，∂f/∂A=GBᵀ", lambda A: np.sum(C*(A @ B)), A, G @ B.T)
+    check_scalar("M6 右输入：P=AB，∂f/∂B=AᵀG", lambda B: np.sum(C*(A @ B)), B, A.T @ G)
+
     A = np.array([[1.0, 2.0], [-1.0, 3.0]])
     b = np.array([0.0, 1.0])
     x = np.array([2.0, 3.0])

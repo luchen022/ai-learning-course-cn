@@ -27,10 +27,10 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <div class="eyebrow">AI 学习课程 · 第一节之前的求导预备课</div>
 <h1>向量与矩阵求导：常用公式与例题</h1>
 <p>本课的目标是积累常用求导公式，学会判断能不能用，并能代入算出结果。每组公式都按“认式子 → 看条件 → 做例题 → 自己练”组织；推导可选，不作为主线。</p>
-<div class="chips"><span class="chip">11 组常用公式</span><span class="chip">条件与形状</span><span class="chip">完整例题</span><span class="chip">练习答案</span><span class="chip">可选推导</span></div>
+<div class="chips"><span class="chip">12 组常用公式</span><span class="chip">条件与形状</span><span class="chip">完整例题</span><span class="chip">练习答案</span><span class="chip">可选推导</span></div>
 </div></header>
 <div class="layout">
-<nav class="nav" aria-label="课程目录"><p class="nav-title">学习路径</p><a href="#types">先读：符号与运算</a><a href="#gradient">V1–V2 向量基础公式</a><a href="#quadratic">V3 二次式</a><a href="#distance">V4 平方差求和</a><a href="#linear">M1–M3 矩阵基础公式</a><a href="#outer">M4 两边夹向量</a><a href="#matrixproduct">M5 矩阵乘积平方差</a><a href="#jacobian">J1–J2 向量输出</a><a href="#rules">公式的组合规则</a><a href="#practice">公式速查表</a><a href="#quiz">自测</a></nav>
+<nav class="nav" aria-label="课程目录"><p class="nav-title">学习路径</p><a href="#types">先读：符号与运算</a><a href="#gradient">V1–V2 向量基础公式</a><a href="#quadratic">V3 二次式</a><a href="#distance">V4 平方差求和</a><a href="#linear">M1–M3 矩阵基础公式</a><a href="#outer">M4 两边夹向量</a><a href="#matrixproduct">M5 矩阵乘积平方差</a><a href="#matrix-chain">M6 矩阵乘法的链式规则</a><a href="#jacobian">J1–J2 向量输出</a><a href="#rules">公式的组合规则</a><a href="#practice">公式速查表</a><a href="#quiz">自测</a></nav>
 <main class="page">
 <div class="note"><strong>使用本课：</strong>先读符号说明，再按顺序学习公式。每做一道题，都先标出“对谁求导，哪些量是常数”，再选公式、代入、检查形状。你不必先证明每个公式。读不懂某个记号时，回到下面的符号说明。</div>
 <section id="types"><p class="section-num">准备 / 公式中每个符号是什么意思</p><h2>先把记号读懂，再用公式</h2>
@@ -146,6 +146,23 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <details><summary>练习答案</summary><div class="formula">AB−C=A，梯度=2A=[[4,-2],[0,6]]</div></details>
 <details><summary>可选推导</summary><p>Σ 表示把指定编号的项相加。Rᵢₖ=ΣⱼAᵢⱼBⱼₖ−Cᵢₖ；对 Aᵢⱼ 求导时，Rᵢₖ 的偏导为 Bⱼₖ，因此 f 的这个偏导为 Σₖ2RᵢₖBⱼₖ。它正是 2RBᵀ 第 i、j 格的计算。</p></details>
 </section>
+<section id="matrix-chain"><p class="section-num">矩阵 / M6 矩阵乘法的链式规则</p><h2>M6：已知输出处的梯度，求两个输入处的梯度</h2>
+<p>这是一条通用的组合求导规则。先做矩阵乘法 P=AB，再把 P 交给一个输出标量的函数 g，得到 f=g(P)。</p>
+<div class="formula">A 为 m×n，B 为 n×p，P=AB 为 m×p<br>f=g(P)，最终输出一个数<br>把已知的 ∂f/∂P 记作 G，G 与 P 同形</div>
+<p>G 叫作 P 处的梯度；有时也叫“上游梯度”。它的第 i、j 格就是最终标量 f 对 P 第 i、j 格的偏导。它不是 P 本身，而是后面的函数 g 求导得到的结果。</p>
+<div class="formula"><strong>∂f/∂A = G Bᵀ<br>∂f/∂B = Aᵀ G</strong></div>
+<p><strong>能用的条件：</strong>只有通过 P=AB 这一条关系计算 f 对 A、B 的贡献；g 在当前位置能求导。若 A、B 还通过其他路径影响 f，需要把其他路径的梯度贡献相加。分别对 A、B 求导时，另一个矩阵固定。</p>
+<div class="table-wrap"><table><thead><tr><th>传到哪里</th><th>公式</th><th>形状核对</th></tr></thead><tbody><tr><td>左边的 A</td><td>GBᵀ</td><td>(m×p)(p×n)=m×n</td></tr><tr><td>右边的 B</td><td>AᵀG</td><td>(n×m)(m×p)=n×p</td></tr></tbody></table></div>
+<p><strong>记公式：</strong>传给左边矩阵，右乘右边矩阵的转置；传给右边矩阵，左乘左边矩阵的转置。不要把它简写成“矩阵乘法的导数等于另一个矩阵”，那样漏掉了 G，也没有说明对谁求导。</p>
+<h3>例题：三个矩阵都有明确形状</h3>
+<div class="formula">A=[[1,2,0],[0,1,1]]，形状 2×3<br>B=[[1,0],[0,1],[1,1]]，形状 3×2<br>P=AB=[[1,2],[1,2]]，形状 2×2<br>C=[[1,2],[3,4]] 为固定矩阵<br>f=sum(C ⊙ P)</div>
+<p>先用 M3：f 对 P 的梯度 G=C=[[1,2],[3,4]]。再用 M6，把这张梯度表传给 A、B：</p>
+<div class="formula">Bᵀ=[[1,0,1],[0,1,1]]<br>∂f/∂A=GBᵀ=[[1,2,3],[3,4,7]]，形状 2×3<br>Aᵀ=[[1,0],[2,1],[0,1]]<br>∂f/∂B=AᵀG=[[1,2],[5,8],[3,4]]，形状 3×2</div>
+<p><strong>自己练：</strong>沿用上面的 A、B，但 f=sum(P)。先求 G，再求 A、B 的梯度。</p>
+<details><summary>练习答案</summary><div class="formula">M1：G=[[1,1],[1,1]]<br>∂f/∂A=[[1,1,2],[1,1,2]]<br>∂f/∂B=[[1,1],[3,3],[1,1]]</div></details>
+<details><summary>可选推导：只看一个输入格子</summary><p>Σ 表示把指定编号的项相加。Pᵢⱼ=ΣₖAᵢₖBₖⱼ。Aᵢₖ 会影响第 i 行的所有 Pᵢⱼ；每条影响的贡献是 GᵢⱼBₖⱼ，汇总 j，得到 GBᵀ 的第 i、k 格。Bₖⱼ 会影响第 j 列的所有 Pᵢⱼ；汇总 i 的贡献 AᵢₖGᵢⱼ，得到 AᵀG 的第 k、j 格。</p></details>
+<div class="note"><strong>矩阵加法的对应规则：</strong>若 P=A+B，A、B 同形，已知 G=∂f/∂P，则传给两边的梯度都是 G。若 B 只有一行并被重复使用到每行，B 的梯度需要把 G 的各行相加。这是重复使用同一个输入时汇总各次贡献的规则。</div>
+</section>
 <section id="jacobian"><p class="section-num">向量输出 / J1–J2</p><h2>先区分：输出一个数，还是输出一个向量</h2>
 <p>前面的 f 都输出一个数，求导结果是梯度。现在 F 输出多个数：每个输出都要对每个输入求偏导，排成雅可比。行对应输出，列对应输入。</p>
 <h2>J1：固定矩阵乘向量，再加常向量</h2>
@@ -182,7 +199,7 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <p><strong>自己练：</strong>f=½xᵀx−aᵀx，a=[1,3]、x=[4,2]，求梯度。</p>
 <details><summary>练习答案</summary><div class="formula">∇ₓf=x−a=[3,−1]</div></details>
 </section>
-<section id="practice"><p class="section-num">速查 / 用公式时对照</p><h2>11 组公式速查表</h2>
+<section id="practice"><p class="section-num">速查 / 用公式时对照</p><h2>12 组公式速查表</h2>
 <p>表里的“固定”非常重要。不要只背最后一列；先辨认函数，再看求导变量和条件。</p>
 <div class="table-wrap"><table><thead><tr><th>编号</th><th>函数</th><th>对谁求导</th><th>条件</th><th>结果</th></tr></thead><tbody>
 <tr><td>V1</td><td>aᵀx+c</td><td>x</td><td>a、c 固定</td><td>a</td></tr>
@@ -194,6 +211,7 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <tr><td>M3</td><td>sum(C⊙A)</td><td>A</td><td>C 固定、同形状</td><td>C</td></tr>
 <tr><td>M4</td><td>xᵀAy</td><td>A</td><td>x、y 固定</td><td>xyᵀ</td></tr>
 <tr><td>M5</td><td>sum((AB−C)⊙(AB−C))</td><td>A</td><td>B、C 固定</td><td>2(AB−C)Bᵀ</td></tr>
+<tr><td>M6</td><td>f=g(AB)，G=∂f/∂P，P=AB</td><td>A、B</td><td>本条乘法路径的贡献</td><td>∂f/∂A=GBᵀ；∂f/∂B=AᵀG</td></tr>
 <tr><td>J1</td><td>Ax+b</td><td>x</td><td>A、b 固定；输出向量</td><td>J=A</td></tr>
 <tr><td>J2</td><td>[g(x₁),g(x₂),…]</td><td>x</td><td>第 i 个输出只依赖 xᵢ</td><td>J=diag(g′(x₁),g′(x₂),…)</td></tr>
 </tbody></table></div>

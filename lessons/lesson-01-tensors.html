@@ -252,6 +252,31 @@ for value in values:
 <tr><td>∂L/∂b=2×沿样本轴的误差平均值</td><td><code>2 * error.mean(axis=0)</code></td><td><code>(1,)</code>，与 b 同形</td></tr>
 </tbody></table></div>
 </div>
+<h3>反向传播：把梯度按计算顺序倒着传</h3>
+<p>先学<a href="lesson-math-matrix-calculus.html#matrix-chain">预备课 M6：矩阵乘法的链式规则</a>。这里采用一般的矩阵形状：N 个样本、每条样本 d 个特征、每条预测 k 个输出。</p>
+<div class="formula">X：(N,d)；W：(d,k)；b：(k,)<br>P=XW+b：(N,k)；y：(N,k)<br>E=P−y：(N,k)<br>L=mean(E ⊙ E)=sum(E ⊙ E)/(N×k)</div>
+<p>这是 <code>np.mean(error ** 2)</code> 的定义：对全部 N×k 个元素取平均。前面公式中的 2/N 针对 k=1；多个输出时，这份损失定义对应 2/(N×k)。 如果另行定义 <code>L=sum(E ⊙ E)/N</code>，只对样本数取平均、对各输出求和，那么即使 k&gt;1，仍使用 <code>G=2E/N</code>。系数取决于损失怎样定义。</p>
+<div class="table-wrap"><table><thead><tr><th>从后往前经过哪个运算</th><th>梯度怎样计算</th><th>结果形状</th></tr></thead><tbody>
+<tr><td>平方后平均：E → L</td><td>∂L/∂E = 2E/(N×k)，使用 M2 与常数倍规则</td><td>(N,k)</td></tr>
+<tr><td>减法：P → E=P−y</td><td>G=∂L/∂P=∂L/∂E，y 固定</td><td>(N,k)</td></tr>
+<tr><td>加法：Z → P=Z+b</td><td>∂L/∂Z=G；b 在各样本重复使用，所以 ∂L/∂b=sum(G, axis=0)</td><td>Z 的梯度 (N,k)；b 的梯度 (k,)</td></tr>
+<tr><td>矩阵乘法：X、W → Z=XW</td><td>∂L/∂W=XᵀG；∂L/∂X=GWᵀ，使用 M6</td><td>W 的梯度 (d,k)；X 的梯度 (N,d)</td></tr>
+</tbody></table></div>
+<p>Z 表示还没加偏置的矩阵 XW；G 是最终标量 L 对每个预测元素的偏导排成的矩阵。反向传播是在传这样的梯度矩阵，不是把原来的 P 或 E 当成“导数”直接往回乘。</p>
+<div class="formula">矩阵乘法这一步的形状：<br>XᵀG：(d,N) @ (N,k) → (d,k)<br>GWᵀ：(N,k) @ (k,d) → (N,d)</div>
+<p>X 通常是固定数据，不会用它的梯度更新输入；但 ∂L/∂X 仍然可以计算。如果 X 是前一个计算步骤的输出，这张梯度就可以继续传给前一步。</p>
+<h3>一般矩阵形状对应的 NumPy 写法</h3>
+<pre><code>prediction = X @ W + b
+error = prediction - y
+loss = np.mean(error ** 2)
+G = 2 * error / error.size    # error.size = N × k
+
+grad_W = X.T @ G             # (d, k)
+grad_b = G.sum(axis=0)        # (k,)
+grad_X = G @ W.T             # (N, d)，固定输入时不更新 X</code></pre>
+<p>下面原来的训练循环使用 k=1，合并这些步骤后，仍得到 <code>grad_W=2/N * X.T @ error</code>、<code>grad_b=2 * error.mean(axis=0)</code>。直接套公式与按反向传播分步计算，结果一致。</p>
+<h3>完整数字例子：2 条样本、3 个特征、2 个输出</h3>
+<div class="formula">X=[[1,2,0],[0,1,1]]，W=[[1,0],[0,1],[1,1]]<br>b=[0,0]，y=[[0,0],[0,0]]<br>P=E=[[1,2],[1,2]]<br>L=(1²+2²+1²+2²)/4=2.5<br>G=2E/4=[[0.5,1],[0.5,1]]<br>grad_W=XᵀG=[[0.5,1],[1.5,3],[0.5,1]]<br>grad_b=G 沿 axis=0 求和=[1,2]<br>grad_X=GWᵀ=[[0.5,1,1.5],[0.5,1,1.5]]</div>
 <h3>把公式写进训练循环</h3>
 <pre><code>import numpy as np
 
