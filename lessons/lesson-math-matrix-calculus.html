@@ -23,256 +23,146 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 </head>
 <body>
 <header class="hero"><div class="hero-inner">
-  <div class="eyebrow">AI 学习课程 · 第一节之前的求导预备课</div>
-  <h1>向量与矩阵求导</h1>
-  <p>你已经会标量求导，也会向量、矩阵和矩阵乘法。本课从这些知识出发，先理解梯度，再把第一节线性回归的每一行计算拆成你熟悉的标量式子。你不需要先学张量或 PyTorch；后面的雅可比、一般线性层与反向传播可以继续学习，也可以在后续课程中回看。</p>
-  <div class="chips"><span class="chip">梯度</span><span class="chip">雅可比矩阵</span><span class="chip">外积</span><span class="chip">批次梯度</span><span class="chip">数值差分核对</span></div>
+<div class="eyebrow">AI 学习课程 · 第一节之前的求导预备课</div>
+<h1>向量与矩阵求导</h1>
+<p>一个函数的自变量是向量或矩阵时，怎样求导？导数又表示什么？从你会的一元求导出发，先逐个元素计算，再把结果组织起来。</p>
+<div class="chips"><span class="chip">偏导的定义</span><span class="chip">向量梯度</span><span class="chip">雅可比矩阵</span><span class="chip">矩阵梯度</span><span class="chip">变化量的意义</span></div>
 </div></header>
 <div class="layout">
-<nav class="nav" aria-label="课程目录"><p class="nav-title">学习路径</p><a href="#types">01 意义与定义</a><a href="#gradient">02 梯度</a><a href="#regression">应用：第一节代码推导</a><a href="#jacobian">03 雅可比</a><a href="#linear">04 矩阵梯度</a><a href="#batch">05 批次</a><a href="#backprop">06 反向传播</a><a href="#optional">07 进阶</a><a href="#practice">08 练习</a><a href="#quiz">09 自测</a></nav>
+<nav class="nav" aria-label="课程目录"><p class="nav-title">学习路径</p><a href="#types">01 先看函数与自变量</a><a href="#gradient">02 标量函数对向量求导</a><a href="#jacobian">03 向量函数对向量求导</a><a href="#linear">04 标量函数对矩阵求导</a><a href="#matrix-output">05 矩阵输出怎样求导</a><a href="#chain">06 复合函数的求导</a><a href="#practice">07 数值验证与练习</a><a href="#quiz">08 自测</a></nav>
 <main class="page">
-
-<div class="note"><strong>学习顺序：</strong>先读“意义与定义”与“梯度”，再完成<a href="#regression">第一节代码推导</a>。能说明两行梯度是怎样算出来的，就可以进入<a href="lesson-01-tensors.html">第一节：张量与必要基础</a>。本页后半部分用于进一步理解向量输出和一般矩阵参数。</div>
-<section id="types"><p class="section-num">01 / 先理解为什么要求导</p><h2>导数是在预测：稍微改一点，结果会怎样变</h2>
-<p class="lead">你熟悉的标量导数已经表达了这个意思。例如 <code>f(w)=w²</code>，在 <code>w=3</code> 时 <code>f′(3)=6</code>：把 <code>w</code> 增加很小的 <code>0.01</code>，<code>f</code> 大约增加 <code>6×0.01=0.06</code>。实际从 9 变成 9.0601；导数给的是当前位置附近的一阶近似。</p>
-<div class="note"><strong>向量和矩阵求导没有改变这件事。</strong>只是现在有很多个可以改动的数，也可能有很多个输出。导数负责把“输入的小变化”换算成“输出的小变化”。在神经网络里，矩阵的每个元素都是一个可调整的权重，矩阵梯度就是每个权重对损失的局部影响表。</div>
+<div class="note"><strong>学习方法：</strong>每遇到一个函数，先展开它，辨认独立的自变量。每次只改变其中一个，固定其他自变量，用你会的标量规则求导；最后再看这些偏导应该排成什么形状。</div>
+<section id="types"><p class="section-num">01 / 从一元导数到偏导</p><h2>向量和矩阵里，每个元素都可以是一个自变量</h2>
+<p>你熟悉 <code>f(t)=t²</code> 的导数 <code>f′(t)=2t</code>。它表示：在当前位置，让 t 增加一个很小的 ε，函数值大约增加 <code>2t×ε</code>。</p>
+<p>现在把两个数组织成向量 <code>x=[x₁,x₂]</code>，定义 <code>f(x)=x₁²+2x₂²</code>。这个写法只是 <code>f(x₁,x₂)</code> 的简写。函数依赖两个独立变量，可以分别问“只改变 x₁ 会怎样”和“只改变 x₂ 会怎样”。</p>
+<h3>偏导怎么求？固定其他变量</h3>
+<div class="formula">只让 x₁ 变化：把 x₂ 当成常数，∂f/∂x₁ = 2x₁<br>只让 x₂ 变化：把 x₁ 当成常数，∂f/∂x₂ = 4x₂</div>
+<p>∂ 读作“偏导”的符号。定义和一元导数一样，只是这里明确规定其他自变量不动：</p>
+<div class="formula">∂f/∂x₁ = lim<sub>ε→0</sub> [f(x₁+ε,x₂)−f(x₁,x₂)] / ε</div>
+<p>这个定义说的是：<strong>只移动一个输入坐标，观察函数值的变化率。</strong>向量和矩阵只是组织这些坐标的方式；求导时仍然可以把每个元素当作一个标量变量。</p>
 <h3>三个常见问题，对应三种结果</h3>
-<p>先把三个问题都写成具体式子。<strong>关键是看“对谁求导”：</strong>前两个问题改变输入 x，第三个问题改变参数 W。下面的例子都只看一条样本；t 表示期望的目标值，求导时保持不变。</p>
 <div class="grid">
-  <article class="card type-card">
-    <h3>一个结果，很多输入</h3>
-    <p><strong>问题：</strong>把向量 x 的每个分量稍微改动，标量损失 L 会变多少？</p>
-    <p><strong>函数与损失：</strong>这里直接把输入到目标的平方距离作为损失，第二个分量的误差权重为 2。</p>
-    <div class="formula">x = [x₁, x₂]，目标 t = [0, 0]<br>L(x) = (x₁−0)² + 2(x₂−0)²<br>　　 = x₁² + 2x₂²</div>
-    <p><strong>对谁求导：</strong>分别对 x₁、x₂ 求偏导，把结果按 x 的顺序排好。</p>
-    <div class="formula">∂L/∂x₁ = 2x₁<br>∂L/∂x₂ = 4x₂<br><strong>∇ₓL = [2x₁, 4x₂]</strong></div>
-    <p><strong>代入数字：</strong>x=[2,1] 时，L=2²+2×1²=6，梯度为 [4,4]。一个损失数对应两个输入的变化率。</p>
-    <p><strong>定义：</strong>标量对向量的偏导排成梯度 <span class="shape">(2,)</span>。</p>
-    <div class="formula">L(x+Δx) ≈ L(x) + <strong>∇L · Δx</strong></div>
-    <p class="small muted">梯度与改变量做点积，预测损失变化。</p>
-  </article>
-  <article class="card type-card">
-    <h3>很多结果，很多输入</h3>
-    <p><strong>问题：</strong>输入向量 x 有一点变化时，输出向量 y 的每个分量怎样变？</p>
-    <p><strong>输出函数：</strong>两个输入产生两个输出。这里的系数保持固定。</p>
-    <div class="formula">x = [x₁, x₂]<br>y₁ = x₁ + 2x₂<br>y₂ = −x₁ + 3x₂ + 1<br>y = [y₁, y₂]</div>
-    <p><strong>对谁求导：</strong>每个输出分别对每个输入求偏导。</p>
-    <div class="formula"><strong>J = ∂y/∂x<br>　= [[1, 2],<br>　　 [−1, 3]]</strong></div>
-    <p><strong>如果要计算损失：</strong>取目标 t=[0,0]，用两个输出的平方误差组成一个标量：</p>
-    <div class="formula">L = ½[(y₁−0)²+(y₂−0)²]<br>　= ½[(x₁+2x₂)²<br>　　 +(−x₁+3x₂+1)²]</div>
-    <p><strong>代入数字：</strong>x=[1,2] 时，y=[5,6]，L=(5²+6²)/2=30.5。</p>
-    <p class="small muted">雅可比 J 是 y 对 x 的导数，描述输出变化；若求 L 对 x 的导数，得到的则是梯度。这是两个不同的求导问题，雅可比本身不需要先定义损失。</p>
-    <p><strong>定义：</strong>所有输出对所有输入的偏导组成雅可比矩阵 <span class="shape">(2,2)</span>。</p>
-    <div class="formula">y(x+Δx) ≈ y(x) + <strong>JΔx</strong></div>
-  </article>
-  <article class="card type-card">
-    <h3>一个结果，矩阵参数</h3>
-    <p><strong>问题：</strong>把权重矩阵 W 的每个格子稍微改动，标量损失 L 会变多少？</p>
-    <p><strong>预测函数：</strong>输入 x=[1,2]、偏置 b=[0,0] 和目标 t=[3,4] 保持固定，只有 W 可调整。计算 Wx 时，把 x 看成一列。</p>
-    <div class="formula">W = [[w₁₁, w₁₂],<br>　　 [w₂₁, w₂₂]]<br>y = Wx + b<br>y₁ = w₁₁ + 2w₁₂<br>y₂ = w₂₁ + 2w₂₂</div>
-    <p><strong>损失计算：</strong>先算误差 e=y−t，再把两个平方误差相加并乘 ½。</p>
-    <div class="formula">e₁ = y₁−3，e₂ = y₂−4<br>L(W) = ½(e₁²+e₂²)<br>　= ½[(w₁₁+2w₁₂−3)²<br>　　 +(w₂₁+2w₂₂−4)²]</div>
-    <p><strong>对谁求导：</strong>分别对 W 的四个元素求偏导，排回原来的位置。</p>
-    <div class="formula"><strong>∂L/∂W = [[e₁, 2e₁],<br>　　　　 [e₂, 2e₂]]</strong></div>
-    <p><strong>代入数字：</strong>W=[[1,2],[3,4]] 时，y=[5,11]，e=[2,7]，L=(2²+7²)/2=26.5，梯度为 [[2,4],[7,14]]。</p>
-    <p><strong>定义：</strong>每格的偏导组成与 W 同形的梯度 <span class="shape">(2,2)</span>。</p>
-    <div class="formula">ΔL ≈ Σᵢⱼ <strong>(∂L/∂Wᵢⱼ)ΔWᵢⱼ</strong></div>
-    <p class="small muted">矩阵梯度描述每个权重对同一个损失的影响；负梯度给出各个权重的调整方向。</p>
-  </article>
+<article class="card type-card"><h3>标量函数，向量自变量</h3><p>一个函数值，两个独立输入。</p><div class="formula">x=[x₁,x₂]<br>f(x)=x₁²+2x₂²<br>∇f=[2x₁,4x₂]</div><p>每个输入对应一个偏导；排成向量，叫<strong>梯度</strong>。</p><p>意义：输入的各个分量怎样影响同一个函数值。</p></article>
+<article class="card type-card"><h3>向量函数，向量自变量</h3><p>两个函数值，两个独立输入。</p><div class="formula">F(x)=[x₁²+x₂, x₁x₂]<br>J = [[2x₁,1],<br>　　 [x₂,x₁]]</div><p>每个输出对每个输入都有偏导；排成一张表，叫<strong>雅可比矩阵</strong>。</p><p>意义：每个输入分别怎样影响每个输出。</p></article>
+<article class="card type-card"><h3>标量函数，矩阵自变量</h3><p>一个函数值，四个独立输入。</p><div class="formula">A=[[a,b],[c,d]]<br>f(A)=a²+3b²+cd<br>∂f/∂A=[[2a,6b],<br>　　　 [d,c]]</div><p>对每个格子分别求偏导，放回原位置，得到<strong>矩阵梯度</strong>。</p><p>意义：每个矩阵元素怎样影响同一个函数值。</p></article>
 </div>
-<p class="small muted">上面的 ½ 是为了让平方求导后的系数 2 抵消，便于读公式。这是示例选择的损失定义；第一节用的是所有样本平方误差的平均值，系数需按那里的定义重新计算。</p>
-
-<div class="success"><strong>一句话记忆：</strong>梯度预测一个标量怎样变；雅可比预测一个向量怎样变；矩阵梯度告诉训练器每个参数该往哪个方向改。</div>
-<div class="warning"><strong>本课采用的约定：</strong>梯度与自变量形状相同；雅可比矩阵的“行对应输出、列对应输入”。不同教材可能使用转置约定，看到公式时先检查形状，不要只凭记忆。</div>
+<p><strong>先不要背结果。</strong>下面会把这三个例子的每一步展开。这里小写 f 表示标量输出，大写 F 表示多个输出，都是普通数学函数。</p>
+<div class="warning"><strong>本课约定：</strong>标量函数的梯度按自变量原来的形状排列；雅可比的行对应输出，列对应输入。默认各个输入元素独立，不附加对称矩阵等约束。其他教材可能采用转置约定，读公式时要先看它的排列方式。</div>
 </section>
-
-<section id="gradient"><p class="section-num">02 / 一个标量如何随多个数变化</p><h2>梯度把所有偏导排在一起</h2>
-<div class="viz-grid"><div>
-  <p>令 <span class="math">L(x₁,x₂)=x₁²+2x₂²</span>。你会分别求两个标量偏导：</p>
-  <div class="formula">∂L/∂x₁ = 2x₁　　∂L/∂x₂ = 4x₂</div>
-  <p>把它们按 <code>x</code> 的顺序排在一起，就是梯度：</p>
-  <div class="formula"><strong>∇L = [2x₁, 4x₂]</strong></div>
-  <div class="controls"><label>x₁ <input id="x1" type="range" min="-3" max="3" step="0.25" value="2"> <span id="x1v">2</span></label><label>x₂ <input id="x2" type="range" min="-3" max="3" step="0.25" value="1"> <span id="x2v">1</span></label></div>
-  <div id="gradReadout" class="readout" aria-live="polite"></div>
-</div><svg class="plane" viewBox="0 0 420 320" role="img" aria-labelledby="planeTitle planeDesc"><title id="planeTitle">二维损失曲面俯视图上的梯度</title><desc id="planeDesc">椭圆是等损失线，红色箭头是梯度，绿色箭头是负梯度下降方向。</desc><defs><marker id="redArrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ad3344"/></marker><marker id="greenArrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#18754a"/></marker></defs><line class="axis" x1="20" y1="160" x2="400" y2="160"/><line class="axis" x1="210" y1="18" x2="210" y2="302"/><ellipse class="contour" cx="210" cy="160" rx="55" ry="32"/><ellipse class="contour" cx="210" cy="160" rx="105" ry="60"/><ellipse class="contour" cx="210" cy="160" rx="160" ry="92"/><circle id="gradPoint" class="point" r="6"/><line id="gradArrow" class="grad"/><line id="stepArrow" class="step"/><text x="330" y="35" fill="#ad3344">∇L：上升最快</text><text x="330" y="57" fill="#18754a">−∇L：下降方向</text></svg></div>
-<h3>例子：让梯度预测一次小改动</h3>
-<p>假设准备把当前位置改成 <code>x+Δx</code>。梯度不必重新完整计算函数，就能预测损失大约变化 <code>∇L·Δx</code>。把改动调大、再调小，比较预测和真实变化。</p>
-<div class="controls"><label>Δx₁ <input id="dx1" type="range" min="-0.5" max="0.5" step="0.05" value="0.10"> <span id="dx1v">0.10</span></label><label>Δx₂ <input id="dx2" type="range" min="-0.5" max="0.5" step="0.05" value="0"> <span id="dx2v">0</span></label></div>
-<div id="deltaReadout" class="readout" aria-live="polite"></div>
-<div class="note">改动越小，一阶预测通常越准确。梯度不是“最终移动量”；训练器会选择 <code>Δx=−η∇L</code>，用学习率 <code>η</code> 控制步长。</div>
+<section id="gradient"><p class="section-num">02 / 标量函数对向量求导</p><h2>分别求偏导，再按输入顺序排成梯度</h2>
+<div class="formula">x=[x₁,x₂]，f(x)=x₁²+2x₂²</div>
+<ol><li>对 x₁ 求导时，2x₂² 是常数，所以 <code>∂f/∂x₁=2x₁</code>。</li><li>对 x₂ 求导时，x₁² 是常数，所以 <code>∂f/∂x₂=4x₂</code>。</li><li>按 x₁、x₂ 的次序，把两个结果排好：<code>∇f=[2x₁,4x₂]</code>。</li></ol>
+<div class="formula">一般地，x=[x₁,…,xₙ]：<br>∇f(x) = [∂f/∂x₁,…,∂f/∂xₙ]</div>
+<h3>梯度的意义：预测这个函数值怎样变化</h3>
+<p>在 x=[2,1] 时，f=6，梯度为 [4,4]。这表示：只让 x₁ 增加很小的 ε，f 大约增加 4ε；只让 x₂ 增加很小的 ε，f 也大约增加 4ε。</p>
+<p>两个分量一起变化时，把各自的贡献相加。设 <code>Δx=[Δx₁,Δx₂]</code>：</p>
+<div class="formula">Δf ≈ (∂f/∂x₁)Δx₁ + (∂f/∂x₂)Δx₂<br>　 = ∇f · Δx<br>f(x+Δx) ≈ f(x) + ∇f · Δx</div>
+<p>例如 Δx=[0.1,0]，梯度预测 Δf≈4×0.1=0.4；实际 <code>f(2.1,1)−f(2,1)=0.41</code>。导数描述局部的一阶变化，所以对于一般非线性函数，有限改动下通常是近似。</p>
+<div class="card"><h3>动手：分别改变两个分量</h3><div class="controls"><label>x₁ <input id="x1" type="range" min="-3" max="3" step="0.25" value="2"> <span id="x1v"></span></label><label>x₂ <input id="x2" type="range" min="-3" max="3" step="0.25" value="1"> <span id="x2v"></span></label></div><div id="gradReadout" class="readout" aria-live="polite"></div><div class="controls"><label>Δx₁ <input id="dx1" type="range" min="-0.2" max="0.2" step="0.01" value="0.1"> <span id="dx1v"></span></label><label>Δx₂ <input id="dx2" type="range" min="-0.2" max="0.2" step="0.01" value="0"> <span id="dx2v"></span></label></div><div id="deltaReadout" class="readout" aria-live="polite"></div></div>
+<h3>分量之间有乘积，也照样逐个求导</h3>
+<div class="formula">g(x)=x₁²+x₁x₂+2x₂²<br>∂g/∂x₁=2x₁+x₂　（对 x₁ 求导，x₂ 是常数）<br>∂g/∂x₂=x₁+4x₂　（对 x₂ 求导，x₁ 是常数）<br>∇g=[2x₁+x₂, x₁+4x₂]</div>
+<p>在 x=[2,1] 时，g=8、∇g=[5,6]。向量函数的表达式不需要每个分量各算各的；关键仍然是每次只对一个自变量求偏导。</p>
 </section>
-
-
-<section id="regression"><p class="section-num">应用 / 读懂第一节的训练代码</p><h2>先逐个求导，再把结果写成矩阵形式</h2>
-<p>下面这段训练代码看起来都是矩阵，其实<strong>每个梯度元素仍然是对一个标量参数求导</strong>。我们先用你会的标量求导算清楚，再把重复计算组织成向量或矩阵。</p>
-<h3>① 一个样本：只用标量求导</h3>
-<p>先看一个输入 x 和目标 y。可训练的参数是 w 和 b；求导时，数据 x、y 保持不变。</p>
-<div class="formula">预测：p = wx + b<br>误差：e = p − y = wx + b − y<br>平方误差：ℓ = e²<br>∂ℓ/∂w = 2e × ∂e/∂w = 2ex<br>∂ℓ/∂b = 2e × ∂e/∂b = 2e</div>
-<p>求 w 的偏导时，把 b 当成常数；求 b 的偏导时，把 w 当成常数。这就是把你熟悉的一元求导分别应用到两个参数上。这里的 ℓ 没有乘 1/2，因此导数保留系数 2。</p>
-<h3>② 五个样本：损失取平均，导数也取平均</h3>
-<p>第一节的数据是 <code>x=[0,1,2,3,4]</code>、<code>y=[1,3,5,7,9]</code>。每条样本都使用<strong>同一组 w、b</strong>。用 i 表示样本编号，从 0 到 4：</p>
-<div class="formula">eᵢ = wxᵢ + b − yᵢ<br>L = (e₀² + e₁² + e₂² + e₃² + e₄²) / 5<br>∂L/∂w = (2x₀e₀ + 2x₁e₁ + 2x₂e₂ + 2x₃e₃ + 2x₄e₄) / 5<br>∂L/∂b = (2e₀ + 2e₁ + 2e₂ + 2e₃ + 2e₄) / 5</div>
-<p>求和的导数等于各项导数相加；除以常数 5，求导后仍然除以 5。没有新的求导规则，只是把五条样本的贡献汇总起来。</p>
-<h3>③ 矩阵写法：把这五次计算一起做</h3>
-<p>这里只需要三个记号：<code>(5,1)</code> 表示 5 行 1 列；<code>@</code> 表示矩阵乘法；<code>.T</code> 表示转置。<code>X</code> 是五个输入排成的列，<code>error</code> 是五个误差排成的列；<code>W=[[w]]</code> 是只有一个元素的矩阵，<code>b=[b]</code> 只有一个元素。</p>
-<div class="formula">X.T @ error<br>= [x₀, x₁, x₂, x₃, x₄] @ [[e₀], [e₁], [e₂], [e₃], [e₄]]<br>= [[x₀e₀ + x₁e₁ + x₂e₂ + x₃e₃ + x₄e₄]]</div>
-<p>看到了吗？<strong>转置加矩阵乘法，就是一次算完上面那串“输入乘误差再相加”。</strong>它把已推导好的标量计算写得更紧凑，并不代替求导过程。</p>
-<div class="formula">grad_W = 2 / 5 * X.T @ error<br>grad_b = 2 * error.mean(axis=0)</div>
-<p>第一行是上面的 ∂L/∂w，结果装在 <code>(1,1)</code> 矩阵里，与 W 同形。第二行是 ∂L/∂b：固定输出列索引 0，遍历五个样本的行索引，对五个误差求平均，再乘 2，结果形状为 <code>(1,)</code>，与 b 同形。<code>len(X)</code> 就是样本数 5。</p>
-<h3>④ 手算第一次更新，对照每一行代码</h3>
-<div class="table-wrap"><table><thead><tr><th>计算</th><th>w=0、b=0 时的结果</th></tr></thead><tbody>
-<tr><td><code>prediction = X @ W + b</code></td><td>五个预测都是 0</td></tr>
-<tr><td><code>error = prediction - y</code></td><td>误差为 −1、−3、−5、−7、−9</td></tr>
-<tr><td><code>loss = np.mean(error ** 2)</code></td><td>(1+9+25+49+81)/5 = 33</td></tr>
-<tr><td><code>X.T @ error</code></td><td>0×(−1)+1×(−3)+2×(−5)+3×(−7)+4×(−9) = −70</td></tr>
-<tr><td><code>grad_W</code></td><td>2/5 × (−70) = −28</td></tr>
-<tr><td><code>grad_b</code></td><td>2 × (−1−3−5−7−9)/5 = −10</td></tr>
-</tbody></table></div>
-<p>学习率为 0.05，参数更新为 <code>w=0−0.05×(−28)=1.4</code>、<code>b=0−0.05×(−10)=0.5</code>。负梯度意味着：在当前位置，小幅增加这两个参数会降低损失。用更新后的参数重新计算，损失从 33 降到 3.61。</p>
-<pre><code>for step in range(100):
-    prediction = X @ W + b              # 一起计算五个 wxᵢ+b
-    error = prediction - y              # 五个误差 eᵢ
-    loss = np.mean(error ** 2)           # 五个平方误差的平均值
-    grad_W = 2 / len(X) * X.T @ error   # 汇总 2xᵢeᵢ，再除以样本数
-    grad_b = 2 * error.mean(axis=0)      # 汇总 2eᵢ，再除以样本数
-    W -= learning_rate * grad_W          # 每个权重减去它自己的梯度 × 学习率
-    b -= learning_rate * grad_b</code></pre>
-<p>每次循环都会用<strong>当前参数</strong>重新计算误差和梯度。上面 −28、−10 只属于初始参数，不会一直保持不变。</p>
-<h3>⑤ 真正有多个权重时，仍然逐个求导</h3>
-<p>如果每条样本有两个特征，预测变成 <code>pᵢ=xᵢ₀w₀+xᵢ₁w₁+b</code>。分别对 w₀、w₁ 求导，其他参数固定：</p>
-<div class="formula">∂L/∂w₀ = (2/N) Σᵢ xᵢ₀eᵢ<br>∂L/∂w₁ = (2/N) Σᵢ xᵢ₁eᵢ</div>
-<p>Σᵢ 就是“把所有样本 i 对应的项相加”，N 是样本数。此时 X 为 <code>(N,2)</code>，W 为 <code>(2,1)</code>，error 为 <code>(N,1)</code>。<code>X.T @ error</code> 的两行分别是 <code>Σᵢ xᵢ₀eᵢ</code> 和 <code>Σᵢ xᵢ₁eᵢ</code>，所以同一行代码得到两个权重各自的梯度。</p>
-<div class="success"><strong>向量、矩阵求导在这里的意义：</strong>分别求出每个参数对同一个标量损失的偏导，再按参数原来的位置排好。梯度告诉我们各个参数该怎样调整，而矩阵运算把这些重复计算一起完成。</div>
-<p><strong>自测：</strong>不看表格，能否从 eᵢ² 推出 2xᵢeᵢ 和 2eᵢ，再解释转置、除以 N、mean 各自做了什么？可以的话，就进入<a href="lesson-01-tensors.html">第一节</a>，学习更完整的形状、轴和广播。</p>
+<section id="jacobian"><p class="section-num">03 / 向量函数对向量求导</p><h2>每个输出都求一遍，得到雅可比矩阵</h2>
+<p>这次输出不再是一个数，而是两个数：</p>
+<div class="formula">F(x)=[f₁(x),f₂(x)]<br>f₁=x₁²+x₂<br>f₂=x₁x₂</div>
+<p>不要直接猜“向量的导数”。先对 f₁ 求两个偏导，再对 f₂ 求两个偏导：</p>
+<div class="table-wrap"><table><thead><tr><th>输出函数</th><th>对 x₁ 求导（固定 x₂）</th><th>对 x₂ 求导（固定 x₁）</th></tr></thead><tbody><tr><td>f₁=x₁²+x₂</td><td>2x₁</td><td>1</td></tr><tr><td>f₂=x₁x₂</td><td>x₂</td><td>x₁</td></tr></tbody></table></div>
+<div class="formula">Jᵢⱼ = ∂fᵢ/∂xⱼ<br>J = [[∂f₁/∂x₁, ∂f₁/∂x₂],<br>　　 [∂f₂/∂x₁, ∂f₂/∂x₂]]<br>　= [[2x₁,1],<br>　　 [x₂,x₁]]</div>
+<p>n 个输入、m 个输出时，一共有 m×n 个偏导，雅可比是 m 行 n 列。某个输出不依赖某个输入，对应的格子就是 0。</p>
+<h3>雅可比的意义：把输入变化换算成各个输出的变化</h3>
+<p>在 x=[2,3] 时，F(x)=[7,6]、J=[[4,1],[3,2]]。只让 x₁ 增加 ε，两个输出分别大约增加 4ε、3ε；这就是雅可比<strong>第一列</strong>的含义。只让 x₂ 增加 ε，则分别增加 ε、2ε，对应第二列。</p>
+<div class="formula">Δf₁ ≈ 2x₁Δx₁ + Δx₂<br>Δf₂ ≈ x₂Δx₁ + x₁Δx₂<br>合在一起：ΔF ≈ JΔx（把 Δx 看成一列）</div>
+<p>例如 Δx=[0.1,0]，预测 ΔF≈[0.4,0.3]；重新计算得到实际变化 [0.41,0.3]。</p>
+<div class="card"><h3>动手：观察一个输入怎样影响两个输出</h3><div class="controls"><label>x₁ <input id="jx1" type="range" min="-3" max="3" step="0.25" value="2"> <span id="jx1v"></span></label><label>x₂ <input id="jx2" type="range" min="-3" max="3" step="0.25" value="3"> <span id="jx2v"></span></label></div><div id="jacReadout" class="readout" aria-live="polite"></div><div class="controls"><label>输入改动 <select id="jacDelta"><option value="x1">只让 x₁ 增加 0.1</option><option value="x2">只让 x₂ 增加 0.1</option><option value="both">x₁ 增加 0.1，x₂ 减少 0.1</option></select></label></div><div id="jacDeltaReadout" class="readout" aria-live="polite"></div></div>
+<div class="note"><strong>和梯度的关系：</strong>若只有一个输出，雅可比按本课约定是一行的偏导表；梯度则按输入形状排列。在列向量记法下，这一行雅可比是梯度的转置。两者记录的是同一组偏导。</div>
 </section>
-
-<section id="jacobian"><p class="section-num">03 / 多个输出对多个输入</p><h2>雅可比矩阵就是一张偏导表</h2>
-<p class="lead">雅可比矩阵的意义不是“把偏导摆好看”，而是用一个矩阵把输入的小变化换算成输出的小变化：<code>Δy≈JΔx</code>。第 <code>j</code> 列直接回答“只改变第 <code>j</code> 个输入时，所有输出如何变化”。</p>
-<p>设 <code>x=[x₁,x₂]</code>，<code>y=Wx+b</code>，其中 <code>W</code> 有 2 行 2 列：</p>
-<div class="equation-row"><span class="matrix" style="--cols:2"><span>y₁</span><span></span><span>y₂</span><span></span></span><span class="eq-op">=</span><span class="matrix" style="--cols:2"><span>1</span><span>2</span><span>−1</span><span>3</span></span><span class="matrix" style="--cols:1"><span>x₁</span><span>x₂</span></span><span class="eq-op">+</span><span class="matrix" style="--cols:1"><span>0</span><span>1</span></span></div>
-<p>展开后 <code>y₁=x₁+2x₂</code>，<code>y₂=−x₁+3x₂+1</code>。每行对应该输出对所有输入的偏导：</p>
-<div class="formula">J = ∂y/∂x = [ [∂y₁/∂x₁, ∂y₁/∂x₂], [∂y₂/∂x₁, ∂y₂/∂x₂] ] = <strong>W</strong></div>
-<div class="controls"><label>x₁ <input id="jx1" type="range" min="-3" max="3" step="1" value="1"> <span id="jx1v">1</span></label><label>x₂ <input id="jx2" type="range" min="-3" max="3" step="1" value="2"> <span id="jx2v">2</span></label></div><div id="jacReadout" class="readout" aria-live="polite"></div>
-<h3>例子：只推动一个输入，看看两个输出怎样动</h3>
-<div class="controls"><label>输入的小变化 <select id="jacDelta"><option value="x1">只让 x₁ 增加 0.1</option><option value="x2">只让 x₂ 增加 0.1</option><option value="both">x₁ 增加 0.1，x₂ 减少 0.1</option></select></label></div>
-<div id="jacDeltaReadout" class="readout" aria-live="polite"></div>
-<p class="muted">本例是线性函数，所以 <code>Δy=JΔx</code> 完全相等。非线性函数中它是当前位置附近的近似，而且雅可比会随输入变化。</p>
+<section id="linear"><p class="section-num">04 / 标量函数对矩阵求导</p><h2>每个矩阵元素分别求偏导，放回原位置</h2>
+<p>矩阵只是把四个自变量排成两行两列。定义：</p>
+<div class="formula">A=[[a,b],[c,d]]<br>f(A)=a²+3b²+cd</div>
+<p>它就是普通的四元函数 <code>f(a,b,c,d)</code>。对 a 求导时，b、c、d 不动；其他元素同理。</p>
+<div class="table-wrap"><table><thead><tr><th>改变哪个元素</th><th>固定哪些元素</th><th>得到的偏导</th></tr></thead><tbody><tr><td>a=A₁₁</td><td>b、c、d</td><td>∂f/∂a=2a</td></tr><tr><td>b=A₁₂</td><td>a、c、d</td><td>∂f/∂b=6b</td></tr><tr><td>c=A₂₁</td><td>a、b、d</td><td>∂f/∂c=d</td></tr><tr><td>d=A₂₂</td><td>a、b、c</td><td>∂f/∂d=c</td></tr></tbody></table></div>
+<div class="formula">∂f/∂A = [[∂f/∂a,∂f/∂b],<br>　　　　 [∂f/∂c,∂f/∂d]]<br>　　　 = [[2a,6b],<br>　　　　 [d,c]]</div>
+<p><strong>矩阵梯度的逐元素定义：</strong>只让第 i、j 个位置增加 ε，其他位置保持不变。Eᵢⱼ 表示“只有第 i、j 格为 1，其余为 0”的矩阵。</p>
+<div class="formula">(∂f/∂A)ᵢⱼ = ∂f/∂Aᵢⱼ<br>　= lim<sub>ε→0</sub> [f(A+εEᵢⱼ)−f(A)] / ε</div>
+<h3>矩阵梯度的意义：预测各个格子的改动对函数值的影响</h3>
+<p>A=[[1,2],[3,4]] 时，f=1²+3×2²+3×4=25，梯度为 [[2,12],[4,3]]。它的第一行第二列为 12，表示只让 b 增加 ε，f 大约增加 12ε。</p>
+<p>例如只让 b 增加 0.1，预测变化为 1.2；实际 <code>f([[1,2.1],[3,4]])−25=1.23</code>。</p>
+<div class="formula">多个格子同时改动：<br>Δf ≈ 2aΔa + 6bΔb + dΔc + cΔd<br>　 = Σᵢⱼ (∂f/∂Aᵢⱼ)ΔAᵢⱼ</div>
+<p>Σᵢⱼ 表示把所有位置的项相加。这是<strong>梯度与改变量对应位置相乘，再全部相加</strong>，不是两张矩阵做矩阵乘法。</p>
+<div class="card"><h3>动手：只改动矩阵的一个格子</h3><p>固定起点 A=[[1,2],[3,4]]，f(A)=25。</p><div class="controls"><label>选择元素 <select id="matrixCell"><option value="0">a=A₁₁，偏导为 2</option><option value="1" selected>b=A₁₂，偏导为 12</option><option value="2">c=A₂₁，偏导为 4</option><option value="3">d=A₂₂，偏导为 3</option></select></label><label>改变量 ε <input id="matrixEps" type="range" min="-0.2" max="0.2" step="0.01" value="0.1"> <span id="matrixEpsV"></span></label></div><div id="matrixReadout" class="readout" aria-live="polite"></div></div>
+<h3>再看一个矩阵记号写成的函数</h3>
+<div class="formula">h(A)=Σᵢⱼ Aᵢⱼ²（所有元素平方后相加）<br>∂h/∂Aᵢⱼ=2Aᵢⱼ<br>所以 ∂h/∂A=2A</div>
+<p>看到简洁的矩阵公式，仍然可以展开到每个元素。这里 <code>2A</code> 表示每个元素乘 2。</p>
 </section>
-
-<section id="linear"><p class="section-num">04 / 训练真正需要的形式</p><h2>先把向量输出变成标量损失，再对参数求导</h2>
-<p class="lead">矩阵 <code>W</code> 可以看成一张参数表。<code>∂L/∂Wᵢⱼ</code> 的定义是：只把第 <code>i,j</code> 个参数增加一个极小量，其余参数不动时，损失变化量与这个极小量的比值。把每一格的结果放回原位置，就得到矩阵梯度。</p>
-<div class="formula">∂L/∂Wᵢⱼ = lim<sub>ε→0</sub> [L(W中只有Wᵢⱼ增加ε) − L(W)] / ε</div>
-<p>直接写“向量 <code>y</code> 对矩阵 <code>W</code> 求导”会得到三维对象，很难使用。训练最终有一个标量损失 <code>L</code>，因此通常直接求 <code>∂L/∂W</code>：它与 <code>W</code> 同形，每一格就是对应权重的局部敏感度。</p>
-<div class="pipeline"><div class="node">输入 x<small>(3,)</small></div><div class="arrow">→</div><div class="node">y = Wx+b<small>(2,)</small></div><div class="arrow">→</div><div class="node">e = y−t<small>(2,)</small></div><div class="arrow">→</div><div class="node">L = ½‖e‖²<small>标量</small></div></div>
-<div class="tabs" role="tablist"><button class="active" data-tab="numbers">带数字算一遍</button><button data-tab="derive">逐元素推导</button><button data-tab="meaning">为什么是外积</button></div>
-<div id="numbers" class="tab-panel active">
-  <div class="equation-row"><span>W =</span><span class="matrix" style="--cols:3"><span>1</span><span>−1</span><span>2</span><span>0.5</span><span>1</span><span>−1</span></span><span>x =</span><span class="matrix" style="--cols:1"><span>2</span><span>1</span><span>−1</span></span><span>b =</span><span class="matrix" style="--cols:1"><span>0</span><span>1</span></span><span>t =</span><span class="matrix" style="--cols:1"><span>0</span><span>2</span></span></div>
-  <div class="formula">y = Wx+b = [−1,4]　　e = y−t = [−1,2]　　L = ½(1+4) = 2.5</div>
-  <div class="table-wrap"><table><thead><tr><th>要求的梯度</th><th>公式</th><th>本例结果</th><th>形状</th></tr></thead><tbody><tr><td>∂L/∂W</td><td>e xᵀ</td><td><code>[[-2,-1,1],[4,2,-2]]</code></td><td><span class="shape">(2,3)</span></td></tr><tr><td>∂L/∂b</td><td>e</td><td><code>[-1,2]</code></td><td><span class="shape">(2,)</span></td></tr><tr><td>∂L/∂x</td><td>Wᵀe</td><td><code>[0,3,-4]</code></td><td><span class="shape">(3,)</span></td></tr></tbody></table></div>
-</div>
-<div id="derive" class="tab-panel"><p>第 <code>i</code> 个输出为 <code>yᵢ=ΣⱼWᵢⱼxⱼ+bᵢ</code>。损失对 <code>yᵢ</code> 的偏导是 <code>eᵢ</code>。</p><div class="formula">∂L/∂Wᵢⱼ = (∂L/∂yᵢ)(∂yᵢ/∂Wᵢⱼ) = eᵢxⱼ</div><p>因此梯度矩阵第 <code>i,j</code> 格就是 <code>eᵢxⱼ</code>，把所有格子合起来便是 <code>e xᵀ</code>。</p><div class="formula">∂L/∂xⱼ = Σᵢ(∂L/∂yᵢ)(∂yᵢ/∂xⱼ) = ΣᵢeᵢWᵢⱼ</div><p>这正是 <code>Wᵀe</code> 的第 <code>j</code> 个分量。</p></div>
-<div id="meaning" class="tab-panel"><p>权重 <code>Wᵢⱼ</code> 连接“输入 <code>xⱼ</code>”和“输出 <code>yᵢ</code>”。它的梯度同时需要两条信息：</p><ul><li><code>eᵢ</code>：第 <code>i</code> 个输出收到多大的上游梯度；</li><li><code>xⱼ</code>：这条连接当时接收到多大的输入。</li></ul><p>把每个输出信号与每个输入值两两相乘，刚好形成一个 <code>(输出数, 输入数)</code> 的表，这就是外积 <code>e xᵀ</code>。</p></div>
-<h3>例子：只拧动权重矩阵中的一个“旋钮”</h3>
-<p>选择一个权重并改变一点。矩阵梯度对应位置的数字乘改变量，会预测损失怎样变化。负梯度表示增加这个权重会让损失下降；正梯度表示增加它会让损失上升。</p>
-<div class="controls"><label>选择权重 <select id="weightCell"><option value="0,0">W₁₁，当前梯度 −2</option><option value="0,1">W₁₂，当前梯度 −1</option><option value="0,2">W₁₃，当前梯度 1</option><option value="1,0">W₂₁，当前梯度 4</option><option value="1,1">W₂₂，当前梯度 2</option><option value="1,2">W₂₃，当前梯度 −2</option></select></label><label>改变量 ε <input id="weightEps" type="range" min="-0.25" max="0.25" step="0.05" value="0.10"> <span id="weightEpsV">0.10</span></label></div>
-<div id="weightReadout" class="readout" aria-live="polite"></div>
-<div class="success"><strong>最可靠的检查：</strong><code>W</code> 是 <code>(2,3)</code>，所以 <code>∂L/∂W</code> 也必须是 <code>(2,3)</code>。如果得到 <code>(3,2)</code>，通常是外积次序或转置写反了。</div>
+<section id="matrix-output"><p class="section-num">05 / 输出也是矩阵时</p><h2>输出每个元素，都有一整组偏导</h2>
+<p>“矩阵函数求导”还可能指输出也是矩阵。它和“标量函数对矩阵求导”不同。仍然使用 A=[[a,b],[c,d]]，定义：</p>
+<div class="formula">F(A)=A²=A @ A（这里是矩阵乘法）<br>F(A)=[[a²+bc, ab+bd],<br>　　　[ac+dc, bc+d²]]</div>
+<p>四个输出、四个输入，一共需要 16 个偏导。先固定一个展开顺序：输入按 [a,b,c,d] 排列，输出按 [F₁₁,F₁₂,F₂₁,F₂₂] 排列，得到 4×4 的雅可比：</p>
+<div class="table-wrap"><table><thead><tr><th>输出</th><th>∂/∂a</th><th>∂/∂b</th><th>∂/∂c</th><th>∂/∂d</th></tr></thead><tbody><tr><td>F₁₁=a²+bc</td><td>2a</td><td>c</td><td>b</td><td>0</td></tr><tr><td>F₁₂=ab+bd</td><td>b</td><td>a+d</td><td>0</td><td>b</td></tr><tr><td>F₂₁=ac+dc</td><td>c</td><td>0</td><td>a+d</td><td>c</td></tr><tr><td>F₂₂=bc+d²</td><td>0</td><td>c</td><td>b</td><td>2d</td></tr></tbody></table></div>
+<p>如果保持矩阵的行列编号，可以把这些数记为 <code>Dᵢⱼₖₗ=∂Fᵢⱼ/∂Aₖₗ</code>：前两个编号标明输出位置，后两个标明输入位置。只是组织方式变了，每格仍是普通偏导。</p>
+<h3>用它预测整张输出矩阵的变化</h3>
+<p>设 A=[[1,2],[3,4]]，只让 b 增加 0.1。取上表“对 b 求导”的一列 [3,5,0,3]，乘 0.1，再按输出位置排回两行两列：</p>
+<div class="formula">ΔF ≈ [[0.3,0.5],[0,0.3]]</div>
+<p>本次只改一个元素，重新计算得到的变化也恰好是这个结果；一般同时改多个元素时，可能还有二阶项。</p>
+<details><summary>更紧凑的写法：导数也可以是“输入改动 → 输出改动”的规则</summary><div class="formula">(A+ΔA)²−A² = AΔA + ΔA A + (ΔA)²<br>忽略二阶小量：(ΔF) ≈ AΔA + ΔA A</div><p>所以 F 在 A 处的导数可以写成线性映射 <code>DF(A)[H]=AH+HA</code>，H 表示一个矩阵改动。它与上面的 16 个偏导描述同一个变化规则。一般矩阵不能交换乘法次序，因此不能直接照搬标量公式，把它写成对任意 H 都成立的 <code>2AH</code>。</p></details>
 </section>
-
-<section id="batch"><p class="section-num">05 / 从一个样本到一批样本</p><h2>PyTorch 的 weight 为什么需要转置</h2>
-<p>PyTorch 把 <code>nn.Linear(in,out).weight</code> 存成 <span class="shape">(out,in)</span>。一批输入 <code>X</code> 的每行是一个样本，所以前向是：</p>
-<div class="formula">X <span class="shape">(B,in)</span> @ weight.T <span class="shape">(in,out)</span> + b <span class="shape">(out,)</span> → Z <span class="shape">(B,out)</span></div>
-<p>设上游梯度 <code>G=∂L/∂Z</code>，它和 <code>Z</code> 同形。批次公式是：</p>
-<div class="table-wrap"><table><thead><tr><th>梯度</th><th>公式</th><th>形状检查</th><th>含义</th></tr></thead><tbody>
-<tr><td><code>∂L/∂weight</code></td><td><code>G.T @ X</code></td><td><code>(out,B) @ (B,in) → (out,in)</code></td><td>把每条样本的外积贡献加起来</td></tr>
-<tr><td><code>∂L/∂b</code></td><td><code>G.sum(axis=0)</code></td><td><code>(B,out) → (out,)</code></td><td>同一个偏置被一批中的所有样本共用</td></tr>
-<tr><td><code>∂L/∂X</code></td><td><code>G @ weight</code></td><td><code>(B,out) @ (out,in) → (B,in)</code></td><td>把梯度继续传向上一层</td></tr>
-</tbody></table></div>
-<div class="note">如果损失使用批次<strong>平均值</strong>，<code>G</code> 中已经包含除以批次大小的因子；如果损失使用<strong>求和</strong>，则没有这个因子。二者方向相同但大小不同。</div>
+<section id="chain"><p class="section-num">06 / 复合函数</p><h2>中间变量也是函数，逐条应用链式法则</h2>
+<p>定义两个中间变量，再把它们代入一个标量函数：</p>
+<div class="formula">u=x₁+x₂，v=x₁−x₂<br>f=u²+3v²</div>
+<p>x₁ 会同时改变 u 和 v，因此两条影响都要计算并相加：</p>
+<div class="formula">∂f/∂x₁ = (∂f/∂u)(∂u/∂x₁) + (∂f/∂v)(∂v/∂x₁)<br>　　　 = 2u×1 + 6v×1 = 2u+6v<br>∂f/∂x₂ = 2u×1 + 6v×(−1) = 2u−6v</div>
+<p>在 x=[2,1] 时，u=3、v=1，∇f=[12,0]。这只是普通复合函数的偏导计算。也可以先展开 <code>f=(x₁+x₂)²+3(x₁−x₂)²</code>，直接求偏导，核对结果。</p>
+<details><summary>向量函数的链式法则</summary><p>若 u=G(x)、y=H(u)，每个输出对每个输入都有多条中间路径：</p><div class="formula">∂yᵢ/∂xⱼ = Σₖ (∂yᵢ/∂uₖ)(∂uₖ/∂xⱼ)<br>按雅可比排列：J<sub>y,x</sub> = J<sub>y,u</sub> J<sub>u,x</sub></div><p>矩阵乘法在这里刚好把“各条路径贡献相乘再相加”组织在一起。</p></details>
 </section>
-
-<section id="backprop"><p class="section-num">06 / 不建立巨大的导数矩阵</p><h2>反向传播是在传递“上游梯度”</h2>
-<p>考虑 <code>z=Wx+b</code>、<code>h=ReLU(z)</code>、<code>L=½‖h−t‖²</code>。从右向左，每个节点只回答：“已经收到 <code>∂L/∂输出</code>，怎样算 <code>∂L/∂输入</code>？”</p>
-<div class="pipeline"><div class="node">L<small>先得 ∂L/∂h</small></div><div class="arrow">→</div><div class="node">ReLU 反向<small>乘 1[z&gt;0]</small></div><div class="arrow">→</div><div class="node">线性层反向<small>算 W、b、x 梯度</small></div></div>
-<div class="formula">g<sub>h</sub> = h−t　→　g<sub>z</sub> = g<sub>h</sub> ⊙ 1[z&gt;0]　→　∂L/∂W = g<sub>z</sub>xᵀ，∂L/∂x = Wᵀg<sub>z</sub></div>
-<p><code>⊙</code> 表示逐元素乘法。虽然 ReLU 作为“向量对向量函数”有雅可比矩阵，但它是对角矩阵；实际程序直接做逐元素乘法，不会创建一张巨大的对角矩阵。</p>
-<div class="warning"><strong>不要把前向和反向混在一起：</strong>前向用参数算预测与损失；反向不重新预测，而是把损失对各中间量的影响从后向前传播。</div>
-</section>
-
-<section id="optional"><p class="section-num">07 / 先理解结果，不要求背</p><h2>softmax 的完整导数与常用化简</h2>
-<p>softmax 的每个输出都依赖所有输入，因此它的雅可比不是单纯的逐元素导数。若 <code>p=softmax(z)</code>：</p>
-<div class="formula">∂pᵢ/∂zⱼ = pᵢ(δᵢⱼ−pⱼ)　，也可写成　J = diag(p)−ppᵀ</div>
-<p>与单个样本的交叉熵 <code>L=−Σᵢyᵢlog pᵢ</code> 合起来后，对 logits 的梯度会化简：</p>
-<div class="formula"><strong>∂L/∂z = p−y</strong></div>
-<p>这不是“softmax 的导数就是 <code>p−y</code>”。<code>p−y</code> 是 <strong>softmax 与交叉熵组合</strong>后的结果。</p>
-<details><summary>以后再学的内容</summary><ul><li>Hessian：标量对向量的二阶偏导矩阵；</li><li>矩阵微分与迹技巧：更紧凑地推导复杂公式；</li><li>特征值、SVD 与低秩分解：在 PCA 和模型压缩中按用途学习。</li></ul></details>
-</section>
-
-<section id="practice"><p class="section-num">08 / 手推之后让代码检查</p><h2>数值差分是你的公式验算器</h2>
-<p>如果把矩阵中某个元素 <code>Wᵢⱼ</code> 增加和减少一个很小的 <code>ε</code>，就能近似该位置的偏导：</p>
-<div class="formula">∂L/∂Wᵢⱼ ≈ [L(Wᵢⱼ+ε)−L(Wᵢⱼ−ε)] / (2ε)</div>
-<p><a href="lesson-math-matrix-calculus.py">打开或下载配套代码</a>。它会核对向量梯度、雅可比、单样本与批次矩阵梯度，并和 PyTorch 自动求导比较。在项目根目录运行：</p>
+<section id="practice"><p class="section-num">07 / 检查自己算得对不对</p><h2>用小改动核对偏导</h2>
+<p>按定义，只改一个输入元素，计算函数值的变化。用加 ε 和减 ε 的中心差分，近似偏导：</p>
+<div class="formula">∂f/∂Aᵢⱼ ≈ [f(A+εEᵢⱼ)−f(A−εEᵢⱼ)]/(2ε)</div>
+<p>对向量也一样，每次只改一个分量；输出有多个分量时，对每个输出分别计算差分。数值结果用于检查手推公式，不是新的求导规则。ε 过大会有近似误差，过小又可能受到浮点舍入影响。</p>
+<p><a href="lesson-math-matrix-calculus.py">配套计算例子</a>只核对本页的数学函数，包括梯度、雅可比、矩阵输出的导数和链式法则。可选运行：</p>
 <pre><code>uv run python lessons/lesson-math-matrix-calculus.py</code></pre>
-<h3>学习任务</h3><ol><li>先不运行代码，手算页面中的 <code>∂L/∂W</code>、<code>∂L/∂b</code> 和 <code>∂L/∂x</code>。</li><li>给每个公式写出形状，确认矩阵乘法可以执行。</li><li>运行配套程序，比较解析梯度、数值差分和 PyTorch 结果。</li><li>把损失从求和改为平均，解释梯度数值发生了什么变化。</li></ol>
-<div class="checklist"><label><input type="checkbox">我能先判断求导结果应该是标量、向量还是矩阵。</label><label><input type="checkbox">我能解释梯度、雅可比矩阵和参数梯度的区别。</label><label><input type="checkbox">我能手推一层 <code>y=Wx+b</code> 的三个反向公式。</label><label><input type="checkbox">我能把单样本公式扩展到批次并检查形状。</label></div>
+<h3>先手算的三道练习</h3>
+<ol><li><code>f(x)=x₁x₂+x₂²</code>：求梯度，并代入 x=[2,3]。</li><li><code>F(x)=[x₁+x₂²,x₁x₂]</code>：逐行计算雅可比。</li><li><code>A=[[a,b],[c,d]]</code>、<code>f(A)=ab+c²−d</code>：求矩阵梯度，解释 b 改动时 f 的变化率。</li></ol>
+<details><summary>展开核对答案</summary><div class="formula">1. ∇f=[x₂,x₁+2x₂]，代入后为 [3,8]<br>2. J=[[1,2x₂],[x₂,x₁]]<br>3. ∂f/∂A=[[b,a],[2c,−1]]；b 的偏导为 a</div></details>
+<div class="checklist"><label><input type="checkbox">我能展开函数，指出每个独立自变量。</label><label><input type="checkbox">我能固定其他元素，逐个求偏导。</label><label><input type="checkbox">我能区分梯度、雅可比和矩阵梯度的排列。</label><label><input type="checkbox">我能用导数预测小改动导致的函数值变化。</label></div>
 </section>
-
-<section id="quiz"><p class="section-num">09 / 检查是否真正理解</p><h2>六道自测题</h2>
-<div class="quiz-item" data-answer="c"><strong>1. 在某点 ∇L=[3,−2]，它主要表达什么？</strong><div class="answers"><button data-choice="a">参数现在等于 3 和 −2</button><button data-choice="b">损失一定等于 1</button><button data-choice="c">两个分量发生小变化时，损失的一阶变化率</button></div><div class="feedback"></div></div>
-<div class="quiz-item" data-answer="b"><strong>2. 标量损失 L 对形状为 (3,4) 的 W 求导，结果形状是？</strong><div class="answers"><button data-choice="a">(4,3)</button><button data-choice="b">(3,4)</button><button data-choice="c">标量</button></div><div class="feedback"></div></div>
-<div class="quiz-item" data-answer="a"><strong>3. y=Wx+b，W 是 (2,3)，x 是 (3,)，y 对 x 的雅可比形状是？</strong><div class="answers"><button data-choice="a">(2,3)</button><button data-choice="b">(3,2)</button><button data-choice="c">(2,)</button></div><div class="feedback"></div></div>
-<div class="quiz-item" data-answer="c"><strong>4. 单样本线性层中 e 是 (out,)，x 是 (in,)，∂L/∂W 是？</strong><div class="answers"><button data-choice="a">x eᵀ</button><button data-choice="b">Wᵀe</button><button data-choice="c">e xᵀ</button></div><div class="feedback"></div></div>
-<div class="quiz-item" data-answer="b"><strong>5. 批次中偏置梯度为什么沿批次维求和？</strong><div class="answers"><button data-choice="a">因为每条样本有不同偏置</button><button data-choice="b">因为同一偏置参与了每条样本的前向计算</button></div><div class="feedback"></div></div>
-<div class="quiz-item" data-answer="a"><strong>6. ∂L/∂z=p−y 是什么的组合结果？</strong><div class="answers"><button data-choice="a">softmax 与交叉熵</button><button data-choice="b">只有 softmax</button><button data-choice="c">ReLU 与均方误差</button></div><div class="feedback"></div></div>
+<section id="quiz"><p class="section-num">08 / 自测</p><h2>六道理解题</h2>
+<div class="quiz-item" data-answer="b" data-explanation="对 x₁ 求偏导时，其余独立变量固定。"><strong>1. 对 f(x₁,x₂) 求 ∂f/∂x₁ 时，怎样处理 x₂？</strong><div class="answers"><button data-choice="a">也一起求导</button><button data-choice="b">把 x₂ 当成常数</button><button data-choice="c">把 x₂ 设成 0</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="c" data-explanation="分别对两个独立输入求偏导，按顺序得到 [x₂,x₁]。"><strong>2. f(x)=x₁x₂ 的梯度是什么？</strong><div class="answers"><button data-choice="a">[x₁,x₂]</button><button data-choice="b">x₁+x₂</button><button data-choice="c">[x₂,x₁]</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="a" data-explanation="本课雅可比的行对应输出，列对应输入，所以是 2×3。"><strong>3. 三个输入、两个输出，雅可比有几行几列？</strong><div class="answers"><button data-choice="a">2 行 3 列</button><button data-choice="b">3 行 2 列</button><button data-choice="c">2 行 2 列</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="b" data-explanation="标量函数对每个输入格子求一个偏导，按本课约定放回原矩阵位置。"><strong>4. f 是标量函数，A 是 2×3 矩阵。∂f/∂A 是什么形状？</strong><div class="answers"><button data-choice="a">3×2</button><button data-choice="b">2×3</button><button data-choice="c">一个数</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="a" data-explanation="只改变 x₂，取它对应的偏导乘改变量，得到 (−2)×0.01=−0.02。"><strong>5. 某点 ∇f=[3,−2]，只让 x₂ 增加 0.01，Δf 约是多少？</strong><div class="answers"><button data-choice="a">−0.02</button><button data-choice="b">0.03</button><button data-choice="c">−2</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="c" data-explanation="四个输出各自对四个输入求偏导，按约定展开后是 4×4 的雅可比。"><strong>6. F(A) 有 2×2 个输出，A 有 2×2 个独立输入，一共有几个一阶偏导？</strong><div class="answers"><button data-choice="a">4 个</button><button data-choice="b">8 个</button><button data-choice="c">16 个</button></div><div class="feedback" aria-live="polite"></div></div>
 </section>
-<p class="footer">本课放在第一节之前。先理解梯度与线性回归推导，再进入<a href="lesson-01-tensors.html">第一节：张量与必要基础 →</a>；雅可比、一般线性层、PyTorch 和进阶内容可继续学习或后续回看。</p>
-</main>
-</div>
+<p class="footer"><a href="../index.html">返回课程目录</a> · <a href="lesson-01-tensors.html">下一课：第一节，张量与必要基础 →</a></p>
+</main></div>
 <script>
 const $=s=>document.querySelector(s);
-function n(v){return Number(v).toFixed(2).replace(/\.00$/,'')}
+function n(v){return Number(v).toFixed(4).replace(/\.?0+$/,'') || '0'}
 function updateGradient(){
-  const x1=Number($('#x1').value),x2=Number($('#x2').value);
-  const dx1=Number($('#dx1').value),dx2=Number($('#dx2').value);
-  const g1=2*x1,g2=4*x2,L=x1*x1+2*x2*x2;
-  const nextL=(x1+dx1)**2+2*(x2+dx2)**2;
-  const predicted=g1*dx1+g2*dx2,actual=nextL-L;
-  $('#x1v').textContent=n(x1);$('#x2v').textContent=n(x2);
-  $('#dx1v').textContent=n(dx1);$('#dx2v').textContent=n(dx2);
-  $('#gradReadout').innerHTML=`当前位置 <code>x=[${n(x1)}, ${n(x2)}]</code>，L=<code>${n(L)}</code><br>梯度 <code>∇L=[${n(g1)}, ${n(g2)}]</code>：x₁ 每增加一点，L 最先按 ${n(g1)} 倍变化；x₂ 对应 ${n(g2)} 倍。`;
-  $('#deltaReadout').innerHTML=`改动 <code>Δx=[${n(dx1)}, ${n(dx2)}]</code><br>梯度预测：<code>ΔL≈∇L·Δx=${n(predicted)}</code><br>重新计算的真实变化：<code>ΔL=${n(actual)}</code>　（两者相差 ${n(Math.abs(actual-predicted))}）`;
-  const sx=210+x1*48,sy=160-x2*38,scale=9;
-  $('#gradPoint').setAttribute('cx',sx);$('#gradPoint').setAttribute('cy',sy);
-  $('#gradArrow').setAttribute('x1',sx);$('#gradArrow').setAttribute('y1',sy);$('#gradArrow').setAttribute('x2',sx+g1*scale);$('#gradArrow').setAttribute('y2',sy-g2*scale);
-  $('#stepArrow').setAttribute('x1',sx);$('#stepArrow').setAttribute('y1',sy);$('#stepArrow').setAttribute('x2',sx-g1*scale);$('#stepArrow').setAttribute('y2',sy+g2*scale);
+ const a=Number($('#x1').value),b=Number($('#x2').value),da=Number($('#dx1').value),db=Number($('#dx2').value);
+ const f=a*a+2*b*b,g=[2*a,4*b],pred=g[0]*da+g[1]*db,actual=(a+da)**2+2*(b+db)**2-f;
+ for(const [id,value] of [['x1v',a],['x2v',b],['dx1v',da],['dx2v',db]]) $('#'+id).textContent=n(value);
+ $('#gradReadout').textContent=`x=[${n(a)}, ${n(b)}]，f(x)=${n(f)}；∇f=[${n(g[0])}, ${n(g[1])}]。两个偏导分别描述只改变 x₁、只改变 x₂ 的变化率。`;
+ $('#deltaReadout').textContent=`Δx=[${n(da)}, ${n(db)}]；预测 Δf≈∇f·Δx=${n(pred)}；实际 Δf=${n(actual)}；差值=${n(actual-pred)}。`;
 }
-['x1','x2','dx1','dx2'].forEach(id=>$('#'+id).addEventListener('input',updateGradient));updateGradient();
-
 function updateJac(){
-  const a=Number($('#jx1').value),b=Number($('#jx2').value),y1=a+2*b,y2=-a+3*b+1;
-  const choices={x1:[.1,0,'0.1 × 雅可比第一列'],x2:[0,.1,'0.1 × 雅可比第二列'],both:[.1,-.1,'0.1 × 第一列 − 0.1 × 第二列']};
-  const [da,db,explanation]=choices[$('#jacDelta').value];
-  const dy1=da+2*db,dy2=-da+3*db;
-  $('#jx1v').textContent=n(a);$('#jx2v').textContent=n(b);
-  $('#jacReadout').innerHTML=`x = <code>[${n(a)}, ${n(b)}]</code> → y = <code>[${n(y1)}, ${n(y2)}]</code><br>J 始终为 <code>[[1, 2], [-1, 3]]</code>，形状 (输出 2, 输入 2)`;
-  $('#jacDeltaReadout').innerHTML=`Δx=<code>[${n(da)}, ${n(db)}]</code><br>Δy=JΔx=<code>[${n(dy1)}, ${n(dy2)}]</code>，也就是 ${explanation}。<br>新输出为 <code>[${n(y1+dy1)}, ${n(y2+dy2)}]</code>。`;
+ const a=Number($('#jx1').value),b=Number($('#jx2').value),d={x1:[.1,0],x2:[0,.1],both:[.1,-.1]}[$('#jacDelta').value];
+ const [da,db]=d,pred=[2*a*da+db,b*da+a*db],actual=[(a+da)**2+b+db-(a*a+b),(a+da)*(b+db)-a*b];
+ $('#jx1v').textContent=n(a);$('#jx2v').textContent=n(b);
+ $('#jacReadout').textContent=`F(x)=[${n(a*a+b)}, ${n(a*b)}]；J=[[${n(2*a)},1],[${n(b)},${n(a)}]]。行对应输出，列对应输入。`;
+ $('#jacDeltaReadout').textContent=`Δx=[${n(da)},${n(db)}]；预测 ΔF≈JΔx=[${n(pred[0])},${n(pred[1])}]；实际 ΔF=[${n(actual[0])},${n(actual[1])}]。`;
 }
-['jx1','jx2','jacDelta'].forEach(id=>$('#'+id).addEventListener('input',updateJac));updateJac();
-
-function updateWeightExample(){
-  const W=[[1,-1,2],[.5,1,-1]],x=[2,1,-1],target=[0,2],bias=[0,1];
-  const y=[W[0][0]*x[0]+W[0][1]*x[1]+W[0][2]*x[2]+bias[0],W[1][0]*x[0]+W[1][1]*x[1]+W[1][2]*x[2]+bias[1]];
-  const error=[y[0]-target[0],y[1]-target[1]],baseLoss=.5*(error[0]**2+error[1]**2);
-  const [row,col]=$('#weightCell').value.split(',').map(Number),eps=Number($('#weightEps').value);
-  const gradient=error[row]*x[col];
-  const changedError=[...error];changedError[row]+=eps*x[col];
-  const newLoss=.5*(changedError[0]**2+changedError[1]**2),actual=newLoss-baseLoss,predicted=gradient*eps;
-  $('#weightEpsV').textContent=n(eps);
-  $('#weightReadout').innerHTML=`W<sub>${row+1}${col+1}</sub> 的梯度是 <code>${n(gradient)}</code>，把它改动 <code>${n(eps)}</code>。<br>梯度预测损失变化：<code>${n(gradient)}×${n(eps)}=${n(predicted)}</code><br>重新前向计算：L 从 <code>${n(baseLoss)}</code> 变为 <code>${n(newLoss)}</code>，真实变化 <code>${n(actual)}</code>。`;
+function updateMatrix(){
+ const cells=['a','b','c','d'],g=[2,12,4,3],idx=Number($('#matrixCell').value),eps=Number($('#matrixEps').value),v=[1,2,3,4]; v[idx]+=eps;
+ const f=v[0]**2+3*v[1]**2+v[2]*v[3],pred=g[idx]*eps;
+ $('#matrixEpsV').textContent=n(eps);
+ $('#matrixReadout').textContent=`只让 ${cells[idx]} 改动 ${n(eps)}，其余元素固定。偏导=${g[idx]}；预测 Δf≈${n(pred)}；新函数值=${n(f)}，实际 Δf=${n(f-25)}。`;
 }
-['weightCell','weightEps'].forEach(id=>$('#'+id).addEventListener('input',updateWeightExample));updateWeightExample();
-document.querySelectorAll('.tabs button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');$('#'+btn.dataset.tab).classList.add('active')}));
-document.querySelectorAll('.quiz-item').forEach(item=>item.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{item.querySelectorAll('button').forEach(b=>b.classList.remove('correct','wrong'));const ok=btn.dataset.choice===item.dataset.answer;btn.classList.add(ok?'correct':'wrong');item.querySelector('.feedback').textContent=ok?'正确。先看输出、自变量和结果形状。':'再检查一次输出、自变量和矩阵乘法的形状。'})));
+for(const id of ['x1','x2','dx1','dx2']) $('#'+id).addEventListener('input',updateGradient);
+for(const id of ['jx1','jx2','jacDelta']) $('#'+id).addEventListener('input',updateJac);
+for(const id of ['matrixCell','matrixEps']) $('#'+id).addEventListener('input',updateMatrix);
+updateGradient();updateJac();updateMatrix();
+document.querySelectorAll('.quiz-item').forEach(item=>item.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{item.querySelectorAll('button').forEach(b=>b.classList.remove('correct','wrong'));const ok=btn.dataset.choice===item.dataset.answer;btn.classList.add(ok?'correct':'wrong');item.querySelector('.feedback').textContent=(ok?'正确。':'再看一次：')+item.dataset.explanation;})));
 </script>
-</body>
-</html>
+</body></html>

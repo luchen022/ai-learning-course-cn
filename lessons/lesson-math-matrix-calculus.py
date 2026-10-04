@@ -1,131 +1,91 @@
-"""向量与矩阵求导：解析梯度、数值差分与 PyTorch 自动求导核对。"""
-
+"""普通数学函数的向量与矩阵求导：逐元素偏导和中心差分核对。"""
 from __future__ import annotations
 
 import numpy as np
-import torch
+
+EPS = 1e-5
 
 
-EPS = 1e-6
-
-
-def finite_difference_vector(function, x: np.ndarray) -> np.ndarray:
-    """用中心差分计算标量函数对向量的梯度。"""
-    gradient = np.zeros_like(x, dtype=np.float64)
-    for index in np.ndindex(x.shape):
-        plus = x.copy()
-        minus = x.copy()
+def gradient_by_difference(function, value):
+    """标量函数：每次只改一个输入元素，其他元素固定。"""
+    gradient = np.zeros_like(value, dtype=float)
+    for index in np.ndindex(value.shape):
+        plus, minus = value.copy(), value.copy()
         plus[index] += EPS
         minus[index] -= EPS
         gradient[index] = (function(plus) - function(minus)) / (2 * EPS)
     return gradient
 
 
-def finite_difference_jacobian(function, x: np.ndarray) -> np.ndarray:
-    """用中心差分计算向量函数对向量的雅可比矩阵。"""
-    output = function(x)
-    jacobian = np.zeros((output.size, x.size), dtype=np.float64)
-    for column in range(x.size):
-        plus = x.copy()
-        minus = x.copy()
-        plus[column] += EPS
-        minus[column] -= EPS
-        jacobian[:, column] = (function(plus) - function(minus)) / (2 * EPS)
+def jacobian_by_difference(function, value):
+    """多个输出：输入与输出都按行展开，行对应输出、列对应输入。"""
+    jacobian = np.zeros((function(value).size, value.size))
+    for column, index in enumerate(np.ndindex(value.shape)):
+        plus, minus = value.copy(), value.copy()
+        plus[index] += EPS
+        minus[index] -= EPS
+        jacobian[:, column] = ((function(plus) - function(minus)) / (2 * EPS)).ravel()
     return jacobian
 
 
-def linear_loss(W: np.ndarray, x: np.ndarray, b: np.ndarray, target: np.ndarray) -> float:
-    error = W @ x + b - target
-    return float(0.5 * error @ error)
+def vector_scalar(x):
+    return x[0] ** 2 + 2 * x[1] ** 2
 
 
-def check_vector_gradient() -> None:
+def vector_output(x):
+    return np.array([x[0] ** 2 + x[1], x[0] * x[1]])
+
+
+def matrix_scalar(A):
+    a, b, c, d = A.ravel()
+    return a**2 + 3 * b**2 + c * d
+
+
+def matrix_square(A):
+    return A @ A
+
+
+def main():
+    np.set_printoptions(precision=4, suppress=True)
     x = np.array([2.0, 1.0])
-    analytic = np.array([2 * x[0], 4 * x[1]])
-    numeric = finite_difference_vector(lambda value: value[0] ** 2 + 2 * value[1] ** 2, x)
-    np.testing.assert_allclose(analytic, numeric, rtol=1e-6, atol=1e-7)
-    print("1. 标量对向量：∇L =", analytic, "（数值差分一致）")
-    delta_x = np.array([0.1, 0.0])
-    predicted_change = analytic @ delta_x
-    actual_change = (x[0] + 0.1) ** 2 + 2 * x[1] ** 2 - (x[0] ** 2 + 2 * x[1] ** 2)
-    print(f"   Δx={delta_x} 时，梯度预测 ΔL≈{predicted_change:.4f}，真实 ΔL={actual_change:.4f}")
+    gradient = np.array([2 * x[0], 4 * x[1]])
+    np.testing.assert_allclose(gradient, gradient_by_difference(vector_scalar, x), atol=1e-7)
+    delta = np.array([0.1, 0.0])
+    print("1. f(x)=x₁²+2x₂²，梯度：", gradient)
+    print("   ∇f·Δx：", gradient @ delta, "；实际变化：", vector_scalar(x + delta) - vector_scalar(x))
 
+    x = np.array([2.0, 3.0])
+    jacobian = np.array([[2 * x[0], 1], [x[1], x[0]]])
+    np.testing.assert_allclose(jacobian, jacobian_by_difference(vector_output, x), atol=1e-7)
+    print("2. F(x)=[x₁²+x₂,x₁x₂]，雅可比：\n", jacobian)
+    print("   JΔx：", jacobian @ delta, "；实际变化：", vector_output(x + delta) - vector_output(x))
 
-def check_jacobian() -> None:
-    W = np.array([[1.0, 2.0], [-1.0, 3.0]])
-    b = np.array([0.0, 1.0])
-    x = np.array([1.0, 2.0])
-    numeric = finite_difference_jacobian(lambda value: W @ value + b, x)
-    np.testing.assert_allclose(W, numeric, rtol=1e-6, atol=1e-7)
-    print("2. 向量对向量：∂y/∂x =\n", W, "\n   （数值差分一致）", sep="")
-    delta_x = np.array([0.0, 0.1])
-    print("   只让 x₂ 增加 0.1 时，Δy = JΔx =", W @ delta_x)
+    A = np.array([[1.0, 2.0], [3.0, 4.0]])
+    a, b, c, d = A.ravel()
+    gradient = np.array([[2 * a, 6 * b], [d, c]])
+    np.testing.assert_allclose(gradient, gradient_by_difference(matrix_scalar, A), atol=1e-7)
+    H = np.array([[0.0, 0.1], [0.0, 0.0]])
+    print("3. f(A)=a²+3b²+cd，矩阵梯度：\n", gradient)
+    print("   对应位置乘积之和：", np.sum(gradient * H), "；实际变化：", matrix_scalar(A + H) - matrix_scalar(A))
 
+    jacobian = np.array([[2*a, c, b, 0], [b, a+d, 0, b], [c, 0, a+d, c], [0, c, b, 2*d]])
+    np.testing.assert_allclose(jacobian, jacobian_by_difference(matrix_square, A), atol=1e-7)
+    np.testing.assert_allclose((jacobian @ H.ravel()).reshape(2, 2), A @ H + H @ A)
+    print("4. F(A)=A @ A，展开后的雅可比：\n", jacobian)
+    print("   导数作用于 H：\n", A @ H + H @ A)
+    print("   实际变化：\n", matrix_square(A + H) - matrix_square(A))
 
-def check_single_sample() -> None:
-    W = np.array([[1.0, -1.0, 2.0], [0.5, 1.0, -1.0]])
-    x = np.array([2.0, 1.0, -1.0])
-    b = np.array([0.0, 1.0])
-    target = np.array([0.0, 2.0])
+    def composite(x):
+        u, v = x[0] + x[1], x[0] - x[1]
+        return u**2 + 3 * v**2
 
-    error = W @ x + b - target
-    grad_W = np.outer(error, x)
-    grad_b = error
-    grad_x = W.T @ error
-
-    numeric_W = finite_difference_vector(lambda value: linear_loss(value, x, b, target), W)
-    numeric_b = finite_difference_vector(lambda value: linear_loss(W, x, value, target), b)
-    numeric_x = finite_difference_vector(lambda value: linear_loss(W, value, b, target), x)
-
-    np.testing.assert_allclose(grad_W, numeric_W, rtol=1e-6, atol=1e-7)
-    np.testing.assert_allclose(grad_b, numeric_b, rtol=1e-6, atol=1e-7)
-    np.testing.assert_allclose(grad_x, numeric_x, rtol=1e-6, atol=1e-7)
-
-    print("3. 单样本线性层：")
-    print("   ∂L/∂W =\n", grad_W)
-    print("   ∂L/∂b =", grad_b)
-    print("   ∂L/∂x =", grad_x, "（三项均通过数值差分）")
-    changed_W = W.copy()
-    changed_W[0, 0] += 0.1
-    predicted_change = grad_W[0, 0] * 0.1
-    actual_change = linear_loss(changed_W, x, b, target) - linear_loss(W, x, b, target)
-    print(f"   W₁₁ 增加 0.1：梯度预测 ΔL≈{predicted_change:.4f}，真实 ΔL={actual_change:.4f}")
-
-
-def check_batch_and_autograd() -> None:
-    X = np.array([[2.0, 1.0, -1.0], [0.0, 2.0, 1.0]])
-    W = np.array([[1.0, -1.0, 2.0], [0.5, 1.0, -1.0]])
-    b = np.array([0.0, 1.0])
-    target = np.array([[0.0, 2.0], [1.0, 0.0]])
-
-    prediction = X @ W.T + b
-    upstream = (prediction - target) / X.shape[0]  # 批次平均损失
-    grad_W = upstream.T @ X
-    grad_b = upstream.sum(axis=0)
-    grad_X = upstream @ W
-
-    X_t = torch.tensor(X, dtype=torch.float64, requires_grad=True)
-    W_t = torch.tensor(W, dtype=torch.float64, requires_grad=True)
-    b_t = torch.tensor(b, dtype=torch.float64, requires_grad=True)
-    target_t = torch.tensor(target, dtype=torch.float64)
-    prediction_t = X_t @ W_t.T + b_t
-    loss_t = 0.5 * ((prediction_t - target_t) ** 2).sum(dim=1).mean()
-    loss_t.backward()
-
-    np.testing.assert_allclose(grad_W, W_t.grad.numpy(), rtol=1e-10, atol=1e-10)
-    np.testing.assert_allclose(grad_b, b_t.grad.numpy(), rtol=1e-10, atol=1e-10)
-    np.testing.assert_allclose(grad_X, X_t.grad.numpy(), rtol=1e-10, atol=1e-10)
-
-    print("4. 批次公式与 PyTorch autograd 一致：")
-    print("   G.T @ X      ->", grad_W.shape)
-    print("   G.sum(axis=0)->", grad_b.shape)
-    print("   G @ W        ->", grad_X.shape)
+    x = np.array([2.0, 1.0])
+    u, v = x[0] + x[1], x[0] - x[1]
+    gradient = np.array([2*u + 6*v, 2*u - 6*v])
+    np.testing.assert_allclose(gradient, gradient_by_difference(composite, x), atol=1e-7)
+    print("5. u=x₁+x₂，v=x₁−x₂，f=u²+3v²，梯度：", gradient)
+    print("所有手推导数都与中心差分一致。")
 
 
 if __name__ == "__main__":
-    np.set_printoptions(precision=4, suppress=True)
-    check_vector_gradient()
-    check_jacobian()
-    check_single_sample()
-    check_batch_and_autograd()
-    print("\n全部检查通过。先用形状推导，再用数值差分和自动求导核对。")
+    main()
