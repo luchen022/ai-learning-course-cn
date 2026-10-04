@@ -70,9 +70,10 @@ def main():
 
     jacobian = np.array([[2*a, c, b, 0], [b, a+d, 0, b], [c, 0, a+d, c], [0, c, b, 2*d]])
     np.testing.assert_allclose(jacobian, jacobian_by_difference(matrix_square, A), atol=1e-7)
-    np.testing.assert_allclose((jacobian @ H.ravel()).reshape(2, 2), A @ H + H @ A)
+    estimated_change = (jacobian[:, 1] * 0.1).reshape(2, 2)
+    np.testing.assert_allclose(estimated_change, matrix_square(A + H) - matrix_square(A))
     print("4. F(A)=A @ A，展开后的雅可比：\n", jacobian)
-    print("   导数作用于 H：\n", A @ H + H @ A)
+    print("   只让 b 增加 0.1，各输出偏导乘 0.1：\n", estimated_change)
     print("   实际变化：\n", matrix_square(A + H) - matrix_square(A))
 
     def composite(x):

@@ -113,18 +113,32 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <p>这里 2A 就是把 A 的每个元素乘 2。这个结论来自本例中“每格贡献自己的平方”。换一个函数，偏导表达式就可能不同，必须按新的函数重新求导。可以复用的是“逐个求偏导，再按原位置排列”的方法，而不是 2A 这个结果。</p>
 </section>
 
-<section id="matrix-output"><p class="section-num">05 / 输出也是矩阵时</p><h2>输出每个元素，都有一整组偏导</h2>
-<p>“矩阵函数求导”还可能指输出也是矩阵。它和“标量函数对矩阵求导”不同。仍然使用 A=[[a,b],[c,d]]，定义：</p>
-<div class="formula">F(A)=A²=A @ A（这里是矩阵乘法）<br>F(A)=[[a²+bc, ab+bd],<br>　　　[ac+dc, bc+d²]]</div>
-<p>四个输出、四个输入，一共需要 16 个偏导。先固定一个展开顺序：输入按 [a,b,c,d] 排列，输出按 [F₁₁,F₁₂,F₂₁,F₂₂] 排列，得到 4×4 的雅可比：</p>
-<div class="table-wrap"><table><thead><tr><th>输出</th><th>∂/∂a</th><th>∂/∂b</th><th>∂/∂c</th><th>∂/∂d</th></tr></thead><tbody><tr><td>F₁₁=a²+bc</td><td>2a</td><td>c</td><td>b</td><td>0</td></tr><tr><td>F₁₂=ab+bd</td><td>b</td><td>a+d</td><td>0</td><td>b</td></tr><tr><td>F₂₁=ac+dc</td><td>c</td><td>0</td><td>a+d</td><td>c</td></tr><tr><td>F₂₂=bc+d²</td><td>0</td><td>c</td><td>b</td><td>2d</td></tr></tbody></table></div>
-<p>如果保持矩阵的行列编号，可以把这些数记为 <code>Dᵢⱼₖₗ=∂Fᵢⱼ/∂Aₖₗ</code>：前两个编号标明输出位置，后两个标明输入位置。只是组织方式变了，每格仍是普通偏导。</p>
-<h3>用它预测整张输出矩阵的变化</h3>
-<p>设 A=[[1,2],[3,4]]，只让 b 增加 0.1。取上表“对 b 求导”的一列 [3,5,0,3]，乘 0.1，再按输出位置排回两行两列：</p>
-<div class="formula">ΔF ≈ [[0.3,0.5],[0,0.3]]</div>
-<p>本次只改一个元素，重新计算得到的变化也恰好是这个结果；一般同时改多个元素时，可能还有二阶项。</p>
-<details><summary>更紧凑的写法：导数也可以是“输入改动 → 输出改动”的规则</summary><div class="formula">(A+ΔA)²−A² = AΔA + ΔA A + (ΔA)²<br>忽略二阶小量：(ΔF) ≈ AΔA + ΔA A</div><p>所以 F 在 A 处的导数可以写成线性映射 <code>DF(A)[H]=AH+HA</code>，H 表示一个矩阵改动。它与上面的 16 个偏导描述同一个变化规则。一般矩阵不能交换乘法次序，因此不能直接照搬标量公式，把它写成对任意 H 都成立的 <code>2AH</code>。</p></details>
+<section id="matrix-output"><p class="section-num">05 / 具体例子：矩阵乘自己</p><h2>先算清楚输出，再对每个输出求偏导</h2>
+<p>上一部分的函数输出一个数。这一部分换一个函数：输入矩阵 A，计算 A 和自己做矩阵乘法，输出仍然是一张矩阵。</p>
+<h3>① 先解释记号和乘法</h3>
+<p><code>F(A)</code> 表示“把矩阵 A 交给函数 F 后得到的结果”。这里定义 <code>F(A)=A @ A</code>，@ 表示矩阵乘法；这也常写作 <code>A²</code>。它与上一部分的逐元素平方不同。</p>
+<p>矩阵乘法的一个输出元素怎么计算？<strong>取左边矩阵的一行、右边矩阵的一列，对应位置相乘，再把乘积相加。</strong>先看左上角：</p>
+<div class="formula">A=[[a,b],[c,d]]<br>左边第一行：[a,b]<br>右边第一列：[a,c]<br>左上角的输出：a×a+b×c=a²+bc</div>
+<p>其他三个位置也用同样的方法。F₁₁ 表示输出矩阵第一行第一列的数，F₁₂ 表示第一行第二列的数；下标只是在标明位置。</p>
+<div class="table-wrap"><table><thead><tr><th>输出位置</th><th>取哪一行和哪一列</th><th>展开计算</th></tr></thead><tbody><tr><td>F₁₁</td><td>第一行与第一列</td><td>a×a+b×c=a²+bc</td></tr><tr><td>F₁₂</td><td>第一行与第二列</td><td>a×b+b×d=ab+bd</td></tr><tr><td>F₂₁</td><td>第二行与第一列</td><td>c×a+d×c=ac+dc</td></tr><tr><td>F₂₂</td><td>第二行与第二列</td><td>c×b+d×d=bc+d²</td></tr></tbody></table></div>
+<div class="formula">F(A)=[[a²+bc,ab+bd],<br>　　　[ac+dc,bc+d²]]</div>
+<h3>② 每个输出，分别对四个输入求偏导</h3>
+<p>先只看左上角的输出 <code>F₁₁=a²+bc</code>：</p>
+<ul><li>对 a 求导：b、c、d 固定，得到 2a。</li><li>对 b 求导：a、c、d 固定，得到 c。</li><li>对 c 求导：a、b、d 固定，得到 b。</li><li>对 d 求导：表达式里没有 d，得到 0。</li></ul>
+<p>这就算出了一个输出对应的四个偏导。对另外三个输出也分别这样计算，一共得到 16 个偏导。仍然使用前面学过的雅可比排列方法：<strong>每一行对应一个输出，每一列对应一个输入。</strong></p>
+<div class="table-wrap"><table><thead><tr><th>输出函数</th><th>对 a 求导</th><th>对 b 求导</th><th>对 c 求导</th><th>对 d 求导</th></tr></thead><tbody><tr><td>F₁₁=a²+bc</td><td>2a</td><td>c</td><td>b</td><td>0</td></tr><tr><td>F₁₂=ab+bd</td><td>b</td><td>a+d</td><td>0</td><td>b</td></tr><tr><td>F₂₁=ac+dc</td><td>c</td><td>0</td><td>a+d</td><td>c</td></tr><tr><td>F₂₂=bc+d²</td><td>0</td><td>c</td><td>b</td><td>2d</td></tr></tbody></table></div>
+<p>输入按 [a,b,c,d] 排列；输出按 [F₁₁,F₁₂,F₂₁,F₂₂] 排列。表中的四行四列就是这个顺序下的雅可比。不要把它当成新的求导公式，每个格子都是刚才那种普通偏导。</p>
+<h3>③ 这些偏导有什么用？只改一个输入试试</h3>
+<p>设 A=[[1,2],[3,4]]，即 a=1、b=2、c=3、d=4。只让 b 增加 0.1，其他元素保持不变。取上表“对 b 求导”的一列：</p>
+<div class="formula">四个输出对 b 的偏导：[c,a+d,0,c]=[3,5,0,3]<br>每个偏导乘改变量 0.1：<br>F₁₁ 的变化约为 3×0.1=0.3<br>F₁₂ 的变化约为 5×0.1=0.5<br>F₂₁ 的变化约为 0×0.1=0<br>F₂₂ 的变化约为 3×0.1=0.3</div>
+<p>把这四个输出的变化放回各自的位置，就得到预计的输出变化：</p>
+<div class="formula">[[0.3,0.5],[0,0.3]]</div>
+<h3>④ 用实际计算核对</h3>
+<div class="formula">原输入 A=[[1,2],[3,4]]<br>原输出 A @ A=[[7,10],[15,22]]<br><br>改后输入：[[1,2.1],[3,4]]<br>改后输出：[[7.3,10.5],[15,22.3]]<br><br>改后输出减去原输出：<br>[[7.3−7,10.5−10],[15−15,22.3−22]]<br>= [[0.3,0.5],[0,0.3]]</div>
+<p>这次结果与偏导估计恰好相等，因为只改变 b 时，四个输出关于 b 都是一次式。对于其他改动，估计与实际结果未必完全相等；前面平方函数的例子已经展示过这种差别。</p>
+<div class="success"><strong>本例学到的方法：</strong>先展开矩阵乘法，找出每个输出函数；再固定其他输入，逐个求偏导；最后用“偏导×小改变量”解释输出怎样变化。这里不需要额外的抽象导数记法。</div>
 </section>
+
 <section id="chain"><p class="section-num">06 / 复合函数</p><h2>中间变量也是函数，逐条应用链式法则</h2>
 <p>定义两个中间变量，再把它们代入一个标量函数：</p>
 <div class="formula">u=x₁+x₂，v=x₁−x₂<br>f=u²+3v²</div>
