@@ -29,7 +29,7 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <div class="chips"><span class="chip">偏导的定义</span><span class="chip">向量梯度</span><span class="chip">雅可比矩阵</span><span class="chip">矩阵梯度</span><span class="chip">变化量的意义</span></div>
 </div></header>
 <div class="layout">
-<nav class="nav" aria-label="课程目录"><p class="nav-title">学习路径</p><a href="#types">01 先看函数与自变量</a><a href="#gradient">02 标量函数对向量求导</a><a href="#jacobian">03 向量函数对向量求导</a><a href="#linear">04 标量函数对矩阵求导</a><a href="#matrix-output">05 矩阵输出怎样求导</a><a href="#chain">06 复合函数的求导</a><a href="#practice">07 数值验证与练习</a><a href="#quiz">08 自测</a></nav>
+<nav class="nav" aria-label="课程目录"><p class="nav-title">学习路径</p><a href="#types">01 先看函数与自变量</a><a href="#gradient">02 标量函数对向量求导</a><a href="#jacobian">03 向量函数对向量求导</a><a href="#linear">04 例子：元素平方后求和</a><a href="#matrix-output">05 矩阵输出怎样求导</a><a href="#chain">06 复合函数的求导</a><a href="#practice">07 数值验证与练习</a><a href="#quiz">08 自测</a></nav>
 <main class="page">
 <div class="note"><strong>学习方法：</strong>每遇到一个函数，先展开它，辨认独立的自变量。每次只改变其中一个，固定其他自变量，用你会的标量规则求导；最后再看这些偏导应该排成什么形状。</div>
 <section id="types"><p class="section-num">01 / 从一元导数到偏导</p><h2>向量和矩阵里，每个元素都可以是一个自变量</h2>
@@ -87,7 +87,8 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <div class="card"><h3>动手：观察一个输入怎样影响两个输出</h3><div class="controls"><label>x₁ <input id="jx1" type="range" min="-3" max="3" step="0.25" value="2"> <span id="jx1v"></span></label><label>x₂ <input id="jx2" type="range" min="-3" max="3" step="0.25" value="3"> <span id="jx2v"></span></label></div><div id="jacReadout" class="readout" aria-live="polite"></div><div class="controls"><label>输入改动 <select id="jacDelta"><option value="x1">只让 x₁ 增加 0.1</option><option value="x2">只让 x₂ 增加 0.1</option><option value="both">x₁ 增加 0.1，x₂ 减少 0.1</option></select></label></div><div id="jacDeltaReadout" class="readout" aria-live="polite"></div></div>
 <div class="note"><strong>和梯度的关系：</strong>若只有一个输出，雅可比按本课约定是一行的偏导表；梯度则按输入形状排列。在列向量记法下，这一行雅可比是梯度的转置。两者记录的是同一组偏导。</div>
 </section>
-<section id="linear"><p class="section-num">04 / 标量函数对矩阵求导</p><h2>每个矩阵元素分别求偏导，放回原位置</h2>
+<section id="linear"><p class="section-num">04 / 一个具体函数的求导例子</p><h2>矩阵求导例子：所有元素平方后求和</h2>
+<div class="note"><strong>本节只推导这一个函数：</strong><code>f(A)=sum(A ⊙ A)</code>。得到的 <code>∂f/∂A=2A</code> 是这个函数的求导公式，不是所有标量函数对矩阵求导都能使用的公式。“标量函数对矩阵求导”是一类问题的名称，本例只是其中一种。</div>
 <h3>这个函数对整个矩阵做了什么运算？</h3>
 <p>定义“每个元素平方，再把所有元素相加”的函数。⊙ 表示<strong>相同位置的元素相乘</strong>，sum 在这里表示<strong>把整张矩阵的所有元素相加</strong>：</p>
 <div class="formula">A=[[a,b],[c,d]]<br>A ⊙ A = [[a²,b²],[c²,d²]]<br>f(A)=sum(A ⊙ A)=a²+b²+c²+d²</div>
@@ -109,7 +110,7 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <div class="card"><h3>动手：只改动矩阵的一个格子</h3><p>固定起点 A=[[1,2],[3,4]]，f(A)=30。</p><div class="controls"><label>选择元素 <select id="matrixCell"><option value="0">a=A₁₁，偏导为 2</option><option value="1" selected>b=A₁₂，偏导为 4</option><option value="2">c=A₂₁，偏导为 6</option><option value="3">d=A₂₂，偏导为 8</option></select></label><label>改变量 ε <input id="matrixEps" type="range" min="-0.2" max="0.2" step="0.01" value="0.1"> <span id="matrixEpsV"></span></label></div><div id="matrixReadout" class="readout" aria-live="polite"></div></div>
 <h3>把求导结果写回矩阵形式</h3>
 <div class="formula">f(A)=sum(A ⊙ A)<br>每格的偏导：∂f/∂Aᵢⱼ=2Aᵢⱼ<br>所有格子排回原位置：∂f/∂A=2A</div>
-<p>这里 2A 就是把 A 的每个元素乘 2。可以看到：函数的整体写法、逐元素展开、逐元素求导和梯度的整体写法是连贯的。</p>
+<p>这里 2A 就是把 A 的每个元素乘 2。这个结论来自本例中“每格贡献自己的平方”。换一个函数，偏导表达式就可能不同，必须按新的函数重新求导。可以复用的是“逐个求偏导，再按原位置排列”的方法，而不是 2A 这个结果。</p>
 </section>
 
 <section id="matrix-output"><p class="section-num">05 / 输出也是矩阵时</p><h2>输出每个元素，都有一整组偏导</h2>
