@@ -216,7 +216,7 @@ for value in values:
 </section>
 <section id="practice">
 <p class="section-num">08 / 将概念落实到代码</p><h2>NumPy 练习与线性回归实验</h2>
-<p>先不引入新模型，继续使用你熟悉的线性回归。我们用一个特征，保持输入、预测和标签都是二维数组，观察一次批量计算如何得到多个样本的预测。</p>
+<p>本节直接应用求导预备课的公式，用 NumPy 写出线性回归训练。这个例子使用一个输入特征和一个输出；先了解下面的 mean 运算，再对照矩阵公式与代码。</p>
 <h3>mean(axis=n)：固定其他轴的索引，只遍历第 n 个轴</h3>
 <div class="callout"><strong>优先用这个思路理解：</strong>固定其他维度的索引（位置编号），遍历 <code>axis=n</code> 这个维度上的所有位置，把取到的数求平均。然后换一组其他维度的索引，再算下一个平均值。轴编号从 0 开始。</div>
 <p>这里“固定”指的是<strong>索引不变</strong>，不是张量里的数值不变。比如 <code>A[i, j]</code> 中，固定 j、遍历 i，就是依次读取 <code>A[0, j]</code>、<code>A[1, j]</code>……。这样理解，不论张量有几个轴都适用。</p>
@@ -238,51 +238,21 @@ for value in values:
 #  [8.5, 9.5, 10.5]]    # (2, 3)，结果用 [i, k] 索引</code></pre>
 <p><strong>为什么形状少了一个轴？</strong>因为 j 的多个位置已经被合成一个平均值，结果不再需要 j 这个索引。默认 <code>keepdims=False</code> 会移除被平均的轴；<code>keepdims=True</code> 则保留它，长度变成 1。例如 <code>T.mean(axis=1, keepdims=True)</code> 的形状是 <code>(2, 1, 3)</code>。</p>
 <p>如果写 <code>A.mean()</code>，不指定 axis，默认就把所有元素一起求平均：<code>(1+2+3+4+5+6)/6 = 3.5</code>，得到一个标量。</p>
-<h3>把这个思路用在线性回归里</h3>
-<div class="callout">向量与矩阵求导的定义和方法见<a href="lesson-math-matrix-calculus.html">求导预备课</a>。下面单独解释如何把求导方法用于本节的训练代码。</div>
-<details id="regression"><summary>两行梯度怎样得到？从标量求导展开训练代码</summary>
-<p>下面这段训练代码看起来都是矩阵，其实<strong>每个梯度元素仍然是对一个标量参数求导</strong>。我们先用你会的标量求导算清楚，再把重复计算组织成向量或矩阵。</p>
-<h3>① 一个样本：只用标量求导</h3>
-<p>先看一个输入 x 和目标 y。可训练的参数是 w 和 b；求导时，数据 x、y 保持不变。</p>
-<div class="formula">预测：p = wx + b<br>误差：e = p − y = wx + b − y<br>平方误差：ℓ = e²<br>∂ℓ/∂w = 2e × ∂e/∂w = 2ex<br>∂ℓ/∂b = 2e × ∂e/∂b = 2e</div>
-<p>求 w 的偏导时，把 b 当成常数；求 b 的偏导时，把 w 当成常数。这就是把你熟悉的一元求导分别应用到两个参数上。这里的 ℓ 没有乘 1/2，因此导数保留系数 2。</p>
-<h3>② 五个样本：损失取平均，导数也取平均</h3>
-<p>第一节的数据是 <code>x=[0,1,2,3,4]</code>、<code>y=[1,3,5,7,9]</code>。每条样本都使用<strong>同一组 w、b</strong>。用 i 表示样本编号，从 0 到 4：</p>
-<div class="formula">eᵢ = wxᵢ + b − yᵢ<br>L = (e₀² + e₁² + e₂² + e₃² + e₄²) / 5<br>∂L/∂w = (2x₀e₀ + 2x₁e₁ + 2x₂e₂ + 2x₃e₃ + 2x₄e₄) / 5<br>∂L/∂b = (2e₀ + 2e₁ + 2e₂ + 2e₃ + 2e₄) / 5</div>
-<p>求和的导数等于各项导数相加；除以常数 5，求导后仍然除以 5。没有新的求导规则，只是把五条样本的贡献汇总起来。</p>
-<h3>③ 矩阵写法：把这五次计算一起做</h3>
-<p>这里只需要三个记号：<code>(5,1)</code> 表示 5 行 1 列；<code>@</code> 表示矩阵乘法；<code>.T</code> 表示转置。<code>X</code> 是五个输入排成的列，<code>error</code> 是五个误差排成的列；<code>W=[[w]]</code> 是只有一个元素的矩阵，<code>b=[b]</code> 只有一个元素。</p>
-<div class="formula">X.T @ error<br>= [x₀, x₁, x₂, x₃, x₄] @ [[e₀], [e₁], [e₂], [e₃], [e₄]]<br>= [[x₀e₀ + x₁e₁ + x₂e₂ + x₃e₃ + x₄e₄]]</div>
-<p>看到了吗？<strong>转置加矩阵乘法，就是一次算完上面那串“输入乘误差再相加”。</strong>它把已推导好的标量计算写得更紧凑，并不代替求导过程。</p>
-<div class="formula">grad_W = 2 / 5 * X.T @ error<br>grad_b = 2 * error.mean(axis=0)</div>
-<p>第一行是上面的 ∂L/∂w，结果装在 <code>(1,1)</code> 矩阵里，与 W 同形。第二行是 ∂L/∂b：固定输出列索引 0，遍历五个样本的行索引，对五个误差求平均，再乘 2，结果形状为 <code>(1,)</code>，与 b 同形。<code>len(X)</code> 就是样本数 5。</p>
-<h3>④ 手算第一次更新，对照每一行代码</h3>
-<div class="table-wrap"><table><thead><tr><th>计算</th><th>w=0、b=0 时的结果</th></tr></thead><tbody>
-<tr><td><code>prediction = X @ W + b</code></td><td>五个预测都是 0</td></tr>
-<tr><td><code>error = prediction - y</code></td><td>误差为 −1、−3、−5、−7、−9</td></tr>
-<tr><td><code>loss = np.mean(error ** 2)</code></td><td>(1+9+25+49+81)/5 = 33</td></tr>
-<tr><td><code>X.T @ error</code></td><td>0×(−1)+1×(−3)+2×(−5)+3×(−7)+4×(−9) = −70</td></tr>
-<tr><td><code>grad_W</code></td><td>2/5 × (−70) = −28</td></tr>
-<tr><td><code>grad_b</code></td><td>2 × (−1−3−5−7−9)/5 = −10</td></tr>
+<h3>直接使用矩阵公式</h3>
+<div id="regression">
+<p>求导公式已在<a href="lesson-math-matrix-calculus.html#distance">预备课 V4：平方差求和</a>中学习，这里直接代入，并用预备课的常数倍规则处理平均值。</p>
+<p>X 是输入，y 是已知标签；W 是权重，b 是偏置。N 为样本数，本例 N=5。求 W 的梯度时固定 b，求 b 的梯度时固定 W；X、y 始终固定。E 表示误差。</p>
+<div class="formula">预测：P = XW + b<br>误差：E = P − y<br>损失：L = sum(E ⊙ E) / N<br>权重梯度：∂L/∂W = (2/N) XᵀE<br>偏置梯度：∂L/∂b = 2 × E 沿 axis=0 的平均值</div>
+<p>这里 sum 表示所有元素求和，⊙ 表示逐元素乘法。b 的加法通过前面学过的广播完成。此处的平均损失与梯度系数针对<strong>每个样本只有一个输出</strong>的情况。</p>
+<div class="table-wrap"><table><thead><tr><th>矩阵公式</th><th>NumPy 写法</th><th>本例结果形状</th></tr></thead><tbody>
+<tr><td>P=XW+b</td><td><code>X @ W + b</code></td><td><code>(5,1)</code></td></tr>
+<tr><td>E=P−y</td><td><code>prediction - y</code></td><td><code>(5,1)</code></td></tr>
+<tr><td>L=sum(E⊙E)/N</td><td><code>np.mean(error ** 2)</code></td><td>标量</td></tr>
+<tr><td>∂L/∂W=(2/N)XᵀE</td><td><code>2 / len(X) * X.T @ error</code></td><td><code>(1,1)</code>，与 W 同形</td></tr>
+<tr><td>∂L/∂b=2×沿样本轴的误差平均值</td><td><code>2 * error.mean(axis=0)</code></td><td><code>(1,)</code>，与 b 同形</td></tr>
 </tbody></table></div>
-<p>学习率为 0.05，参数更新为 <code>w=0−0.05×(−28)=1.4</code>、<code>b=0−0.05×(−10)=0.5</code>。负梯度意味着：在当前位置，小幅增加这两个参数会降低损失。用更新后的参数重新计算，损失从 33 降到 3.61。</p>
-<pre><code>for step in range(100):
-    prediction = X @ W + b              # 一起计算五个 wxᵢ+b
-    error = prediction - y              # 五个误差 eᵢ
-    loss = np.mean(error ** 2)           # 五个平方误差的平均值
-    grad_W = 2 / len(X) * X.T @ error   # 汇总 2xᵢeᵢ，再除以样本数
-    grad_b = 2 * error.mean(axis=0)      # 汇总 2eᵢ，再除以样本数
-    W -= learning_rate * grad_W          # 每个权重减去它自己的梯度 × 学习率
-    b -= learning_rate * grad_b</code></pre>
-<p>每次循环都会用<strong>当前参数</strong>重新计算误差和梯度。上面 −28、−10 只属于初始参数，不会一直保持不变。</p>
-<h3>⑤ 真正有多个权重时，仍然逐个求导</h3>
-<p>如果每条样本有两个特征，预测变成 <code>pᵢ=xᵢ₀w₀+xᵢ₁w₁+b</code>。分别对 w₀、w₁ 求导，其他参数固定：</p>
-<div class="formula">∂L/∂w₀ = (2/N) Σᵢ xᵢ₀eᵢ<br>∂L/∂w₁ = (2/N) Σᵢ xᵢ₁eᵢ</div>
-<p>Σᵢ 就是“把所有样本 i 对应的项相加”，N 是样本数。此时 X 为 <code>(N,2)</code>，W 为 <code>(2,1)</code>，error 为 <code>(N,1)</code>。<code>X.T @ error</code> 的两行分别是 <code>Σᵢ xᵢ₀eᵢ</code> 和 <code>Σᵢ xᵢ₁eᵢ</code>，所以同一行代码得到两个权重各自的梯度。</p>
-<div class="success"><strong>向量、矩阵求导在这里的意义：</strong>分别求出每个参数对同一个标量损失的偏导，再按参数原来的位置排好。梯度告诉我们各个参数该怎样调整，而矩阵运算把这些重复计算一起完成。</div>
-<p><strong>自测：</strong>不看表格，能否从 eᵢ² 推出 2xᵢeᵢ 和 2eᵢ，再解释转置、除以 N、mean 各自做了什么？可以的话，再对照下面的训练代码检查每一步。</p>
-</details>
-
+</div>
+<h3>把公式写进训练循环</h3>
 <pre><code>import numpy as np
 
 X = np.array([[0.], [1.], [2.], [3.], [4.]])  # (5, 1)
@@ -299,7 +269,7 @@ for step in range(100):
     grad_b = 2 * error.mean(axis=0)           # (1,)
     W -= learning_rate * grad_W
     b -= learning_rate * grad_b</code></pre>
-<p><code>error</code> 的形状为 <code>(5, 1)</code>，用 <code>error[i, j]</code> 索引。<code>error.mean(axis=0)</code> 就是<strong>固定输出索引 j，遍历样本索引 i</strong>。这里只有 j=0，所以取五个样本的误差 <code>error[0, 0]</code> 到 <code>error[4, 0]</code> 求平均，结果形状为 <code>(1,)</code>，正好对应 b 的形状。</p><p>这里 MSE 对所有元素取平均，模型只有一个输出，因此 <code>2 / len(X)</code> 的梯度系数与这份损失定义相匹配。</p>
+<p>每一步重新计算预测、损失和梯度，再让参数减去“学习率×梯度”。下面的实验用于观察训练结果，不再重复求导推导。</p>
 <div class="lab"><h3>实验 G：亲手推进梯度下降</h3><p>目标数据满足 <code>y = 2x + 1</code>。初始参数 <code>w = 0, b = 0</code>。改变学习率后，点击训练，观察直线和损失的变化。</p>
 <div class="controls"><label for="learning-rate">学习率 <select id="learning-rate"><option value="0.01">0.01</option><option value="0.05" selected>0.05</option><option value="0.1">0.10</option><option value="0.2">0.20：观察是否稳定</option></select></label><button id="train-one" type="button">训练 1 步</button><button id="train-many" class="primary" type="button">训练 20 步</button><button id="train-reset" type="button">重置参数</button></div>
 <div id="train-meta" class="readout" aria-live="polite"></div>
