@@ -7,7 +7,9 @@
 @media(max-width:850px){.layout{display:block;padding:0 15px 35px}nav{position:static;display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}nav a{border:1px solid var(--line);border-radius:6px;padding:4px 8px}nav p{display:none}header{padding:30px 16px 18px}.grid3{grid-template-columns:1fr}}
 @media(max-width:570px){section{padding:19px 15px}.grid{grid-template-columns:1fr}.formula{font-size:13px}.cell{min-height:70px;padding:4px}.cell b{font-size:16px}.episodes{grid-template-columns:repeat(6,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,button,.controls{display:none}.layout{display:block}section{break-inside:avoid}}
-</style></head><body>
+</style><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48 64x64" href="../favicon.ico">
+</head><body>
 <header><div class="eyebrow">AI 学习课程 / LESSON 14</div><h1>第十四节：从预测走向决策</h1><p class="intro">强化学习问的不是“这个样本的正确标签是什么”，而是“我现在做什么，能让之后的累计奖励更高”。在一个可手算的网格里，亲手走出状态、动作、奖励与回报。</p><span class="pill">网格世界</span><span class="pill">折扣回报</span><span class="pill">MDP / Bellman</span><span class="pill">探索与利用</span><span class="pill">离线 HTML</span></header>
 <div class="layout"><nav aria-label="目录"><a href="#paradigm">01 · 预测与决策</a><a href="#world">02 · 自己走网格</a><a href="#return">03 · 折扣回报</a><a href="#mdp">04 · 马尔可夫决策过程</a><a href="#value">05 · V、Q 与 Bellman</a><a href="#credit">06 · 延迟奖励</a><a href="#explore">07 · 探索与利用</a><a href="#practice">08 · 动手练习</a><a href="#quiz">09 · 自测</a><a href="lesson-13-llm-use.html">← 第十三节</a><p>直接打开本地文件即可。</p></nav><main>
 <noscript><div class="callout warning">启用 JavaScript 可操作网格与图解；正文和练习仍可阅读。</div></noscript>

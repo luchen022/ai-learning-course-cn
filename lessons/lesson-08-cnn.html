@@ -5,7 +5,9 @@
 @media(max-width:800px){.layout{display:block;padding:0 16px 40px}nav{position:static;display:flex;flex-wrap:wrap;gap:3px;margin-bottom:16px}nav a{border:1px solid var(--line);border-radius:6px;padding:4px 8px}nav p{display:none}header{padding:30px 16px}.grid3{grid-template-columns:1fr}}
 @media(max-width:520px){section{padding:20px 16px}.lab{padding:13px}.grid{grid-template-columns:1fr}h2{font-size:23px}.formula{font-size:13px}.cell{min-width:33px;min-height:33px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,button{display:none}.layout{display:block}section{break-inside:avoid}pre{white-space:pre-wrap}}
-</style></head><body>
+</style><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48 64x64" href="../favicon.ico">
+</head><body>
 <header><div class="eyebrow">AI 学习课程 / LESSON 08</div><h1>第八节：卷积神经网络</h1><p class="intro">从一个 2×2 小核在图像上滑动开始，逐格算出结果，再扩展到通道、池化和多层 CNN。每个形状都能对上真实的 PyTorch。</p><span class="pill">卷积逐格演算</span><span class="pill">NCHW 形状追踪</span><span class="pill">CPU 小实验</span><span class="pill">离线 HTML</span></header>
 <div class="layout"><nav aria-label="第八节目录"><a href="#start">01 · 图像和通道</a><a href="#sliding">02 · 卷积核滑动</a><a href="#shape">03 · 输出形状</a><a href="#channel">04 · 多通道求和</a><a href="#pool">05 · 池化</a><a href="#receptive">06 · 感受野</a><a href="#network">07 · CNN 逐层形状</a><a href="#result">08 · 实际训练</a><a href="#augment">09 · 增强与迁移</a><a href="#practice">10 · 代码练习</a><a href="#quiz">11 · 自测</a><a href="lesson-07-training.html">← 第七节讲义</a><p>浏览器演示数学计算；训练结果来自真正的 CPU PyTorch。本文件可直接打开。</p></nav><main>
 <noscript><div class="callout warning">开启 JavaScript 可点击图解；正文与练习仍能阅读。</div></noscript>

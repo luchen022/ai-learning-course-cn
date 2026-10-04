@@ -7,7 +7,9 @@
 @media(max-width:860px){.layout{display:block;padding:0 15px 35px}nav{position:static;display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}nav a{border:1px solid var(--line);border-radius:6px;padding:4px 8px}nav p{display:none}header{padding:30px 16px 18px}.grid3{grid-template-columns:1fr}}
 @media(max-width:570px){section{padding:19px 15px}.grid{grid-template-columns:1fr}.formula{font-size:13px}.cell{min-height:68px;padding:4px}.cell b{font-size:16px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,button,.controls{display:none}.layout{display:block}section{break-inside:avoid}}
-</style></head><body>
+</style><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48 64x64" href="../favicon.ico">
+</head><body>
 <header><div class="eyebrow">AI 学习课程 / LESSON 15</div><h1>第十五节：表格型强化学习</h1><p class="intro">上一节只走路线，这一节开始真正更新“每个状态值多少、每个动作值多少”。同一张小网格，依次看已知规则的价值迭代、固定策略的 MC/TD 估计，以及靠经验学习策略的 Q-learning。</p><span class="pill">价值迭代</span><span class="pill">蒙特卡洛 / TD</span><span class="pill">NumPy Q 表</span><span class="pill">SARSA 对照</span><span class="pill">离线 HTML</span></header>
 <div class="layout"><nav aria-label="目录"><a href="#map">01 · 四种方法的分工</a><a href="#vi">02 · 价值迭代</a><a href="#mctd">03 · MC 与 TD</a><a href="#qupdate">04 · Q-learning 更新</a><a href="#training">05 · 训练与评估</a><a href="#qtable">06 · 读 Q 表</a><a href="#sarsa">07 · SARSA 对照</a><a href="#practice">08 · 动手练习</a><a href="#quiz">09 · 自测</a><a href="lesson-14-rl-basics.html">← 第十四节</a><p>数据已嵌入；本地 HTML 直接打开。</p></nav><main>
 <noscript><div class="callout warning">启用 JavaScript 可以切换网格数值与训练结果；正文及练习仍可阅读。</div></noscript>

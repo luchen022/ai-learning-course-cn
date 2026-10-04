@@ -7,7 +7,9 @@
 @media(max-width:850px){.layout{display:block;padding:0 15px 35px}nav{position:static;display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}nav a{border:1px solid var(--line);border-radius:6px;padding:4px 8px}nav p{display:none}header{padding:30px 16px 18px}.grid3{grid-template-columns:1fr}}
 @media(max-width:570px){section{padding:19px 15px}.grid{grid-template-columns:1fr}.formula{font-size:13px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,button,.controls{display:none}.layout{display:block}section{break-inside:avoid}}
-</style></head><body>
+</style><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48 64x64" href="../favicon.ico">
+</head><body>
 <header><div class="eyebrow">AI 学习课程 / LESSON 13</div><h1>第十三节：大语言模型的训练与使用</h1><p class="intro">从“预测下一个 Token”走到“回答用户的问题”：先分清训练阶段，再亲手调采样分布、上下文预算与检索结果，定位一次回答为何没有证据。</p><span class="pill">预训练 / SFT / 偏好</span><span class="pill">温度与 Top-k</span><span class="pill">上下文窗口</span><span class="pill">RAG 故障诊断</span><span class="pill">离线 HTML</span></header>
 <div class="layout"><nav aria-label="目录"><a href="#bridge">01 · 从上节走过来</a><a href="#stages">02 · 三种训练阶段</a><a href="#sampling">03 · 温度与采样</a><a href="#context">04 · 上下文窗口</a><a href="#rag">05 · RAG 诊断实验</a><a href="#limits">06 · 幻觉与能力边界</a><a href="#choices">07 · 微调还是 RAG</a><a href="#practice">08 · 动手练习</a><a href="#quiz">09 · 自测</a><a href="lesson-12-transformer.html">← 第十二节</a><p>页面内嵌实验结果，直接打开即可。</p></nav><main>
 <noscript><div class="callout warning">启用 JavaScript 可操作采样和检索；正文与练习仍可阅读。</div></noscript>

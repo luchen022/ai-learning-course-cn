@@ -7,7 +7,9 @@
 @media(max-width:860px){.layout{display:block;padding:0 14px 35px}nav{position:static;display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}nav a{border:1px solid var(--line);border-radius:6px;padding:4px 8px}nav p{display:none}header{padding:30px 16px 18px}.grid3{grid-template-columns:1fr}}
 @media(max-width:600px){section{padding:20px 15px}.grid,.comparison{grid-template-columns:1fr}.formula{font-size:13px}.flow span{min-width:90px;font-size:13px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,button,.controls{display:none}.layout{display:block}section{break-inside:avoid}}
-</style></head><body>
+</style><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48 64x64" href="../favicon.ico">
+</head><body>
 <header><div class="eyebrow">AI 学习课程 / LESSON 17</div><h1>第十七节：策略梯度与大语言模型对齐</h1><p class="intro">DQN 先估计每个动作的价值，再选动作。策略梯度直接调整「选各动作的概率」。从一条完整轨迹的 REINFORCE 更新出发，逐步连接基线、Actor-Critic、PPO，再看偏好数据如何用于 RLHF 与 DPO。</p><span class="pill">PyTorch · REINFORCE 实验</span><span class="pill">基线与优势</span><span class="pill">Actor-Critic / PPO</span><span class="pill">RLHF / DPO</span><span class="pill">离线 HTML</span></header>
 <div class="layout"><nav aria-label="目录"><a href="#map">01 · 学 Q 还是学策略</a><a href="#reinforce">02 · REINFORCE 推导</a><a href="#baseline">03 · 基线怎样减小波动</a><a href="#experiment">04 · 实际训练结果</a><a href="#actor">05 · Actor-Critic 与 PPO</a><a href="#tokens">06 · Token 序列决策</a><a href="#alignment">07 · RLHF 与 DPO</a><a href="#reward">08 · 奖励的局限</a><a href="#practice">09 · 练习与自测</a><a href="lesson-16-dqn.html">← 第十六节</a><p>实验数据已嵌入，直接打开本地 HTML。</p></nav><main>
 <noscript><div class="callout warning">启用 JavaScript 可操作概率、基线、PPO 剪裁与训练数据；文字和公式仍可阅读。</div></noscript>

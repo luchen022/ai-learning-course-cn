@@ -7,7 +7,9 @@
 @media(max-width:830px){.layout{display:block;padding:0 15px 35px}nav{position:static;display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}nav a{border:1px solid var(--line);border-radius:6px;padding:4px 8px}nav p{display:none}header{padding:30px 16px 18px}.grid3{grid-template-columns:1fr}}
 @media(max-width:550px){section{padding:19px 15px}.grid{grid-template-columns:1fr}.formula{font-size:13px}.barrow{grid-template-columns:105px minmax(0,1fr) 52px}.matrixbutton{min-width:41px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,button{display:none}.layout{display:block}section{break-inside:avoid}pre{white-space:pre-wrap}}
-</style></head><body>
+</style><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48 64x64" href="../favicon.ico">
+</head><body>
 <header><div class="eyebrow">AI 学习课程 / LESSON 11</div><h1>第十一节：注意力机制</h1><p class="intro">沿着三个 Token 逐格计算：一个位置如何给其他位置打分、把分数变成权重、按权重汇合信息；再扩展到因果掩码、多头和位置编码。</p><span class="pill">Q、K、V 手算</span><span class="pill">softmax 热图</span><span class="pill">因果掩码</span><span class="pill">多头形状</span><span class="pill">离线 HTML</span></header>
 <div class="layout"><nav aria-label="第十一节目录"><a href="#why">01 · 为什么注意力</a><a href="#qkv">02 · Q、K、V</a><a href="#score">03 · 分数与权重</a><a href="#value">04 · 加权求和</a><a href="#causal">05 · 因果掩码</a><a href="#heads">06 · 多头注意力</a><a href="#position">07 · 位置编码</a><a href="#practice">08 · PyTorch 练习</a><a href="#quiz">09 · 自测</a><a href="lesson-10-text.html">← 第十节</a><p>图解使用代码核对过的数字；直接打开本地文件即可。</p></nav><main>
 <noscript><div class="callout warning">启用 JavaScript 可操作矩阵；正文与练习仍可阅读。</div></noscript>

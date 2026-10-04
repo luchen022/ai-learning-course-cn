@@ -7,7 +7,9 @@
 @media(max-width:860px){.layout{display:block;padding:0 14px 35px}nav{position:static;display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}nav a{border:1px solid var(--line);border-radius:6px;padding:4px 8px}nav p{display:none}header{padding:30px 16px 18px}.grid3{grid-template-columns:1fr}}
 @media(max-width:600px){section{padding:20px 15px}.grid{grid-template-columns:1fr}.formula{font-size:13px}.flow span{min-width:90px;font-size:13px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,button,.controls{display:none}.layout{display:block}section{break-inside:avoid}}
-</style></head><body>
+</style><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48 64x64" href="../favicon.ico">
+</head><body>
 <header><div class="eyebrow">AI 学习课程 / LESSON 16</div><h1>第十六节：深度强化学习与 DQN</h1><p class="intro">上一节用一张 Q 表记住每个状态—动作的价值。这一节把“查表”换成“输入状态，神经网络输出四个 Q 值”，再用真实训练结果理解经验回放、目标网络与评估波动。</p><span class="pill">PyTorch · CPU</span><span class="pill">DQN 更新</span><span class="pill">经验回放</span><span class="pill">目标网络</span><span class="pill">3 个训练种子</span><span class="pill">离线 HTML</span></header>
 <div class="layout"><nav aria-label="目录"><a href="#why">01 · 为什么需要函数近似</a><a href="#network">02 · 网络怎样表示 Q</a><a href="#target">03 · TD 目标与损失</a><a href="#replay">04 · 经验回放与目标网络</a><a href="#experiment">05 · 实际训练结果</a><a href="#practice">06 · 动手练习</a><a href="#quiz">07 · 自测</a><a href="lesson-15-tabular-rl.html">← 第十五节</a><p>实验数据已嵌入，可直接打开本地 HTML。</p></nav><main>
 <noscript><div class="callout warning">打开 JavaScript 后可切换状态、训练种子与计算示例；正文和代码说明仍可阅读。</div></noscript>
