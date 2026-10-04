@@ -240,10 +240,27 @@ for value in values:
 <p>如果写 <code>A.mean()</code>，不指定 axis，默认就把所有元素一起求平均：<code>(1+2+3+4+5+6)/6 = 3.5</code>，得到一个标量。</p>
 <h3>直接使用矩阵公式</h3>
 <div id="regression">
-<p>求导公式已在<a href="lesson-math-matrix-calculus.html#distance">预备课 V4：平方差求和</a>中学习，这里直接代入，并用预备课的常数倍规则处理平均值。</p>
+<p>这里直接套用<a href="lesson-math-matrix-calculus.html#matrixproduct">预备课 M5 的右侧变量版本</a>，再使用<a href="lesson-math-matrix-calculus.html#rules">常数倍规则</a>乘上 1/N。下面分别标出求 W、求 b 时的字母替换。</p>
 <p>X 是输入，y 是已知标签；W 是权重，b 是偏置。N 为样本数，本例 N=5。求 W 的梯度时固定 b，求 b 的梯度时固定 W；X、y 始终固定。E 表示误差。</p>
-<div class="formula">预测：P = XW + b<br>误差：E = P − y<br>损失：L = sum(E ⊙ E) / N<br>权重梯度：∂L/∂W = (2/N) XᵀE<br>偏置梯度：∂L/∂b = 2 × E 沿 axis=0 的平均值</div>
+<div class="formula">预测：P = XW + b<br>误差：E = P − y<br>损失：L = sum(E ⊙ E) / N<br>权重梯度：∂L/∂W = (2/N) XᵀE【套 M5 右侧版本，替换见下】<br>偏置梯度：∂L/∂b = 2 × E 沿 axis=0 的平均值【同一公式处理偏置的重复使用，见下】</div>
 <p>这里 sum 表示所有元素求和，⊙ 表示逐元素乘法。b 的加法通过前面学过的广播完成。此处的平均损失与梯度系数针对<strong>每个样本只有一个输出</strong>的情况。</p>
+<h3>权重梯度：套 M5 的哪一式、替换哪些字母？</h3>
+<div class="formula">预备课公式：<br>f(A)=sum((BA−C) ⊙ (BA−C))<br>∂f/∂A=2Bᵀ(BA−C)</div>
+<div class="table-wrap"><table><thead><tr><th>公式里的字母</th><th>本题替换成什么</th><th>为什么</th></tr></thead><tbody>
+<tr><td>A（求导变量）</td><td>W</td><td>这次要求 W 的梯度</td></tr>
+<tr><td>B（固定的左侧矩阵）</td><td>X</td><td>XW 中 X 在左边，数据固定</td></tr>
+<tr><td>C（固定的被减矩阵）</td><td>y−b</td><td>XW+b−y=XW−(y−b)，此时 b 固定</td></tr>
+</tbody></table></div>
+<p>这里 y−b 用广播得到与 y 同形状的矩阵。代入后：</p>
+<div class="formula">BA−C → XW−(y−b)=E<br>2Bᵀ(BA−C) → 2XᵀE<br>L=f/N，使用常数倍规则：<br><strong>∂L/∂W=(2/N)XᵀE</strong></div>
+<h3>偏置梯度：把重复使用写成矩阵乘法，再套同一式</h3>
+<p>求 b 的梯度时，W 固定。为了使用公式，把 b 排成一行，记作 β（读作“贝塔”）；β 与代码里的 b 装着同一组数。令 U 是 N 行 1 列、每格都是 1 的矩阵。Uβ 就是把这行偏置重复到每条样本：</p>
+<div class="formula">例如 U=[[1],[1]]，β=[[10,20]]<br>Uβ=[[10,20],[10,20]]</div>
+<p>这样误差可以写成 <code>E=Uβ−(y−XW)</code>。仍然套 M5 右侧版本，只是换了一组对应关系：</p>
+<div class="table-wrap"><table><thead><tr><th>公式里的字母</th><th>本题替换成什么</th></tr></thead><tbody><tr><td>A（求导变量）</td><td>β，即排成一行的 b</td></tr><tr><td>B（固定左侧矩阵）</td><td>U，全 1 的 N×1 矩阵</td></tr><tr><td>C（固定被减矩阵）</td><td>y−XW，此时 W 固定</td></tr></tbody></table></div>
+<div class="formula">∂L/∂β=(2/N)UᵀE<br>Uᵀ 是一行 N 个 1，所以 UᵀE 把 E 的各行相加<br>除以 N 得到沿样本轴的平均值<br><strong>代码中的 grad_b=2 * error.mean(axis=0)</strong></div>
+<p>数学式的 ∂L/∂β 是 1×k 的一行；代码里的 b 为 <code>(k,)</code>，所以用 <code>mean(axis=0)</code> 得到相同元素、形状为 <code>(k,)</code> 的结果。本例 k=1，结果形状为 <code>(1,)</code>。</p>
+<h3>公式与代码对照</h3>
 <div class="table-wrap"><table><thead><tr><th>矩阵公式</th><th>NumPy 写法</th><th>本例结果形状</th></tr></thead><tbody>
 <tr><td>P=XW+b</td><td><code>X @ W + b</code></td><td><code>(5,1)</code></td></tr>
 <tr><td>E=P−y</td><td><code>prediction - y</code></td><td><code>(5,1)</code></td></tr>

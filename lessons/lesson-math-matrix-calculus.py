@@ -77,6 +77,11 @@ def main():
     C = np.ones((2, 2))
     check_scalar("M5：sum((AB-C)²) → 2(AB-C)Bᵀ", lambda A: np.sum((A @ B-C)**2), A, 2*(A @ B-C) @ B.T)
 
+    B = np.array([[1.0, 2.0], [0.0, 1.0]])
+    A = np.array([[1.0], [2.0]])
+    C = np.array([[1.0], [1.0]])
+    check_scalar("M5 右侧变量：sum((BA-C)²) → 2Bᵀ(BA-C)", lambda A: np.sum((B @ A-C)**2), A, 2*B.T @ (B @ A-C))
+
     A = np.array([[1.0, 2.0, 0.0], [0.0, 1.0, 1.0]])
     B = np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
     C = np.array([[1.0, 2.0], [3.0, 4.0]])

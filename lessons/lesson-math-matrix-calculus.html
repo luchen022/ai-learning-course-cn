@@ -145,6 +145,13 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <p><strong>自己练：</strong>B=[[1,0],[0,1]]、C 是全 0 矩阵，A=[[2,−1],[0,3]]，求梯度。</p>
 <details><summary>练习答案</summary><div class="formula">AB−C=A，梯度=2A=[[4,-2],[0,6]]</div></details>
 <details><summary>可选推导</summary><p>Σ 表示把指定编号的项相加。Rᵢₖ=ΣⱼAᵢⱼBⱼₖ−Cᵢₖ；对 Aᵢⱼ 求导时，Rᵢₖ 的偏导为 Bⱼₖ，因此 f 的这个偏导为 Σₖ2RᵢₖBⱼₖ。它正是 2RBᵀ 第 i、j 格的计算。</p></details>
+<h3>M5 的右侧变量版本：变量在乘积的右边</h3>
+<p>刚才是变量 A 在左边的 AB。如果变量 A 在右边，函数写成 BA，使用下面这个版本。两式不能交换乘法顺序：</p>
+<div class="formula">f(A)=sum((BA−C) ⊙ (BA−C))<br><strong>∂f/∂A=2Bᵀ(BA−C)</strong></div>
+<p><strong>条件：</strong>B、C 固定，A 是求导变量。B 为 m×n，A 为 n×p，C 为 m×p；梯度为 n×p，与 A 同形。整个函数乘一个固定系数，梯度也乘这个系数。</p>
+<h3>右侧版本的代入例题</h3>
+<div class="formula">B=[[1,2],[0,1]]，A=[[1],[2]]，C=[[1],[1]]<br>BA−C=[[4],[1]]<br>Bᵀ=[[1,0],[2,1]]<br>梯度=2Bᵀ(BA−C)=[[8],[18]]</div>
+<p>这个版本可以直接处理任意列数的矩阵变量 A，不需要把整个表达式先改成标量。第一节的 XW+b 对 W 求导，会用到这里的“变量在右边”版本。</p>
 </section>
 <section id="matrix-chain"><p class="section-num">矩阵 / M6 矩阵乘法的链式规则</p><h2>M6：已知输出处的梯度，求两个输入处的梯度</h2>
 <p>这是一条通用的组合求导规则。先做矩阵乘法 P=AB，再把 P 交给一个输出标量的函数 g，得到 f=g(P)。</p>
@@ -210,7 +217,7 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <tr><td>M2</td><td>sum(A⊙A)</td><td>A</td><td>逐元素平方后求和</td><td>2A</td></tr>
 <tr><td>M3</td><td>sum(C⊙A)</td><td>A</td><td>C 固定、同形状</td><td>C</td></tr>
 <tr><td>M4</td><td>xᵀAy</td><td>A</td><td>x、y 固定</td><td>xyᵀ</td></tr>
-<tr><td>M5</td><td>sum((AB−C)⊙(AB−C))</td><td>A</td><td>B、C 固定</td><td>2(AB−C)Bᵀ</td></tr>
+<tr><td>M5</td><td>左侧变量：sum((AB−C)⊙(AB−C))<br>右侧变量：sum((BA−C)⊙(BA−C))</td><td>A</td><td>B、C 固定</td><td>左侧：2(AB−C)Bᵀ<br>右侧：2Bᵀ(BA−C)</td></tr>
 <tr><td>M6</td><td>f=g(AB)，G=∂f/∂P，P=AB</td><td>A、B</td><td>本条乘法路径的贡献</td><td>∂f/∂A=GBᵀ；∂f/∂B=AᵀG</td></tr>
 <tr><td>J1</td><td>Ax+b</td><td>x</td><td>A、b 固定；输出向量</td><td>J=A</td></tr>
 <tr><td>J2</td><td>[g(x₁),g(x₂),…]</td><td>x</td><td>第 i 个输出只依赖 xᵢ</td><td>J=diag(g′(x₁),g′(x₂),…)</td></tr>
