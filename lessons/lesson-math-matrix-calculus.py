@@ -38,7 +38,7 @@ def vector_output(x):
 
 def matrix_scalar(A):
     a, b, c, d = A.ravel()
-    return a**2 + 3 * b**2 + c * d
+    return np.sum(A * A)
 
 
 def matrix_square(A):
@@ -62,10 +62,10 @@ def main():
 
     A = np.array([[1.0, 2.0], [3.0, 4.0]])
     a, b, c, d = A.ravel()
-    gradient = np.array([[2 * a, 6 * b], [d, c]])
+    gradient = 2 * A
     np.testing.assert_allclose(gradient, gradient_by_difference(matrix_scalar, A), atol=1e-7)
     H = np.array([[0.0, 0.1], [0.0, 0.0]])
-    print("3. f(A)=a²+3b²+cd，矩阵梯度：\n", gradient)
+    print("3. f(A)=sum(A * A)，矩阵梯度：\n", gradient)
     print("   对应位置乘积之和：", np.sum(gradient * H), "；实际变化：", matrix_scalar(A + H) - matrix_scalar(A))
 
     jacobian = np.array([[2*a, c, b, 0], [b, a+d, 0, b], [c, 0, a+d, c], [0, c, b, 2*d]])

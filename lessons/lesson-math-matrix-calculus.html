@@ -42,14 +42,24 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <p>这个定义说的是：<strong>只移动一个输入坐标，观察函数值的变化率。</strong>向量和矩阵只是组织这些坐标的方式；求导时仍然可以把每个元素当作一个标量变量。</p>
 <h3>三个常见问题，对应三种结果</h3>
 <div class="grid">
-<article class="card type-card"><h3>标量函数，向量自变量</h3><p>一个函数值，两个独立输入。</p><div class="formula">x=[x₁,x₂]<br>f(x)=x₁²+2x₂²<br>∇f=[2x₁,4x₂]</div><p>每个输入对应一个偏导；排成向量，叫<strong>梯度</strong>。</p><p>意义：输入的各个分量怎样影响同一个函数值。</p></article>
+<article class="card type-card"><h3>标量函数，向量自变量</h3><p>一个函数值，两个独立输入。</p><div class="formula">x=[x₁,x₂]<br>f(x)=x₁²+2x₂²<br>∇f=[2x₁,4x₂]</div><p><strong>整体运算：</strong>把 x 的每个元素平方，第二个乘 2，再把两个数相加。</p><p>每个输入对应一个偏导；排成向量，叫<strong>梯度</strong>。</p><p>意义：输入的各个分量怎样影响同一个函数值。</p></article>
 <article class="card type-card"><h3>向量函数，向量自变量</h3><p>两个函数值，两个独立输入。</p><div class="formula">F(x)=[x₁²+x₂, x₁x₂]<br>J = [[2x₁,1],<br>　　 [x₂,x₁]]</div><p>每个输出对每个输入都有偏导；排成一张表，叫<strong>雅可比矩阵</strong>。</p><p>意义：每个输入分别怎样影响每个输出。</p></article>
-<article class="card type-card"><h3>标量函数，矩阵自变量</h3><p>一个函数值，四个独立输入。</p><div class="formula">A=[[a,b],[c,d]]<br>f(A)=a²+3b²+cd<br>∂f/∂A=[[2a,6b],<br>　　　 [d,c]]</div><p>对每个格子分别求偏导，放回原位置，得到<strong>矩阵梯度</strong>。</p><p>意义：每个矩阵元素怎样影响同一个函数值。</p></article>
+<article class="card type-card"><h3>标量函数，矩阵自变量</h3><p>一个函数值，四个独立输入。</p><div class="formula">A=[[a,b],[c,d]]<br>f(A)=sum(A ⊙ A)<br>　=a²+b²+c²+d²<br>∂f/∂A=2A</div><p><strong>整体运算：</strong>⊙ 表示对应位置相乘，sum 表示把所有元素相加，所以这个函数把一张矩阵变成一个数。</p><p>对每个格子分别求偏导，放回原位置，得到<strong>矩阵梯度</strong>。</p><p>意义：每个矩阵元素怎样影响同一个函数值。</p></article>
 </div>
 <p><strong>先不要背结果。</strong>下面会把这三个例子的每一步展开。这里小写 f 表示标量输出，大写 F 表示多个输出，都是普通数学函数。</p>
 <div class="warning"><strong>本课约定：</strong>标量函数的梯度按自变量原来的形状排列；雅可比的行对应输出，列对应输入。默认各个输入元素独立，不附加对称矩阵等约束。其他教材可能采用转置约定，读公式时要先看它的排列方式。</div>
 </section>
 <section id="gradient"><p class="section-num">02 / 标量函数对向量求导</p><h2>分别求偏导，再按输入顺序排成梯度</h2>
+<h3>先看整体运算，再展开成标量</h3>
+<p>最简单的例子是“向量和自己做点积”。<strong>点积</strong>就是两个向量对应位置相乘，再把结果相加；符号是中间的点 ·。</p>
+<div class="formula">x=[x₁,x₂]<br>x · x = x₁×x₁ + x₂×x₂ = x₁²+x₂²<br>例如 x=[2,1]：x · x = 2×2+1×1=5</div>
+<p>所以 <code>h(x)=x·x</code> 是一个<strong>输入整个向量、输出一个数</strong>的函数。展开后看见标量运算，是因为点积本来就是这样计算的，不代表输入变成了标量。分别求偏导，就得到 <code>∇h=[2x₁,2x₂]=2x</code>。</p>
+<p>本页的 f 多了一步：第二个位置的平方乘 2。把“对应位置相乘”记作 ⊙，把“所有元素相加”记作 sum，则同一个函数可以写成：</p>
+<div class="formula">f(x)=sum([1,2] ⊙ (x ⊙ x))<br>也可以写成点积：f(x)=x · [x₁,2x₂]<br>展开后：f(x)=x₁²+2x₂²</div>
+<div class="formula">x=[2,1]<br>① x ⊙ x = [4,1]<br>② [1,2] ⊙ [4,1] = [4,2]<br>③ sum([4,2]) = 6</div>
+<p>整体运算和逐元素展开是<strong>同一个函数的两种写法</strong>。向量形式方便看整体；展开形式方便用你已学的标量规则求偏导。这里 [x₁,2x₂] 也随 x 变化，不是一个固定的常量向量，求导时仍需展开计算。</p>
+<h3>现在逐个求导</h3>
+
 <div class="formula">x=[x₁,x₂]，f(x)=x₁²+2x₂²</div>
 <ol><li>对 x₁ 求导时，2x₂² 是常数，所以 <code>∂f/∂x₁=2x₁</code>。</li><li>对 x₂ 求导时，x₁² 是常数，所以 <code>∂f/∂x₂=4x₂</code>。</li><li>按 x₁、x₂ 的次序，把两个结果排好：<code>∇f=[2x₁,4x₂]</code>。</li></ol>
 <div class="formula">一般地，x=[x₁,…,xₙ]：<br>∇f(x) = [∂f/∂x₁,…,∂f/∂xₙ]</div>
@@ -78,23 +88,30 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <div class="note"><strong>和梯度的关系：</strong>若只有一个输出，雅可比按本课约定是一行的偏导表；梯度则按输入形状排列。在列向量记法下，这一行雅可比是梯度的转置。两者记录的是同一组偏导。</div>
 </section>
 <section id="linear"><p class="section-num">04 / 标量函数对矩阵求导</p><h2>每个矩阵元素分别求偏导，放回原位置</h2>
-<p>矩阵只是把四个自变量排成两行两列。定义：</p>
-<div class="formula">A=[[a,b],[c,d]]<br>f(A)=a²+3b²+cd</div>
+<h3>这个函数对整个矩阵做了什么运算？</h3>
+<p>定义“每个元素平方，再把所有元素相加”的函数。⊙ 表示<strong>相同位置的元素相乘</strong>，sum 在这里表示<strong>把整张矩阵的所有元素相加</strong>：</p>
+<div class="formula">A=[[a,b],[c,d]]<br>A ⊙ A = [[a²,b²],[c²,d²]]<br>f(A)=sum(A ⊙ A)=a²+b²+c²+d²</div>
+<p>例如 A=[[1,2],[3,4]]，先得到 [[1,4],[9,16]]，再把四个数相加，得到 30。输入是一张矩阵，输出是一个数。</p>
+<div class="note">这里 A ⊙ A 是逐元素乘法，<strong>不是</strong>矩阵乘法 A @ A。前者每格只乘它自己；后者按行与列相乘再相加，下一部分会单独讲。</div>
+<h3>展开后，逐个元素求导</h3>
+<p>现在把同一个函数写成四个标量变量的表达式：</p>
+<div class="formula">A=[[a,b],[c,d]]<br>f(A)=a²+b²+c²+d²</div>
 <p>它就是普通的四元函数 <code>f(a,b,c,d)</code>。对 a 求导时，b、c、d 不动；其他元素同理。</p>
-<div class="table-wrap"><table><thead><tr><th>改变哪个元素</th><th>固定哪些元素</th><th>得到的偏导</th></tr></thead><tbody><tr><td>a=A₁₁</td><td>b、c、d</td><td>∂f/∂a=2a</td></tr><tr><td>b=A₁₂</td><td>a、c、d</td><td>∂f/∂b=6b</td></tr><tr><td>c=A₂₁</td><td>a、b、d</td><td>∂f/∂c=d</td></tr><tr><td>d=A₂₂</td><td>a、b、c</td><td>∂f/∂d=c</td></tr></tbody></table></div>
-<div class="formula">∂f/∂A = [[∂f/∂a,∂f/∂b],<br>　　　　 [∂f/∂c,∂f/∂d]]<br>　　　 = [[2a,6b],<br>　　　　 [d,c]]</div>
+<div class="table-wrap"><table><thead><tr><th>改变哪个元素</th><th>固定哪些元素</th><th>得到的偏导</th></tr></thead><tbody><tr><td>a=A₁₁</td><td>b、c、d</td><td>∂f/∂a=2a</td></tr><tr><td>b=A₁₂</td><td>a、c、d</td><td>∂f/∂b=2b</td></tr><tr><td>c=A₂₁</td><td>a、b、d</td><td>∂f/∂c=2c</td></tr><tr><td>d=A₂₂</td><td>a、b、c</td><td>∂f/∂d=2d</td></tr></tbody></table></div>
+<div class="formula">∂f/∂A = [[∂f/∂a,∂f/∂b],<br>　　　　 [∂f/∂c,∂f/∂d]]<br>　　　 = [[2a,2b],<br>　　　　 [2c,2d]]=2A</div>
 <p><strong>矩阵梯度的逐元素定义：</strong>只让第 i、j 个位置增加 ε，其他位置保持不变。Eᵢⱼ 表示“只有第 i、j 格为 1，其余为 0”的矩阵。</p>
 <div class="formula">(∂f/∂A)ᵢⱼ = ∂f/∂Aᵢⱼ<br>　= lim<sub>ε→0</sub> [f(A+εEᵢⱼ)−f(A)] / ε</div>
 <h3>矩阵梯度的意义：预测各个格子的改动对函数值的影响</h3>
-<p>A=[[1,2],[3,4]] 时，f=1²+3×2²+3×4=25，梯度为 [[2,12],[4,3]]。它的第一行第二列为 12，表示只让 b 增加 ε，f 大约增加 12ε。</p>
-<p>例如只让 b 增加 0.1，预测变化为 1.2；实际 <code>f([[1,2.1],[3,4]])−25=1.23</code>。</p>
-<div class="formula">多个格子同时改动：<br>Δf ≈ 2aΔa + 6bΔb + dΔc + cΔd<br>　 = Σᵢⱼ (∂f/∂Aᵢⱼ)ΔAᵢⱼ</div>
+<p>A=[[1,2],[3,4]] 时，f=1²+2²+3²+4²=30，梯度为 [[2,4],[6,8]]。它的第一行第二列为 4，表示只让 b 增加 ε，f 大约增加 4ε。</p>
+<p>例如只让 b 增加 0.1，预测变化为 0.4；实际 <code>f([[1,2.1],[3,4]])−30=0.41</code>。</p>
+<div class="formula">多个格子同时改动：<br>Δf ≈ 2aΔa + 2bΔb + 2cΔc + 2dΔd<br>　 = Σᵢⱼ (∂f/∂Aᵢⱼ)ΔAᵢⱼ</div>
 <p>Σᵢⱼ 表示把所有位置的项相加。这是<strong>梯度与改变量对应位置相乘，再全部相加</strong>，不是两张矩阵做矩阵乘法。</p>
-<div class="card"><h3>动手：只改动矩阵的一个格子</h3><p>固定起点 A=[[1,2],[3,4]]，f(A)=25。</p><div class="controls"><label>选择元素 <select id="matrixCell"><option value="0">a=A₁₁，偏导为 2</option><option value="1" selected>b=A₁₂，偏导为 12</option><option value="2">c=A₂₁，偏导为 4</option><option value="3">d=A₂₂，偏导为 3</option></select></label><label>改变量 ε <input id="matrixEps" type="range" min="-0.2" max="0.2" step="0.01" value="0.1"> <span id="matrixEpsV"></span></label></div><div id="matrixReadout" class="readout" aria-live="polite"></div></div>
-<h3>再看一个矩阵记号写成的函数</h3>
-<div class="formula">h(A)=Σᵢⱼ Aᵢⱼ²（所有元素平方后相加）<br>∂h/∂Aᵢⱼ=2Aᵢⱼ<br>所以 ∂h/∂A=2A</div>
-<p>看到简洁的矩阵公式，仍然可以展开到每个元素。这里 <code>2A</code> 表示每个元素乘 2。</p>
+<div class="card"><h3>动手：只改动矩阵的一个格子</h3><p>固定起点 A=[[1,2],[3,4]]，f(A)=30。</p><div class="controls"><label>选择元素 <select id="matrixCell"><option value="0">a=A₁₁，偏导为 2</option><option value="1" selected>b=A₁₂，偏导为 4</option><option value="2">c=A₂₁，偏导为 6</option><option value="3">d=A₂₂，偏导为 8</option></select></label><label>改变量 ε <input id="matrixEps" type="range" min="-0.2" max="0.2" step="0.01" value="0.1"> <span id="matrixEpsV"></span></label></div><div id="matrixReadout" class="readout" aria-live="polite"></div></div>
+<h3>把求导结果写回矩阵形式</h3>
+<div class="formula">f(A)=sum(A ⊙ A)<br>每格的偏导：∂f/∂Aᵢⱼ=2Aᵢⱼ<br>所有格子排回原位置：∂f/∂A=2A</div>
+<p>这里 2A 就是把 A 的每个元素乘 2。可以看到：函数的整体写法、逐元素展开、逐元素求导和梯度的整体写法是连贯的。</p>
 </section>
+
 <section id="matrix-output"><p class="section-num">05 / 输出也是矩阵时</p><h2>输出每个元素，都有一整组偏导</h2>
 <p>“矩阵函数求导”还可能指输出也是矩阵。它和“标量函数对矩阵求导”不同。仍然使用 A=[[a,b],[c,d]]，定义：</p>
 <div class="formula">F(A)=A²=A @ A（这里是矩阵乘法）<br>F(A)=[[a²+bc, ab+bd],<br>　　　[ac+dc, bc+d²]]</div>
@@ -154,10 +171,10 @@ function updateJac(){
  $('#jacDeltaReadout').textContent=`Δx=[${n(da)},${n(db)}]；预测 ΔF≈JΔx=[${n(pred[0])},${n(pred[1])}]；实际 ΔF=[${n(actual[0])},${n(actual[1])}]。`;
 }
 function updateMatrix(){
- const cells=['a','b','c','d'],g=[2,12,4,3],idx=Number($('#matrixCell').value),eps=Number($('#matrixEps').value),v=[1,2,3,4]; v[idx]+=eps;
- const f=v[0]**2+3*v[1]**2+v[2]*v[3],pred=g[idx]*eps;
+ const cells=['a','b','c','d'],g=[2,4,6,8],idx=Number($('#matrixCell').value),eps=Number($('#matrixEps').value),v=[1,2,3,4]; v[idx]+=eps;
+ const f=v.reduce((total,value)=>total+value*value,0),pred=g[idx]*eps;
  $('#matrixEpsV').textContent=n(eps);
- $('#matrixReadout').textContent=`只让 ${cells[idx]} 改动 ${n(eps)}，其余元素固定。偏导=${g[idx]}；预测 Δf≈${n(pred)}；新函数值=${n(f)}，实际 Δf=${n(f-25)}。`;
+ $('#matrixReadout').textContent=`只让 ${cells[idx]} 改动 ${n(eps)}，其余元素固定。偏导=${g[idx]}；预测 Δf≈${n(pred)}；新函数值=${n(f)}，实际 Δf=${n(f-30)}。`;
 }
 for(const id of ['x1','x2','dx1','dx2']) $('#'+id).addEventListener('input',updateGradient);
 for(const id of ['jx1','jx2','jacDelta']) $('#'+id).addEventListener('input',updateJac);
