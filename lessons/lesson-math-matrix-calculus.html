@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>求导预备课：向量与矩阵求导</title>
+<title>求导预备课：常用公式与例题</title>
 <style>
+section h2:not(:first-of-type){margin-top:32px}details{margin:12px 0}summary{cursor:pointer;color:var(--accent)}.formula{white-space:normal}
 :root{--bg:#f6f5f0;--paper:#fff;--card:#fff;--ink:#202c2b;--muted:#566661;--line:#d9e1db;--accent:#166b55;--soft:#e9f4ee;--orange:#9a4a15;--orange-bg:#fff0df;--code:#172c28;--code-ink:#edf8f2;--blue:#276bb0;--cyan:#087987;--green:#18754a;--red:#ba3442;--shadow:0 8px 32px #24392d08;--wrong-bg:#fcebed}
 @media(prefers-color-scheme:dark){:root{--bg:#131b18;--paper:#1b2722;--card:#1b2722;--ink:#e7eee9;--muted:#b1c2b9;--line:#3e5248;--accent:#8ed6b6;--soft:#283e32;--orange:#ffc28c;--orange-bg:#423121;--code:#0e1713;--code-ink:#edf8f2;--blue:#8dbef3;--cyan:#79d4dc;--green:#8ed6b6;--red:#ff9ca3;--shadow:none;--wrong-bg:#44272c}}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}a{color:var(--accent);text-underline-offset:4px}button,input,select{font:inherit}button,select{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}code,pre,.math{font-family:ui-monospace,Consolas,monospace}code{font-size:.94em}
@@ -24,177 +25,195 @@ header{max-width:1160px;margin:auto;padding:60px 32px 32px}.eyebrow{font-size:13
 <body>
 <header class="hero"><div class="hero-inner">
 <div class="eyebrow">AI 学习课程 · 第一节之前的求导预备课</div>
-<h1>向量与矩阵求导</h1>
-<p>一个函数的自变量是向量或矩阵时，怎样求导？导数又表示什么？从你会的一元求导出发，先逐个元素计算，再把结果组织起来。</p>
-<div class="chips"><span class="chip">偏导的定义</span><span class="chip">向量梯度</span><span class="chip">雅可比矩阵</span><span class="chip">矩阵梯度</span><span class="chip">变化量的意义</span></div>
+<h1>向量与矩阵求导：常用公式与例题</h1>
+<p>本课的目标是积累常用求导公式，学会判断能不能用，并能代入算出结果。每组公式都按“认式子 → 看条件 → 做例题 → 自己练”组织；推导可选，不作为主线。</p>
+<div class="chips"><span class="chip">11 组常用公式</span><span class="chip">条件与形状</span><span class="chip">完整例题</span><span class="chip">练习答案</span><span class="chip">可选推导</span></div>
 </div></header>
 <div class="layout">
-<nav class="nav" aria-label="课程目录"><p class="nav-title">学习路径</p><a href="#types">01 先看函数与自变量</a><a href="#gradient">02 标量函数对向量求导</a><a href="#jacobian">03 向量函数对向量求导</a><a href="#linear">04 例子：元素平方后求和</a><a href="#matrix-output">05 矩阵输出怎样求导</a><a href="#chain">06 复合函数的求导</a><a href="#practice">07 数值验证与练习</a><a href="#quiz">08 自测</a></nav>
+<nav class="nav" aria-label="课程目录"><p class="nav-title">学习路径</p><a href="#types">先读：符号与运算</a><a href="#gradient">V1–V2 向量基础公式</a><a href="#quadratic">V3 二次式</a><a href="#distance">V4 平方差求和</a><a href="#linear">M1–M3 矩阵基础公式</a><a href="#outer">M4 两边夹向量</a><a href="#matrixproduct">M5 矩阵乘积平方差</a><a href="#jacobian">J1–J2 向量输出</a><a href="#rules">公式的组合规则</a><a href="#practice">公式速查表</a><a href="#quiz">自测</a></nav>
 <main class="page">
-<div class="note"><strong>学习方法：</strong>每遇到一个函数，先展开它，辨认独立的自变量。每次只改变其中一个，固定其他自变量，用你会的标量规则求导；最后再看这些偏导应该排成什么形状。</div>
-<section id="types"><p class="section-num">01 / 从一元导数到偏导</p><h2>向量和矩阵里，每个元素都可以是一个自变量</h2>
-<p>你熟悉 <code>f(t)=t²</code> 的导数 <code>f′(t)=2t</code>。它表示：在当前位置，让 t 增加一个很小的 ε，函数值大约增加 <code>2t×ε</code>。</p>
-<p>现在把两个数组织成向量 <code>x=[x₁,x₂]</code>，定义 <code>f(x)=x₁²+2x₂²</code>。这个写法只是 <code>f(x₁,x₂)</code> 的简写。函数依赖两个独立变量，可以分别问“只改变 x₁ 会怎样”和“只改变 x₂ 会怎样”。</p>
-<h3>偏导怎么求？固定其他变量</h3>
-<div class="formula">只让 x₁ 变化：把 x₂ 当成常数，∂f/∂x₁ = 2x₁<br>只让 x₂ 变化：把 x₁ 当成常数，∂f/∂x₂ = 4x₂</div>
-<p>∂ 读作“偏导”的符号。定义和一元导数一样，只是这里明确规定其他自变量不动：</p>
-<div class="formula">∂f/∂x₁ = lim<sub>ε→0</sub> [f(x₁+ε,x₂)−f(x₁,x₂)] / ε</div>
-<p>这个定义说的是：<strong>只移动一个输入坐标，观察函数值的变化率。</strong>向量和矩阵只是组织这些坐标的方式；求导时仍然可以把每个元素当作一个标量变量。</p>
-<h3>三个常见问题，对应三种结果</h3>
-<div class="grid">
-<article class="card type-card"><h3>标量函数，向量自变量</h3><p>一个函数值，两个独立输入。</p><div class="formula">x=[x₁,x₂]<br>f(x)=x₁²+2x₂²<br>∇f=[2x₁,4x₂]</div><p><strong>整体运算：</strong>把 x 的每个元素平方，第二个乘 2，再把两个数相加。</p><p>每个输入对应一个偏导；排成向量，叫<strong>梯度</strong>。</p><p>意义：输入的各个分量怎样影响同一个函数值。</p></article>
-<article class="card type-card"><h3>向量函数，向量自变量</h3><p>两个函数值，两个独立输入。</p><div class="formula">F(x)=[x₁²+x₂, x₁x₂]<br>J = [[2x₁,1],<br>　　 [x₂,x₁]]</div><p>每个输出对每个输入都有偏导；排成一张表，叫<strong>雅可比矩阵</strong>。</p><p>意义：每个输入分别怎样影响每个输出。</p></article>
-<article class="card type-card"><h3>标量函数，矩阵自变量</h3><p>一个函数值，四个独立输入。</p><div class="formula">A=[[a,b],[c,d]]<br>f(A)=sum(A ⊙ A)<br>　=a²+b²+c²+d²<br>∂f/∂A=2A</div><p><strong>整体运算：</strong>⊙ 表示对应位置相乘，sum 表示把所有元素相加，所以这个函数把一张矩阵变成一个数。</p><p>对每个格子分别求偏导，放回原位置，得到<strong>矩阵梯度</strong>。</p><p>意义：每个矩阵元素怎样影响同一个函数值。</p></article>
-</div>
-<p><strong>先不要背结果。</strong>下面会把这三个例子的每一步展开。这里小写 f 表示标量输出，大写 F 表示多个输出，都是普通数学函数。</p>
-<div class="warning"><strong>本课约定：</strong>标量函数的梯度按自变量原来的形状排列；雅可比的行对应输出，列对应输入。默认各个输入元素独立，不附加对称矩阵等约束。其他教材可能采用转置约定，读公式时要先看它的排列方式。</div>
+<div class="note"><strong>使用本课：</strong>先读符号说明，再按顺序学习公式。每做一道题，都先标出“对谁求导，哪些量是常数”，再选公式、代入、检查形状。你不必先证明每个公式。读不懂某个记号时，回到下面的符号说明。</div>
+<section id="types"><p class="section-num">准备 / 公式中每个符号是什么意思</p><h2>先把记号读懂，再用公式</h2>
+<p>本页只讨论普通数学函数。小写 x、a、b、y 表示向量；大写 A、B、C 表示矩阵；f 表示输出一个数的函数；F 表示输出多个数的函数。字母本身不代表特殊含义。</p>
+<h3>① 向量按一列来写</h3>
+<div class="formula">x=[2,3] 的列形式：[[2],[3]]，有 2 行 1 列<br>xᵀ=[2,3]，有 1 行 2 列</div>
+<p>上标 ᵀ 表示<strong>转置</strong>：交换行与列。公式中的向量都按列来计算；文字里为节省空间，常写成 [2,3]。m×n 表示 m 行 n 列。例如 A 是 2×3 矩阵，就是两行、每行三个数。</p>
+<h3>② 三种运算，先分开</h3>
+<div class="table-wrap"><table><thead><tr><th>记号</th><th>运算</th><th>具体例子</th></tr></thead><tbody>
+<tr><td>xᵀy</td><td>点积：同位置相乘，再相加。x、y 元素数相同。</td><td>x=[2,3]、y=[4,5]：2×4+3×5=23</td></tr>
+<tr><td>AB，代码写 A @ B</td><td>矩阵乘法：左边一行与右边一列对应相乘再相加。左边列数必须等于右边行数。</td><td>A=[[1,2],[3,4]]、x=[2,1]：Ax=[1×2+2×1,3×2+4×1]=[4,10]</td></tr>
+<tr><td>A ⊙ B</td><td>逐元素乘法：相同位置相乘。本页这里两张矩阵形状相同。</td><td>[[1,2],[3,4]] ⊙ [[1,2],[3,4]]=[[1,4],[9,16]]</td></tr>
+<tr><td>sum(A)</td><td>把所有元素相加，得到一个数。</td><td>sum([[1,4],[9,16]])=30</td></tr>
+</tbody></table></div>
+<p>公式里 AB 是矩阵乘法，⊙ 是逐元素乘法。<code>xᵀBx</code> 表示先算 Bx，再算 xᵀ与结果的点积。不要把两类乘法混用。</p>
+<h3>③ 求导结果怎么读</h3>
+<p>“偏导”就是每次只对一个独立变量求导，其他变量当成常数。例如 f(x)=x₁²+x₁x₂：对 x₁ 求导得到 2x₁+x₂，对 x₂ 求导得到 x₁。</p>
+<div class="formula">标量函数对向量：∇ₓf=[∂f/∂x₁,∂f/∂x₂,…]，按列排列<br>标量函数对矩阵：∂f/∂A，各个偏导放回对应格子<br>向量函数对向量：J，每行对应一个输出，每列对应一个输入</div>
+<p>∇ₓf 读作“f 对 x 的梯度”，就是各个偏导按 x 的位置排成的向量。∂f/∂A 是矩阵梯度。J 叫<strong>雅可比矩阵</strong>，是多个输出对多个输入的偏导表；到 J1 时再举例。它们不是三个互相替代的万能公式。</p>
+<div class="warning"><strong>本页约定：</strong>各个输入元素独立；标量函数的梯度与求导变量形状相同；雅可比的行对应输出、列对应输入。没有假设输入矩阵必须对称，也没有附加其他约束。</div>
+<h3>④ 一个简短的标量公式提醒</h3>
+<div class="formula">常数的导数=0；t 的导数=1；t² 的导数=2t<br>eᵗ 的导数=eᵗ；ln(t) 的导数=1/t（t&gt;0）</div>
+<p>e 是约等于 2.71828 的固定数；eᵗ 是指数函数。例如 e⁰=1、e¹≈2.71828。ln 是以 e 为底的对数：ln(s)=t 的意思是 eᵗ=s，例如 ln(1)=0、ln(e)=1。这两条在后面的“逐元素函数”公式里会用到；你可以先只练平方函数。</p>
 </section>
-<section id="gradient"><p class="section-num">02 / 标量函数对向量求导</p><h2>分别求偏导，再按输入顺序排成梯度</h2>
-<h3>先看整体运算，再展开成标量</h3>
-<p>最简单的例子是“向量和自己做点积”。<strong>点积</strong>就是两个向量对应位置相乘，再把结果相加；符号是中间的点 ·。</p>
-<div class="formula">x=[x₁,x₂]<br>x · x = x₁×x₁ + x₂×x₂ = x₁²+x₂²<br>例如 x=[2,1]：x · x = 2×2+1×1=5</div>
-<p>所以 <code>h(x)=x·x</code> 是一个<strong>输入整个向量、输出一个数</strong>的函数。展开后看见标量运算，是因为点积本来就是这样计算的，不代表输入变成了标量。分别求偏导，就得到 <code>∇h=[2x₁,2x₂]=2x</code>。</p>
-<p>本页的 f 多了一步：第二个位置的平方乘 2。把“对应位置相乘”记作 ⊙，把“所有元素相加”记作 sum，则同一个函数可以写成：</p>
-<div class="formula">f(x)=sum([1,2] ⊙ (x ⊙ x))<br>也可以写成点积：f(x)=x · [x₁,2x₂]<br>展开后：f(x)=x₁²+2x₂²</div>
-<div class="formula">x=[2,1]<br>① x ⊙ x = [4,1]<br>② [1,2] ⊙ [4,1] = [4,2]<br>③ sum([4,2]) = 6</div>
-<p>整体运算和逐元素展开是<strong>同一个函数的两种写法</strong>。向量形式方便看整体；展开形式方便用你已学的标量规则求偏导。这里 [x₁,2x₂] 也随 x 变化，不是一个固定的常量向量，求导时仍需展开计算。</p>
-<h3>现在逐个求导</h3>
-
-<div class="formula">x=[x₁,x₂]，f(x)=x₁²+2x₂²</div>
-<ol><li>对 x₁ 求导时，2x₂² 是常数，所以 <code>∂f/∂x₁=2x₁</code>。</li><li>对 x₂ 求导时，x₁² 是常数，所以 <code>∂f/∂x₂=4x₂</code>。</li><li>按 x₁、x₂ 的次序，把两个结果排好：<code>∇f=[2x₁,4x₂]</code>。</li></ol>
-<div class="formula">一般地，x=[x₁,…,xₙ]：<br>∇f(x) = [∂f/∂x₁,…,∂f/∂xₙ]</div>
-<h3>梯度的意义：预测这个函数值怎样变化</h3>
-<p>在 x=[2,1] 时，f=6，梯度为 [4,4]。这表示：只让 x₁ 增加很小的 ε，f 大约增加 4ε；只让 x₂ 增加很小的 ε，f 也大约增加 4ε。</p>
-<p>两个分量一起变化时，把各自的贡献相加。设 <code>Δx=[Δx₁,Δx₂]</code>：</p>
-<div class="formula">Δf ≈ (∂f/∂x₁)Δx₁ + (∂f/∂x₂)Δx₂<br>　 = ∇f · Δx<br>f(x+Δx) ≈ f(x) + ∇f · Δx</div>
-<p>例如 Δx=[0.1,0]，梯度预测 Δf≈4×0.1=0.4；实际 <code>f(2.1,1)−f(2,1)=0.41</code>。导数描述局部的一阶变化，所以对于一般非线性函数，有限改动下通常是近似。</p>
-<div class="card"><h3>动手：分别改变两个分量</h3><div class="controls"><label>x₁ <input id="x1" type="range" min="-3" max="3" step="0.25" value="2"> <span id="x1v"></span></label><label>x₂ <input id="x2" type="range" min="-3" max="3" step="0.25" value="1"> <span id="x2v"></span></label></div><div id="gradReadout" class="readout" aria-live="polite"></div><div class="controls"><label>Δx₁ <input id="dx1" type="range" min="-0.2" max="0.2" step="0.01" value="0.1"> <span id="dx1v"></span></label><label>Δx₂ <input id="dx2" type="range" min="-0.2" max="0.2" step="0.01" value="0"> <span id="dx2v"></span></label></div><div id="deltaReadout" class="readout" aria-live="polite"></div></div>
-<h3>分量之间有乘积，也照样逐个求导</h3>
-<div class="formula">g(x)=x₁²+x₁x₂+2x₂²<br>∂g/∂x₁=2x₁+x₂　（对 x₁ 求导，x₂ 是常数）<br>∂g/∂x₂=x₁+4x₂　（对 x₂ 求导，x₁ 是常数）<br>∇g=[2x₁+x₂, x₁+4x₂]</div>
-<p>在 x=[2,1] 时，g=8、∇g=[5,6]。向量函数的表达式不需要每个分量各算各的；关键仍然是每次只对一个自变量求偏导。</p>
+<section id="gradient"><p class="section-num">向量 / 两组基础公式</p><h2>V1：常向量与 x 的点积</h2>
+<div class="formula">f(x)=aᵀx+c<br><strong>∇ₓf=a</strong></div>
+<p><strong>能用的条件：</strong>x 是求导变量；a 是与 x 同长度的常向量，c 是常数，它们不随 x 改变。如果 a 本身依赖 x，不能直接套这条。</p>
+<p><strong>这个函数的运算：</strong>把 a 和 x 做点积，再加 c。每个分量的系数直接成为对应偏导。</p>
+<h3>例题：a=[2,−3]，c=5</h3>
+<div class="formula">f(x)=2x₁−3x₂+5<br>选 V1：∇ₓf=a=[2,−3]</div>
+<p>结果与 x 的当前位置无关。例如在 x=[1,4] 时 f=−5，梯度仍为 [2,−3]。只改变 x₂ 时，它的变化率是 −3。</p>
+<p><strong>自己练：</strong>a=[4,1,−2]、c=7，求 f=aᵀx+c 的梯度。</p>
+<details><summary>练习答案</summary><div class="formula">∇ₓf=[4,1,−2]</div></details>
+<details><summary>可选推导：为什么直接等于 a？</summary><p>展开成 f=a₁x₁+a₂x₂+…+c。对 xᵢ 求导时，只有 aᵢxᵢ 这一项依赖它，偏导就是 aᵢ。按顺序排好，得到 a。</p></details>
+<h2>V2：向量和自己的点积</h2>
+<div class="formula">f(x)=xᵀx=sum(x ⊙ x)<br><strong>∇ₓf=2x</strong></div>
+<p><strong>能用的条件：</strong>f 是 x 的所有元素平方后求和；结果是一个数，不是把 x 每个元素平方后输出一个向量。</p>
+<h3>例题：x=[2,−1,3]</h3>
+<div class="formula">f=2²+(−1)²+3²=14<br>代入 V2：∇ₓf=2[2,−1,3]=[4,−2,6]</div>
+<p>梯度的三个位置分别对应三个输入的变化率；它与 x 的形状相同。</p>
+<p><strong>自己练：</strong>x=[−2,4]，分别算 f 和 ∇ₓf。</p>
+<details><summary>练习答案</summary><div class="formula">f=20；∇ₓf=[−4,8]</div></details>
+<details><summary>可选推导</summary><p>展开为 f=x₁²+x₂²+…，各个偏导为 2x₁、2x₂……，排成向量就是 2x。</p></details>
 </section>
-<section id="jacobian"><p class="section-num">03 / 向量函数对向量求导</p><h2>每个输出都求一遍，得到雅可比矩阵</h2>
-<p>这次输出不再是一个数，而是两个数：</p>
-<div class="formula">F(x)=[f₁(x),f₂(x)]<br>f₁=x₁²+x₂<br>f₂=x₁x₂</div>
-<p>不要直接猜“向量的导数”。先对 f₁ 求两个偏导，再对 f₂ 求两个偏导：</p>
-<div class="table-wrap"><table><thead><tr><th>输出函数</th><th>对 x₁ 求导（固定 x₂）</th><th>对 x₂ 求导（固定 x₁）</th></tr></thead><tbody><tr><td>f₁=x₁²+x₂</td><td>2x₁</td><td>1</td></tr><tr><td>f₂=x₁x₂</td><td>x₂</td><td>x₁</td></tr></tbody></table></div>
-<div class="formula">Jᵢⱼ = ∂fᵢ/∂xⱼ<br>J = [[∂f₁/∂x₁, ∂f₁/∂x₂],<br>　　 [∂f₂/∂x₁, ∂f₂/∂x₂]]<br>　= [[2x₁,1],<br>　　 [x₂,x₁]]</div>
-<p>n 个输入、m 个输出时，一共有 m×n 个偏导，雅可比是 m 行 n 列。某个输出不依赖某个输入，对应的格子就是 0。</p>
-<h3>雅可比的意义：把输入变化换算成各个输出的变化</h3>
-<p>在 x=[2,3] 时，F(x)=[7,6]、J=[[4,1],[3,2]]。只让 x₁ 增加 ε，两个输出分别大约增加 4ε、3ε；这就是雅可比<strong>第一列</strong>的含义。只让 x₂ 增加 ε，则分别增加 ε、2ε，对应第二列。</p>
-<div class="formula">Δf₁ ≈ 2x₁Δx₁ + Δx₂<br>Δf₂ ≈ x₂Δx₁ + x₁Δx₂<br>合在一起：ΔF ≈ JΔx（把 Δx 看成一列）</div>
-<p>例如 Δx=[0.1,0]，预测 ΔF≈[0.4,0.3]；重新计算得到实际变化 [0.41,0.3]。</p>
-<div class="card"><h3>动手：观察一个输入怎样影响两个输出</h3><div class="controls"><label>x₁ <input id="jx1" type="range" min="-3" max="3" step="0.25" value="2"> <span id="jx1v"></span></label><label>x₂ <input id="jx2" type="range" min="-3" max="3" step="0.25" value="3"> <span id="jx2v"></span></label></div><div id="jacReadout" class="readout" aria-live="polite"></div><div class="controls"><label>输入改动 <select id="jacDelta"><option value="x1">只让 x₁ 增加 0.1</option><option value="x2">只让 x₂ 增加 0.1</option><option value="both">x₁ 增加 0.1，x₂ 减少 0.1</option></select></label></div><div id="jacDeltaReadout" class="readout" aria-live="polite"></div></div>
-<div class="note"><strong>和梯度的关系：</strong>若只有一个输出，雅可比按本课约定是一行的偏导表；梯度则按输入形状排列。在列向量记法下，这一行雅可比是梯度的转置。两者记录的是同一组偏导。</div>
+<section id="quadratic"><p class="section-num">向量 / V3 二次式</p><h2>V3：xᵀBx 的求导公式</h2>
+<div class="formula">f(x)=xᵀBx，B 是固定的 n×n 矩阵<br><strong>∇ₓf=(B+Bᵀ)x</strong></div>
+<p><strong>能用的条件：</strong>x 是 n 个元素的列向量；B 不随 x 改变。先算 Bx，再与 x 做点积，得到一个数。</p>
+<p>如果 B 转置后不变，称为<strong>对称矩阵</strong>。例如 [[1,2],[2,3]] 是对称的，[[1,2],[0,3]] 不是。只有 B=Bᵀ 时，公式可以简写：</p>
+<div class="formula">B=Bᵀ 时：<strong>∇ₓf=2Bx</strong></div>
+<h3>例题一：对称矩阵</h3>
+<div class="formula">B=[[1,0],[0,2]]，x=[2,1]<br>Bx=[2,2]<br>f=xᵀBx=2×2+1×2=6<br>梯度=2Bx=[4,4]</div>
+<p>这里展开后的函数是 f=x₁²+2x₂²。它是 V3 的一个具体例子，不是另一条通用公式。</p>
+<h3>例题二：B 不对称</h3>
+<div class="formula">B=[[1,2],[0,3]]，x=[1,2]<br>Bᵀ=[[1,0],[2,3]]<br>B+Bᵀ=[[2,2],[2,6]]<br>梯度=(B+Bᵀ)x=[2×1+2×2,2×1+6×2]=[6,14]</div>
+<p><strong>易错点：</strong>这时 2Bx=[10,12]，不等于正确答案。不要漏掉对称条件。</p>
+<p><strong>自己练：</strong>B=[[3,0],[0,1]]、x=[1,−2]，求梯度。</p>
+<details><summary>练习答案</summary><div class="formula">B 对称；∇ₓf=2Bx=[6,−4]</div></details>
+<details><summary>可选推导：先看两个元素的情况</summary><p>若 B=[[p,q],[r,s]]，展开 f=px₁²+(q+r)x₁x₂+sx₂²。两个偏导为 2px₁+(q+r)x₂、(q+r)x₁+2sx₂；这正是 (B+Bᵀ)x。p、q、r、s 都是固定数。</p></details>
 </section>
-<section id="linear"><p class="section-num">04 / 一个具体函数的求导例子</p><h2>矩阵求导例子：所有元素平方后求和</h2>
-<div class="note"><strong>本节只推导这一个函数：</strong><code>f(A)=sum(A ⊙ A)</code>。得到的 <code>∂f/∂A=2A</code> 是这个函数的求导公式，不是所有标量函数对矩阵求导都能使用的公式。“标量函数对矩阵求导”是一类问题的名称，本例只是其中一种。</div>
-<h3>这个函数对整个矩阵做了什么运算？</h3>
-<p>定义“每个元素平方，再把所有元素相加”的函数。⊙ 表示<strong>相同位置的元素相乘</strong>，sum 在这里表示<strong>把整张矩阵的所有元素相加</strong>：</p>
-<div class="formula">A=[[a,b],[c,d]]<br>A ⊙ A = [[a²,b²],[c²,d²]]<br>f(A)=sum(A ⊙ A)=a²+b²+c²+d²</div>
-<p>例如 A=[[1,2],[3,4]]，先得到 [[1,4],[9,16]]，再把四个数相加，得到 30。输入是一张矩阵，输出是一个数。</p>
-<div class="note">这里 A ⊙ A 是逐元素乘法，<strong>不是</strong>矩阵乘法 A @ A。前者每格只乘它自己；后者按行与列相乘再相加，下一部分会单独讲。</div>
-<h3>展开后，逐个元素求导</h3>
-<p>现在把同一个函数写成四个标量变量的表达式：</p>
-<div class="formula">A=[[a,b],[c,d]]<br>f(A)=a²+b²+c²+d²</div>
-<p>它就是普通的四元函数 <code>f(a,b,c,d)</code>。对 a 求导时，b、c、d 不动；其他元素同理。</p>
-<div class="table-wrap"><table><thead><tr><th>改变哪个元素</th><th>固定哪些元素</th><th>得到的偏导</th></tr></thead><tbody><tr><td>a=A₁₁</td><td>b、c、d</td><td>∂f/∂a=2a</td></tr><tr><td>b=A₁₂</td><td>a、c、d</td><td>∂f/∂b=2b</td></tr><tr><td>c=A₂₁</td><td>a、b、d</td><td>∂f/∂c=2c</td></tr><tr><td>d=A₂₂</td><td>a、b、c</td><td>∂f/∂d=2d</td></tr></tbody></table></div>
-<div class="formula">∂f/∂A = [[∂f/∂a,∂f/∂b],<br>　　　　 [∂f/∂c,∂f/∂d]]<br>　　　 = [[2a,2b],<br>　　　　 [2c,2d]]=2A</div>
-<p><strong>矩阵梯度的逐元素定义：</strong>只让第 i、j 个位置增加 ε，其他位置保持不变。Eᵢⱼ 表示“只有第 i、j 格为 1，其余为 0”的矩阵。</p>
-<div class="formula">(∂f/∂A)ᵢⱼ = ∂f/∂Aᵢⱼ<br>　= lim<sub>ε→0</sub> [f(A+εEᵢⱼ)−f(A)] / ε</div>
-<h3>矩阵梯度的意义：预测各个格子的改动对函数值的影响</h3>
-<p>A=[[1,2],[3,4]] 时，f=1²+2²+3²+4²=30，梯度为 [[2,4],[6,8]]。它的第一行第二列为 4，表示只让 b 增加 ε，f 大约增加 4ε。</p>
-<p>例如只让 b 增加 0.1，预测变化为 0.4；实际 <code>f([[1,2.1],[3,4]])−30=0.41</code>。</p>
-<div class="formula">多个格子同时改动：<br>Δf ≈ 2aΔa + 2bΔb + 2cΔc + 2dΔd<br>　 = Σᵢⱼ (∂f/∂Aᵢⱼ)ΔAᵢⱼ</div>
-<p>Σᵢⱼ 表示把所有位置的项相加。这是<strong>梯度与改变量对应位置相乘，再全部相加</strong>，不是两张矩阵做矩阵乘法。</p>
-<div class="card"><h3>动手：只改动矩阵的一个格子</h3><p>固定起点 A=[[1,2],[3,4]]，f(A)=30。</p><div class="controls"><label>选择元素 <select id="matrixCell"><option value="0">a=A₁₁，偏导为 2</option><option value="1" selected>b=A₁₂，偏导为 4</option><option value="2">c=A₂₁，偏导为 6</option><option value="3">d=A₂₂，偏导为 8</option></select></label><label>改变量 ε <input id="matrixEps" type="range" min="-0.2" max="0.2" step="0.01" value="0.1"> <span id="matrixEpsV"></span></label></div><div id="matrixReadout" class="readout" aria-live="polite"></div></div>
-<h3>把求导结果写回矩阵形式</h3>
-<div class="formula">f(A)=sum(A ⊙ A)<br>每格的偏导：∂f/∂Aᵢⱼ=2Aᵢⱼ<br>所有格子排回原位置：∂f/∂A=2A</div>
-<p>这里 2A 就是把 A 的每个元素乘 2。这个结论来自本例中“每格贡献自己的平方”。换一个函数，偏导表达式就可能不同，必须按新的函数重新求导。可以复用的是“逐个求偏导，再按原位置排列”的方法，而不是 2A 这个结果。</p>
+<section id="distance"><p class="section-num">向量 / V4 平方差求和</p><h2>V4：Ax−b 的各元素平方后求和</h2>
+<p>先用 A 乘 x，再减去固定向量 b。为写得简短，暂时把结果叫 r。r 不是新的独立变量，它随 x 改变。</p>
+<div class="formula">r=Ax−b<br>f(x)=sum(r ⊙ r)<br><strong>∇ₓf=2Aᵀ(Ax−b)=2Aᵀr</strong></div>
+<p><strong>能用的条件：</strong>A 是固定 m×n 矩阵，x 是 n 个元素的变量向量，b 是固定 m 个元素的向量。Ax−b 有 m 个元素，但对 x 求导的结果有 n 个元素。</p>
+<h3>例题：一步一步代入</h3>
+<div class="formula">A=[[1,2],[0,1]]，x=[1,2]，b=[1,1]<br>① Ax=[5,2]<br>② r=Ax−b=[4,1]<br>③ f=4²+1²=17<br>④ Aᵀ=[[1,0],[2,1]]<br>⑤ Aᵀr=[4,9]<br>⑥ ∇ₓf=2Aᵀr=[8,18]</div>
+<p><strong>常见变式：</strong>如果整个 f 前面乘了一个常数，梯度也乘这个常数。例如 f=½sum(r⊙r) 时，梯度是 Aᵀr；如果 f=sum(r⊙r)/m，则梯度是 (2/m)Aᵀr。m 必须是固定数。</p>
+<p><strong>自己练：</strong>A=[[1,0],[0,1]]、x=[3,−1]、b=[1,2]，求梯度。</p>
+<details><summary>练习答案</summary><div class="formula">r=[2,−3]；Aᵀr=[2,−3]；梯度=[4,−6]</div></details>
+<details><summary>可选推导</summary><p>第 i 个结果 rᵢ=ΣⱼAᵢⱼxⱼ−bᵢ。Σ 表示把指定编号的项相加。对 xⱼ 求导得到 Aᵢⱼ，再对 rᵢ² 用链式法则得到 2rᵢAᵢⱼ。汇总所有 i，正好是 2Aᵀr 的第 j 个元素。</p></details>
 </section>
-
-<section id="matrix-output"><p class="section-num">05 / 具体例子：矩阵乘自己</p><h2>先算清楚输出，再对每个输出求偏导</h2>
-<p>上一部分的函数输出一个数。这一部分换一个函数：输入矩阵 A，计算 A 和自己做矩阵乘法，输出仍然是一张矩阵。</p>
-<h3>① 先解释记号和乘法</h3>
-<p><code>F(A)</code> 表示“把矩阵 A 交给函数 F 后得到的结果”。这里定义 <code>F(A)=A @ A</code>，@ 表示矩阵乘法；这也常写作 <code>A²</code>。它与上一部分的逐元素平方不同。</p>
-<p>矩阵乘法的一个输出元素怎么计算？<strong>取左边矩阵的一行、右边矩阵的一列，对应位置相乘，再把乘积相加。</strong>先看左上角：</p>
-<div class="formula">A=[[a,b],[c,d]]<br>左边第一行：[a,b]<br>右边第一列：[a,c]<br>左上角的输出：a×a+b×c=a²+bc</div>
-<p>其他三个位置也用同样的方法。F₁₁ 表示输出矩阵第一行第一列的数，F₁₂ 表示第一行第二列的数；下标只是在标明位置。</p>
-<div class="table-wrap"><table><thead><tr><th>输出位置</th><th>取哪一行和哪一列</th><th>展开计算</th></tr></thead><tbody><tr><td>F₁₁</td><td>第一行与第一列</td><td>a×a+b×c=a²+bc</td></tr><tr><td>F₁₂</td><td>第一行与第二列</td><td>a×b+b×d=ab+bd</td></tr><tr><td>F₂₁</td><td>第二行与第一列</td><td>c×a+d×c=ac+dc</td></tr><tr><td>F₂₂</td><td>第二行与第二列</td><td>c×b+d×d=bc+d²</td></tr></tbody></table></div>
-<div class="formula">F(A)=[[a²+bc,ab+bd],<br>　　　[ac+dc,bc+d²]]</div>
-<h3>② 每个输出，分别对四个输入求偏导</h3>
-<p>先只看左上角的输出 <code>F₁₁=a²+bc</code>：</p>
-<ul><li>对 a 求导：b、c、d 固定，得到 2a。</li><li>对 b 求导：a、c、d 固定，得到 c。</li><li>对 c 求导：a、b、d 固定，得到 b。</li><li>对 d 求导：表达式里没有 d，得到 0。</li></ul>
-<p>这就算出了一个输出对应的四个偏导。对另外三个输出也分别这样计算，一共得到 16 个偏导。仍然使用前面学过的雅可比排列方法：<strong>每一行对应一个输出，每一列对应一个输入。</strong></p>
-<div class="table-wrap"><table><thead><tr><th>输出函数</th><th>对 a 求导</th><th>对 b 求导</th><th>对 c 求导</th><th>对 d 求导</th></tr></thead><tbody><tr><td>F₁₁=a²+bc</td><td>2a</td><td>c</td><td>b</td><td>0</td></tr><tr><td>F₁₂=ab+bd</td><td>b</td><td>a+d</td><td>0</td><td>b</td></tr><tr><td>F₂₁=ac+dc</td><td>c</td><td>0</td><td>a+d</td><td>c</td></tr><tr><td>F₂₂=bc+d²</td><td>0</td><td>c</td><td>b</td><td>2d</td></tr></tbody></table></div>
-<p>输入按 [a,b,c,d] 排列；输出按 [F₁₁,F₁₂,F₂₁,F₂₂] 排列。表中的四行四列就是这个顺序下的雅可比。不要把它当成新的求导公式，每个格子都是刚才那种普通偏导。</p>
-<h3>③ 这些偏导有什么用？只改一个输入试试</h3>
-<p>设 A=[[1,2],[3,4]]，即 a=1、b=2、c=3、d=4。只让 b 增加 0.1，其他元素保持不变。取上表“对 b 求导”的一列：</p>
-<div class="formula">四个输出对 b 的偏导：[c,a+d,0,c]=[3,5,0,3]<br>每个偏导乘改变量 0.1：<br>F₁₁ 的变化约为 3×0.1=0.3<br>F₁₂ 的变化约为 5×0.1=0.5<br>F₂₁ 的变化约为 0×0.1=0<br>F₂₂ 的变化约为 3×0.1=0.3</div>
-<p>把这四个输出的变化放回各自的位置，就得到预计的输出变化：</p>
-<div class="formula">[[0.3,0.5],[0,0.3]]</div>
-<h3>④ 用实际计算核对</h3>
-<div class="formula">原输入 A=[[1,2],[3,4]]<br>原输出 A @ A=[[7,10],[15,22]]<br><br>改后输入：[[1,2.1],[3,4]]<br>改后输出：[[7.3,10.5],[15,22.3]]<br><br>改后输出减去原输出：<br>[[7.3−7,10.5−10],[15−15,22.3−22]]<br>= [[0.3,0.5],[0,0.3]]</div>
-<p>这次结果与偏导估计恰好相等，因为只改变 b 时，四个输出关于 b 都是一次式。对于其他改动，估计与实际结果未必完全相等；前面平方函数的例子已经展示过这种差别。</p>
-<div class="success"><strong>本例学到的方法：</strong>先展开矩阵乘法，找出每个输出函数；再固定其他输入，逐个求偏导；最后用“偏导×小改变量”解释输出怎样变化。这里不需要额外的抽象导数记法。</div>
+<section id="linear"><p class="section-num">矩阵 / M1–M3 三组基础公式</p><h2>M1：矩阵所有元素求和</h2>
+<div class="formula">f(A)=sum(A)<br><strong>∂f/∂A=与 A 同形状、每格都是 1 的矩阵</strong></div>
+<p>例如 A=[[1,2],[3,4]]，f=10，梯度=[[1,1],[1,1]]。任何一个格子增加 0.01，f 就增加 0.01。</p>
+<p><strong>自己练：</strong>A 是 2×3 矩阵，求 sum(A) 对 A 的梯度。</p>
+<details><summary>练习答案</summary><div class="formula">[[1,1,1],[1,1,1]]</div></details>
+<h2>M2：矩阵所有元素平方后求和</h2>
+<div class="formula">f(A)=sum(A ⊙ A)<br><strong>∂f/∂A=2A</strong></div>
+<p><strong>能用的条件：</strong>每个元素平方，再把所有结果相加。这里不是 A @ A，也不是输出逐元素平方的整张矩阵。</p>
+<h3>例题：A=[[1,2],[3,4]]</h3>
+<div class="formula">A ⊙ A=[[1,4],[9,16]]<br>f=1+4+9+16=30<br>梯度=2A=[[2,4],[6,8]]</div>
+<p><strong>自己练：</strong>A=[[−1,0],[2,3]]，求 f 和梯度。</p>
+<details><summary>练习答案</summary><div class="formula">f=14；梯度=[[-2,0],[4,6]]</div></details>
+<details><summary>可选推导</summary><p>每个格子只贡献自己的平方，其偏导是该格子乘 2，按原位置放好就是 2A。</p></details>
+<h2>M3：矩阵与固定系数逐元素相乘后求和</h2>
+<div class="formula">f(A)=sum(C ⊙ A)，C 为常矩阵<br><strong>∂f/∂A=C</strong></div>
+<p><strong>能用的条件：</strong>C、A 形状相同；C 不随 A 改变；运算是逐元素乘法后求和。</p>
+<h3>例题：A=[[1,2],[3,4]]，C=[[2,−1],[0,3]]</h3>
+<div class="formula">C ⊙ A=[[2,−2],[0,12]]<br>f=12<br>梯度=C=[[2,−1],[0,3]]</div>
+<p><strong>自己练：</strong>C=[[1,4],[−2,0]]，求 sum(C⊙A) 对 A 的梯度。</p>
+<details><summary>练习答案</summary><div class="formula">[[1,4],[-2,0]]，不需要知道 A 的当前数值。</div></details>
+<details><summary>可选推导</summary><p>展开为各格 CᵢⱼAᵢⱼ 相加；对 Aᵢⱼ 求导得到系数 Cᵢⱼ。</p></details>
 </section>
-
-<section id="chain"><p class="section-num">06 / 复合函数</p><h2>中间变量也是函数，逐条应用链式法则</h2>
-<p>定义两个中间变量，再把它们代入一个标量函数：</p>
-<div class="formula">u=x₁+x₂，v=x₁−x₂<br>f=u²+3v²</div>
-<p>x₁ 会同时改变 u 和 v，因此两条影响都要计算并相加：</p>
-<div class="formula">∂f/∂x₁ = (∂f/∂u)(∂u/∂x₁) + (∂f/∂v)(∂v/∂x₁)<br>　　　 = 2u×1 + 6v×1 = 2u+6v<br>∂f/∂x₂ = 2u×1 + 6v×(−1) = 2u−6v</div>
-<p>在 x=[2,1] 时，u=3、v=1，∇f=[12,0]。这只是普通复合函数的偏导计算。也可以先展开 <code>f=(x₁+x₂)²+3(x₁−x₂)²</code>，直接求偏导，核对结果。</p>
-<details><summary>向量函数的链式法则</summary><p>若 u=G(x)、y=H(u)，每个输出对每个输入都有多条中间路径：</p><div class="formula">∂yᵢ/∂xⱼ = Σₖ (∂yᵢ/∂uₖ)(∂uₖ/∂xⱼ)<br>按雅可比排列：J<sub>y,x</sub> = J<sub>y,u</sub> J<sub>u,x</sub></div><p>矩阵乘法在这里刚好把“各条路径贡献相乘再相加”组织在一起。</p></details>
+<section id="outer"><p class="section-num">矩阵 / M4 两边夹向量</p><h2>M4：xᵀAy 对 A 求导</h2>
+<p>这次求导变量是 A，x 和 y 都是固定向量。别把它与 V3“对 x 求导”混淆。</p>
+<div class="formula">f(A)=xᵀAy<br><strong>∂f/∂A=xyᵀ</strong></div>
+<p><strong>能用的条件：</strong>A 是 m×n，x 有 m 个元素，y 有 n 个元素。先算 Ay，再与 x 做点积，得到一个数。x、y 不随 A 变化。</p>
+<p><strong>xyᵀ 怎么算：</strong>x 是一列，yᵀ 是一行，二者做矩阵乘法。结果每个格子等于 x 对应元素乘 y 对应元素。这种运算叫<strong>外积</strong>；先看下面的数字，不需要另背定义。</p>
+<h3>例题：x=[1,2]、y=[3,4,5]</h3>
+<div class="formula">A=[[1,2,3],[4,5,6]]<br>Ay=[26,62]<br>f=xᵀAy=1×26+2×62=150<br>xyᵀ=[[1×3,1×4,1×5],<br>　　 [2×3,2×4,2×5]]<br>梯度=[[3,4,5],[6,8,10]]，形状 2×3</div>
+<p>梯度第一行第二列是 4：只把 A 的这个格子增加 ε，函数值增加 4ε。这里 ε 表示一个改变量，例如 0.01。</p>
+<p><strong>自己练：</strong>x=[2,−1]、y=[1,3]，求 xᵀAy 对 A 的梯度。</p>
+<details><summary>练习答案</summary><div class="formula">xyᵀ=[[2,6],[-1,-3]]</div></details>
+<details><summary>可选推导</summary><p>展开 xᵀAy 后，A 第 i 行第 j 列的系数是 xᵢyⱼ，因此这个格子的偏导是 xᵢyⱼ。xyᵀ 刚好把这些系数排好。</p></details>
 </section>
-<section id="practice"><p class="section-num">07 / 检查自己算得对不对</p><h2>用小改动核对偏导</h2>
-<p>按定义，只改一个输入元素，计算函数值的变化。用加 ε 和减 ε 的中心差分，近似偏导：</p>
-<div class="formula">∂f/∂Aᵢⱼ ≈ [f(A+εEᵢⱼ)−f(A−εEᵢⱼ)]/(2ε)</div>
-<p>对向量也一样，每次只改一个分量；输出有多个分量时，对每个输出分别计算差分。数值结果用于检查手推公式，不是新的求导规则。ε 过大会有近似误差，过小又可能受到浮点舍入影响。</p>
-<p><a href="lesson-math-matrix-calculus.py">配套计算例子</a>只核对本页的数学函数，包括梯度、雅可比、矩阵输出的导数和链式法则。可选运行：</p>
+<section id="matrixproduct"><p class="section-num">矩阵 / M5 矩阵乘积的平方差</p><h2>M5：AB−C 的各元素平方后求和</h2>
+<p>这是对矩阵 A 求导的公式。B、C 固定，先算矩阵乘法 AB，再逐元素减 C，把结果叫 R。</p>
+<div class="formula">R=AB−C<br>f(A)=sum(R ⊙ R)<br><strong>∂f/∂A=2(AB−C)Bᵀ=2RBᵀ</strong></div>
+<p><strong>能用的条件：</strong>A 为 m×n，B 为 n×p，C 为 m×p。因此 R 为 m×p，RBᵀ 为 m×n，和 A 形状相同。右边的 Bᵀ 不能任意移到左边。</p>
+<h3>例题：每一步都代入</h3>
+<div class="formula">A=[[1,2],[3,4]]<br>B=[[1,0],[0,2]]，C=[[1,1],[1,1]]<br>① AB=[[1,4],[3,8]]<br>② R=[[0,3],[2,7]]<br>③ f=0²+3²+2²+7²=62<br>④ Bᵀ=B<br>⑤ RBᵀ=[[0,6],[2,14]]<br>⑥ 梯度=2RBᵀ=[[0,12],[4,28]]</div>
+<p><strong>常见变式：</strong>f 前面乘 ½，梯度中的 2 抵消；f 除以一个固定的非零数 k，梯度也除以 k。</p>
+<p><strong>自己练：</strong>B=[[1,0],[0,1]]、C 是全 0 矩阵，A=[[2,−1],[0,3]]，求梯度。</p>
+<details><summary>练习答案</summary><div class="formula">AB−C=A，梯度=2A=[[4,-2],[0,6]]</div></details>
+<details><summary>可选推导</summary><p>Σ 表示把指定编号的项相加。Rᵢₖ=ΣⱼAᵢⱼBⱼₖ−Cᵢₖ；对 Aᵢⱼ 求导时，Rᵢₖ 的偏导为 Bⱼₖ，因此 f 的这个偏导为 Σₖ2RᵢₖBⱼₖ。它正是 2RBᵀ 第 i、j 格的计算。</p></details>
+</section>
+<section id="jacobian"><p class="section-num">向量输出 / J1–J2</p><h2>先区分：输出一个数，还是输出一个向量</h2>
+<p>前面的 f 都输出一个数，求导结果是梯度。现在 F 输出多个数：每个输出都要对每个输入求偏导，排成雅可比。行对应输出，列对应输入。</p>
+<h2>J1：固定矩阵乘向量，再加常向量</h2>
+<div class="formula">F(x)=Ax+b，A、b 固定<br><strong>J=A</strong></div>
+<p><strong>能用的条件：</strong>A 是 m×n，输入 x 有 n 个元素，输出 F 有 m 个元素。雅可比为 m×n。注意 V1 输出的是 aᵀx 这个数，J1 输出的是 Ax 这个向量。</p>
+<h3>例题：A=[[1,2],[−1,3]]，b=[0,1]</h3>
+<div class="formula">F₁=x₁+2x₂<br>F₂=−x₁+3x₂+1<br>J=[[1,2],[-1,3]]</div>
+<p>第一列 [1,−1] 表示只改 x₁ 时两个输出的变化率；第二列 [2,3] 表示只改 x₂ 时的变化率。固定 b 的导数为 0，不出现在结果里。</p>
+<p><strong>自己练：</strong>A=[[2,0],[1,−3],[4,1]]，b=[1,1,1]，求雅可比。</p>
+<details><summary>练习答案</summary><div class="formula">J=A=[[2,0],[1,-3],[4,1]]，形状 3×2</div></details>
+<h2>J2：每个元素分别使用同一个标量函数</h2>
+<p>设 g 是一个标量函数，例如 g(t)=t²；g′(t) 表示它的标量导数。对 x 的每个元素分别计算它：F(x)=[g(x₁),g(x₂),…]，输出向量长度不变。</p>
+<p><strong>对角矩阵</strong>是只有左上到右下那条线可以非零、其他位置都是 0 的矩阵。把一组数放到这条线上，写作 diag(这组数)。</p>
+<div class="formula">F(x)=[g(x₁),g(x₂),…]<br><strong>J=diag(g′(x₁),g′(x₂),…)</strong></div>
+<p><strong>能用的条件：</strong>g 在使用的输入处能求导，而且第 i 个输出只依赖第 i 个输入。若一个输出同时依赖多个输入，就不能直接套对角公式。</p>
+<h3>例题：每个元素平方，x=[2,3]</h3>
+<div class="formula">g(t)=t²，g′(t)=2t<br>F(x)=[4,9]<br>J=diag(4,6)=[[4,0],[0,6]]</div>
+<div class="warning"><strong>不要混淆：</strong>V2 把平方结果相加，只输出一个数，梯度是 2x；J2 保留所有平方结果，输出一个向量，雅可比是 diag(2x)。</div>
+<p><strong>另两条可直接套用的例子：</strong>逐元素 eᵗ：J=diag(e^(x₁),e^(x₂),…)；逐元素 ln(t)：J=diag(1/x₁,1/x₂,…)且所有 xᵢ&gt;0。</p>
+<p><strong>自己练：</strong>F(x)=[x₁²,x₂²,x₃²]，x=[1,−2,3]，求雅可比。</p>
+<details><summary>练习答案</summary><div class="formula">J=[[2,0,0],[0,-4,0],[0,0,6]]</div></details>
+<details><summary>可选推导</summary><p>每个输出只依赖它自己的输入，所以其他位置的偏导为 0；相同编号的位置则是普通标量导数 g′(xᵢ)。</p></details>
+</section>
+<section id="rules"><p class="section-num">规则 / 把已学公式组合起来</p><h2>三个实用的组合规则</h2>
+<p>以下 f、g 都输出一个数，使用相同自变量；α 是不随自变量变化的固定数。标量函数对矩阵求导时，也使用相同规则。</p>
+<div class="formula">常数函数：梯度为全 0<br>常数倍：∇(αf)=α∇f<br>相加：∇(f+g)=∇f+∇g</div>
+<h3>例题：组合 V1 与 V2</h3>
+<div class="formula">f(x)=3xᵀx+aᵀx+7，a=[1,−2]<br>① xᵀx 的梯度是 2x（V2）<br>② 乘 3 得到 6x<br>③ aᵀx 的梯度是 a（V1）<br>④ 常数 7 的梯度为 0<br>合起来：∇ₓf=6x+a<br>x=[2,1] 时：梯度=[12,6]+[1,−2]=[13,4]</div>
+<h3>简单复合函数的链式规则</h3>
+<p>如果先算一个<strong>标量</strong> u=h(x)，再算 f=g(u)，先求 h 的梯度，再乘 g 对 u 的标量导数。g′(u) 是一个数。</p>
+<div class="formula">u=h(x)，f=g(u)<br>∇ₓf=g′(u)∇ₓh</div>
+<p>例如 u=aᵀx、f=u²，先用 V1 得到 ∇u=a，再用平方的标量导数得到 2u：</p>
+<div class="formula">∇ₓf=2u a=2(aᵀx)a<br>a=[1,2]、x=[2,1] 时，u=4，梯度=8[1,2]=[8,16]</div>
+<p><strong>自己练：</strong>f=½xᵀx−aᵀx，a=[1,3]、x=[4,2]，求梯度。</p>
+<details><summary>练习答案</summary><div class="formula">∇ₓf=x−a=[3,−1]</div></details>
+</section>
+<section id="practice"><p class="section-num">速查 / 用公式时对照</p><h2>11 组公式速查表</h2>
+<p>表里的“固定”非常重要。不要只背最后一列；先辨认函数，再看求导变量和条件。</p>
+<div class="table-wrap"><table><thead><tr><th>编号</th><th>函数</th><th>对谁求导</th><th>条件</th><th>结果</th></tr></thead><tbody>
+<tr><td>V1</td><td>aᵀx+c</td><td>x</td><td>a、c 固定</td><td>a</td></tr>
+<tr><td>V2</td><td>xᵀx</td><td>x</td><td>所有元素平方后求和</td><td>2x</td></tr>
+<tr><td>V3</td><td>xᵀBx</td><td>x</td><td>B 固定</td><td>(B+Bᵀ)x；B 对称时 2Bx</td></tr>
+<tr><td>V4</td><td>sum((Ax−b)⊙(Ax−b))</td><td>x</td><td>A、b 固定</td><td>2Aᵀ(Ax−b)</td></tr>
+<tr><td>M1</td><td>sum(A)</td><td>A</td><td>输出一个数</td><td>同形状全 1 矩阵</td></tr>
+<tr><td>M2</td><td>sum(A⊙A)</td><td>A</td><td>逐元素平方后求和</td><td>2A</td></tr>
+<tr><td>M3</td><td>sum(C⊙A)</td><td>A</td><td>C 固定、同形状</td><td>C</td></tr>
+<tr><td>M4</td><td>xᵀAy</td><td>A</td><td>x、y 固定</td><td>xyᵀ</td></tr>
+<tr><td>M5</td><td>sum((AB−C)⊙(AB−C))</td><td>A</td><td>B、C 固定</td><td>2(AB−C)Bᵀ</td></tr>
+<tr><td>J1</td><td>Ax+b</td><td>x</td><td>A、b 固定；输出向量</td><td>J=A</td></tr>
+<tr><td>J2</td><td>[g(x₁),g(x₂),…]</td><td>x</td><td>第 i 个输出只依赖 xᵢ</td><td>J=diag(g′(x₁),g′(x₂),…)</td></tr>
+</tbody></table></div>
+<h3>做题时使用这四步</h3>
+<ol><li>圈出求导变量，标出哪些量固定。</li><li>判断输出是一个数还是多个数。</li><li>选择匹配的公式，先计算括号里的量，再代入。</li><li>检查结果形状：标量函数的梯度与变量同形；雅可比行数是输出数、列数是输入数。</li></ol>
+<p><a href="lesson-math-matrix-calculus.py">配套例题核对代码</a>会计算本页例题，并用数值差分检查公式结果。运行代码是可选的：</p>
 <pre><code>uv run python lessons/lesson-math-matrix-calculus.py</code></pre>
-<h3>先手算的三道练习</h3>
-<ol><li><code>f(x)=x₁x₂+x₂²</code>：求梯度，并代入 x=[2,3]。</li><li><code>F(x)=[x₁+x₂²,x₁x₂]</code>：逐行计算雅可比。</li><li><code>A=[[a,b],[c,d]]</code>、<code>f(A)=ab+c²−d</code>：求矩阵梯度，解释 b 改动时 f 的变化率。</li></ol>
-<details><summary>展开核对答案</summary><div class="formula">1. ∇f=[x₂,x₁+2x₂]，代入后为 [3,8]<br>2. J=[[1,2x₂],[x₂,x₁]]<br>3. ∂f/∂A=[[b,a],[2c,−1]]；b 的偏导为 a</div></details>
-<div class="checklist"><label><input type="checkbox">我能展开函数，指出每个独立自变量。</label><label><input type="checkbox">我能固定其他元素，逐个求偏导。</label><label><input type="checkbox">我能区分梯度、雅可比和矩阵梯度的排列。</label><label><input type="checkbox">我能用导数预测小改动导致的函数值变化。</label></div>
+<details><summary>什么是数值差分？只在想核对公式时阅读</summary><p>只把某一个输入元素加一个小量 ε，再减同样的小量，分别算函数值；两者之差除以 2ε，就能近似该元素的偏导。ε 是改变量，例如 0.00001。它是核对方法，不是另一套需要背的求导公式。</p></details>
 </section>
-<section id="quiz"><p class="section-num">08 / 自测</p><h2>六道理解题</h2>
-<div class="quiz-item" data-answer="b" data-explanation="对 x₁ 求偏导时，其余独立变量固定。"><strong>1. 对 f(x₁,x₂) 求 ∂f/∂x₁ 时，怎样处理 x₂？</strong><div class="answers"><button data-choice="a">也一起求导</button><button data-choice="b">把 x₂ 当成常数</button><button data-choice="c">把 x₂ 设成 0</button></div><div class="feedback" aria-live="polite"></div></div>
-<div class="quiz-item" data-answer="c" data-explanation="分别对两个独立输入求偏导，按顺序得到 [x₂,x₁]。"><strong>2. f(x)=x₁x₂ 的梯度是什么？</strong><div class="answers"><button data-choice="a">[x₁,x₂]</button><button data-choice="b">x₁+x₂</button><button data-choice="c">[x₂,x₁]</button></div><div class="feedback" aria-live="polite"></div></div>
-<div class="quiz-item" data-answer="a" data-explanation="本课雅可比的行对应输出，列对应输入，所以是 2×3。"><strong>3. 三个输入、两个输出，雅可比有几行几列？</strong><div class="answers"><button data-choice="a">2 行 3 列</button><button data-choice="b">3 行 2 列</button><button data-choice="c">2 行 2 列</button></div><div class="feedback" aria-live="polite"></div></div>
-<div class="quiz-item" data-answer="b" data-explanation="标量函数对每个输入格子求一个偏导，按本课约定放回原矩阵位置。"><strong>4. f 是标量函数，A 是 2×3 矩阵。∂f/∂A 是什么形状？</strong><div class="answers"><button data-choice="a">3×2</button><button data-choice="b">2×3</button><button data-choice="c">一个数</button></div><div class="feedback" aria-live="polite"></div></div>
-<div class="quiz-item" data-answer="a" data-explanation="只改变 x₂，取它对应的偏导乘改变量，得到 (−2)×0.01=−0.02。"><strong>5. 某点 ∇f=[3,−2]，只让 x₂ 增加 0.01，Δf 约是多少？</strong><div class="answers"><button data-choice="a">−0.02</button><button data-choice="b">0.03</button><button data-choice="c">−2</button></div><div class="feedback" aria-live="polite"></div></div>
-<div class="quiz-item" data-answer="c" data-explanation="四个输出各自对四个输入求偏导，按约定展开后是 4×4 的雅可比。"><strong>6. F(A) 有 2×2 个输出，A 有 2×2 个独立输入，一共有几个一阶偏导？</strong><div class="answers"><button data-choice="a">4 个</button><button data-choice="b">8 个</button><button data-choice="c">16 个</button></div><div class="feedback" aria-live="polite"></div></div>
+<section id="quiz"><p class="section-num">自测 / 会选公式，能计算</p><h2>六道公式应用题</h2>
+<div class="quiz-item" data-answer="b" data-explanation="V2：所有元素平方后求和，梯度是 2x。"><strong>1. f=xᵀx，x=[2,−3]，梯度是？</strong><div class="answers"><button data-choice="a">[4,9]</button><button data-choice="b">[4,−6]</button><button data-choice="c">13</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="c" data-explanation="V3 的一般公式是 (B+Bᵀ)x；只有 B 对称时才能简写为 2Bx。"><strong>2. B 不一定对称，xᵀBx 对 x 的梯度是？</strong><div class="answers"><button data-choice="a">2Bx</button><button data-choice="b">B</button><button data-choice="c">(B+Bᵀ)x</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="a" data-explanation="V4 再乘常数 ½，梯度中的 2 抵消。"><strong>3. f=½sum((Ax−b)⊙(Ax−b))，A、b 固定，对 x 求导得到？</strong><div class="answers"><button data-choice="a">Aᵀ(Ax−b)</button><button data-choice="b">2Aᵀ(Ax−b)</button><button data-choice="c">A</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="b" data-explanation="M4 对 A 求导得到 xyᵀ，形状与 A 一致。"><strong>4. x、y 固定，xᵀAy 对 A 求导是？</strong><div class="answers"><button data-choice="a">yxᵀ</button><button data-choice="b">xyᵀ</button><button data-choice="c">2A</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="c" data-explanation="M5：右乘 Bᵀ，结果与 A 同形。"><strong>5. f=sum((AB−C)⊙(AB−C))，B、C 固定，对 A 求导得到？</strong><div class="answers"><button data-choice="a">2Bᵀ(AB−C)</button><button data-choice="b">2A</button><button data-choice="c">2(AB−C)Bᵀ</button></div><div class="feedback" aria-live="polite"></div></div>
+<div class="quiz-item" data-answer="a" data-explanation="J2 保留两个输出，雅可比是 diag(2x)，不是标量求和函数的梯度 2x。"><strong>6. F(x)=[x₁²,x₂²]，x=[1,2]，雅可比是？</strong><div class="answers"><button data-choice="a">[[2,0],[0,4]]</button><button data-choice="b">[2,4]</button><button data-choice="c">5</button></div><div class="feedback" aria-live="polite"></div></div>
 </section>
 <p class="footer"><a href="../index.html">返回课程目录</a> · <a href="lesson-01-tensors.html">下一课：第一节，张量与必要基础 →</a></p>
 </main></div>
 <script>
-const $=s=>document.querySelector(s);
-function n(v){return Number(v).toFixed(4).replace(/\.?0+$/,'') || '0'}
-function updateGradient(){
- const a=Number($('#x1').value),b=Number($('#x2').value),da=Number($('#dx1').value),db=Number($('#dx2').value);
- const f=a*a+2*b*b,g=[2*a,4*b],pred=g[0]*da+g[1]*db,actual=(a+da)**2+2*(b+db)**2-f;
- for(const [id,value] of [['x1v',a],['x2v',b],['dx1v',da],['dx2v',db]]) $('#'+id).textContent=n(value);
- $('#gradReadout').textContent=`x=[${n(a)}, ${n(b)}]，f(x)=${n(f)}；∇f=[${n(g[0])}, ${n(g[1])}]。两个偏导分别描述只改变 x₁、只改变 x₂ 的变化率。`;
- $('#deltaReadout').textContent=`Δx=[${n(da)}, ${n(db)}]；预测 Δf≈∇f·Δx=${n(pred)}；实际 Δf=${n(actual)}；差值=${n(actual-pred)}。`;
-}
-function updateJac(){
- const a=Number($('#jx1').value),b=Number($('#jx2').value),d={x1:[.1,0],x2:[0,.1],both:[.1,-.1]}[$('#jacDelta').value];
- const [da,db]=d,pred=[2*a*da+db,b*da+a*db],actual=[(a+da)**2+b+db-(a*a+b),(a+da)*(b+db)-a*b];
- $('#jx1v').textContent=n(a);$('#jx2v').textContent=n(b);
- $('#jacReadout').textContent=`F(x)=[${n(a*a+b)}, ${n(a*b)}]；J=[[${n(2*a)},1],[${n(b)},${n(a)}]]。行对应输出，列对应输入。`;
- $('#jacDeltaReadout').textContent=`Δx=[${n(da)},${n(db)}]；预测 ΔF≈JΔx=[${n(pred[0])},${n(pred[1])}]；实际 ΔF=[${n(actual[0])},${n(actual[1])}]。`;
-}
-function updateMatrix(){
- const cells=['a','b','c','d'],g=[2,4,6,8],idx=Number($('#matrixCell').value),eps=Number($('#matrixEps').value),v=[1,2,3,4]; v[idx]+=eps;
- const f=v.reduce((total,value)=>total+value*value,0),pred=g[idx]*eps;
- $('#matrixEpsV').textContent=n(eps);
- $('#matrixReadout').textContent=`只让 ${cells[idx]} 改动 ${n(eps)}，其余元素固定。偏导=${g[idx]}；预测 Δf≈${n(pred)}；新函数值=${n(f)}，实际 Δf=${n(f-30)}。`;
-}
-for(const id of ['x1','x2','dx1','dx2']) $('#'+id).addEventListener('input',updateGradient);
-for(const id of ['jx1','jx2','jacDelta']) $('#'+id).addEventListener('input',updateJac);
-for(const id of ['matrixCell','matrixEps']) $('#'+id).addEventListener('input',updateMatrix);
-updateGradient();updateJac();updateMatrix();
-document.querySelectorAll('.quiz-item').forEach(item=>item.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{item.querySelectorAll('button').forEach(b=>b.classList.remove('correct','wrong'));const ok=btn.dataset.choice===item.dataset.answer;btn.classList.add(ok?'correct':'wrong');item.querySelector('.feedback').textContent=(ok?'正确。':'再看一次：')+item.dataset.explanation;})));
+document.querySelectorAll('.quiz-item').forEach(item=>item.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{item.querySelectorAll('button').forEach(b=>b.classList.remove('correct','wrong'));const ok=btn.dataset.choice===item.dataset.answer;btn.classList.add(ok?'correct':'wrong');item.querySelector('.feedback').textContent=(ok?'正确。':'再核对一下：')+item.dataset.explanation;})));
 </script>
 </body></html>
